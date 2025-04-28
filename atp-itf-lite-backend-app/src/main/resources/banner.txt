@@ -1,0 +1,7 @@
+
+  ${AnsiColor.RED} █████╗ ████████╗ ███████╗${AnsiColor.GREEN}    ███████╗      ██████╗  ${AnsiColor.WHITE}
+  ${AnsiColor.RED}██╔══██║╚══██╔══╝ ██╔══██║${AnsiColor.GREEN}    ╚════██║     ██╔═══██║ ${AnsiColor.WHITE}
+  ${AnsiColor.RED}███████║   ██║    ███████║${AnsiColor.GREEN}      █████║     ██║   ██║ ${AnsiColor.WHITE}
+  ${AnsiColor.RED}██╔══██║   ██║    ██╔════╝${AnsiColor.GREEN}    ██╔════╝     ██║   ██║ ${AnsiColor.WHITE}
+  ${AnsiColor.RED}██║  ██║   ██║    ██║     ${AnsiColor.GREEN}    ███████╗ ██╗ ╚██████╔╝ ${AnsiColor.WHITE}
+  ${AnsiColor.RED}╚═╝  ╚═╝   ╚═╝    ╚═╝     ${AnsiColor.GREEN}    ╚══════╝ ╚═╝  ╚═════╝  ${AnsiColor.WHITE}

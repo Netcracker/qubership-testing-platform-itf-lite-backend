@@ -1,0 +1,91 @@
+<configuration scan="true">
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
+    <property resource="application.properties"/>
+    <if condition='property("log.graylog.on").equals("true")'>
+        <then>
+            <appender name="GELF" class="biz.paluch.logging.gelf.logback.GelfLogbackAppender">
+                <host>${log.graylog.host}</host>
+                <port>${log.graylog.port}</port>
+                <version>1.1</version>
+                <facility>${project.artifactId}</facility>
+                <extractStackTrace>true</extractStackTrace>
+                <filterStackTrace>true</filterStackTrace>
+                <mdcProfiling>true</mdcProfiling>
+                <timestampPattern>yyyy-MM-dd HH:mm:ss,SSSS</timestampPattern>
+                <maximumMessageSize>8192</maximumMessageSize>
+
+                <additionalFields>environment=TA,application=${project.artifactId}</additionalFields>
+                <additionalFieldTypes>environment=String,application=atp-itf-lite-backend</additionalFieldTypes>
+
+                <mdcFields>mdc.userId,mdc.projectId,mdc.executionRequestId,mdc.testRunId,mdc.bvTestRunId,mdc.bvTestCaseId,mdc.environmentId,mdc.systemId,mdc.subscriberId,mdc.tsgSessionId,mdc.svpSessionId,mdc.dataSetId,mdc.dataSetListId,mdc.attributeId,mdc.itfLiteRequestId,itfLiteSseId,mdc.reportType,mdc.itfSessionId,mdc.itfContextId,mdc.callChainId,mdc.engineName,mdc.requestId</mdcFields>
+                <dynamicMdcFieldTypes>userId=String,projectId=String,executionRequestId=String,testRunId=String,environmentId=String,systemId=String,bvTestRunId=String,bvTestCaseId=String,subscriberId=String,tsgSessionId=String,svpSessionId=String,dataSetId=String,dataSetListId=String,attributeId=String,itfLiteRequestId=String,itfLiteSseId=String,reportType=String,itfSessionId=String,itfContextId=String,callChainId=String,engineName=String,requestId=String</dynamicMdcFieldTypes>
+                <dynamicMdcFields>mdc.*,(mdc|MDC)fields</dynamicMdcFields>
+                <includeFullMdc>true</includeFullMdc>
+            </appender>
+
+            <appender name="ASYNC_GELF" class="ch.qos.logback.classic.AsyncAppender">
+                <appender-ref ref="GELF" />
+            </appender>
+
+            <root level='property("logging.level.root")'>
+                <appender-ref ref="ASYNC_GELF"/>
+            </root>
+
+            <if condition='${ATP_HTTP_LOGGING:-false}'>
+                <then>
+                    <logger name="org.qubership.atp.common.logging.filter.LoggingFilter" level="DEBUG" additivity="false">
+                        <appender-ref ref="ASYNC_GELF"/>
+                    </logger>
+                    <logger name="org.qubership.atp.common.logging.interceptor.RestTemplateLogInterceptor" level="DEBUG" additivity="false">
+                        <appender-ref ref="ASYNC_GELF"/>
+                    </logger>
+                    <logger name="org.qubership.atp.itf.lite.backend.feign" level="DEBUG" additivity="false">
+                        <appender-ref ref="ASYNC_GELF"/>
+                    </logger>
+                </then>
+            </if>
+        </then>
+        <else>
+            <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>console.log</file>
+                <encoder class="org.qubership.atp.integration.configuration.logging.logback.AtpPatternLayoutEncoder">
+                    <pattern>%date{YYYY-MM-dd HH:mm:ss.SS} %-7([%level]) "%thread" %X{requestId} [%logger#%method] - %message%n
+                    </pattern>
+                    <charset>UTF-8</charset>
+                </encoder>
+                <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                    <maxIndex>10</maxIndex>
+                    <FileNamePattern>console.log.%i</FileNamePattern>
+                </rollingPolicy>
+                <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                    <maxFileSize>10Mb</maxFileSize>
+                </triggeringPolicy>
+            </appender>
+            <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder>
+                    <pattern>%date{YYYY-MM-dd HH:mm:ss.SS} %-7([%level]) "%thread" %X{requestId} [%logger#%method] - %message%n</pattern>
+                </encoder>
+            </appender>
+
+            <root level='property("logging.level.root")'>
+                <appender-ref ref="FILE"/>
+                <appender-ref ref="STDOUT"/>
+            </root>
+
+            <if condition='${ATP_HTTP_LOGGING:-false}'>
+                <then>
+                    <logger name="org.qubership.atp.common.logging.filter.LoggingFilter" level="DEBUG" additivity="false">
+                        <appender-ref ref="FILE"/>
+                    </logger>
+                    <logger name="org.qubership.atp.common.logging.interceptor.RestTemplateLogInterceptor" level="DEBUG" additivity="false">
+                        <appender-ref ref="FILE"/>
+                    </logger>
+                    <logger name="org.qubership.atp.itf.lite.backend.feign" level="DEBUG" additivity="false">
+                        <appender-ref ref="FILE"/>
+                        <appender-ref ref="STDOUT"/>
+                    </logger>
+                </then>
+            </if>
+        </else>
+    </if>
+</configuration>

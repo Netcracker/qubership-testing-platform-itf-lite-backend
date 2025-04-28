@@ -1,0 +1,71 @@
+/*
+ * # Copyright 2024-2025 NetCracker Technology Corporation
+ * #
+ * # Licensed under the Apache License, Version 2.0 (the "License");
+ * # you may not use this file except in compliance with the License.
+ * # You may obtain a copy of the License at
+ * #
+ * #      http://www.apache.org/licenses/LICENSE-2.0
+ * #
+ * # Unless required by applicable law or agreed to in writing, software
+ * # distributed under the License is distributed on an "AS IS" BASIS,
+ * # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * # See the License for the specific language governing permissions and
+ * # limitations under the License.
+ */
+
+package org.qubership.atp.itf.lite.backend.model.api.request;
+
+import java.util.Date;
+import java.util.UUID;
+
+import javax.validation.constraints.NotNull;
+
+import org.qubership.atp.itf.lite.backend.model.api.request.auth.AuthorizationSaveRequest;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class FolderUpsetRequest {
+
+    @NotNull
+    private String name;
+    @NotNull
+    private UUID projectId;
+    private UUID parentId;
+    private Permissions permissions;
+    private boolean isAutoCookieDisabled;
+    private boolean disableSslCertificateVerification;
+    private boolean disableSslClientCertificate;
+    private boolean disableFollowingRedirect;
+    private boolean disableAutoEncoding;
+    private String description;
+    private AuthorizationSaveRequest authorization;
+    private Date modifiedWhen;
+
+    public FolderUpsetRequest(String name, UUID projectId, UUID parentId, Permissions permissions, String description) {
+        this(name, projectId, parentId, permissions, false, false, false, false, false, description, null, new Date());
+    }
+
+    public FolderUpsetRequest(String name, UUID projectId, UUID parentId, Permissions permissions,
+                              boolean isAutoCookieDisabled, boolean disableSslCertificateVerification,
+                              boolean disableSslClientCertificate, boolean disableFollowingRedirect,
+                              boolean disableAutoEncoding) {
+        this(name, projectId, parentId, permissions, isAutoCookieDisabled, disableSslCertificateVerification,
+                disableSslClientCertificate, disableFollowingRedirect, disableAutoEncoding, "", null, new Date());
+    }
+
+    @JsonProperty(value = "isAutoCookieDisabled")
+    public boolean isAutoCookieDisabled() {
+        return isAutoCookieDisabled;
+    }
+
+    public void setAutoCookieDisabled(boolean isAutoCookieDisabled) {
+        this.isAutoCookieDisabled = isAutoCookieDisabled;
+    }
+}

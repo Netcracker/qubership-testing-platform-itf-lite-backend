@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: Api Documentation
+  description: Api Documentation
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+    description: Inferred Url
+tags:
+  - name: collection-controller
+    description: Collection Controller
+paths:
+  '/atp-itf-lite/api/v1/collections/import':
+    post:
+      tags:
+        - collection-controller
+      summary: import collection
+      operationId: importCollections
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                collections:
+                  type: string
+                  format: binary
+                requestEntity:
+                  $ref: 'models-v1.yaml#/definitions/ImportCollectionsRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'models-v1.yaml#/definitions/ImportCollectionsResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/atp-itf-lite/api/v1/collections/execute':
+    post:
+      tags:
+        - collection-controller
+      summary: execute collection
+      operationId: executeCollection
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/CollectionExecuteRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found

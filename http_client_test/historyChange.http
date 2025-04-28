@@ -1,0 +1,100 @@
+###
+PUT {{URL}}requests/{{itemId}}
+Authorization: {{bearer}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="requestEntity"; filename="blob"
+Content-Type: application/json
+
+{
+    "authorization": null,
+    "body": {
+        "content": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soapenv:Header/>\r\n  <soapenv:Body>\r\n    <CheckEligibilityServiceRequestMessage xmlns=\"http://zain.com/telecom/esb/xsd/checkeligibilityservice/verifyusereligibility/request/v1_0_0_0\" xmlns:ns0=\"http://zain.com/telecom/esb/xsd/SecurityManagement/common/headers/v1_0_0_0\">\r\n      <RequestHeader>\r\n        <ns0:Timestamp>2023-01-12T10:05:09.169+03:00</ns0:Timestamp>\r\n        <ns0:ChannelId>NCCSRD</ns0:ChannelId>\r\n        <ns0:ChannelTransctionId>571a7b94-f745-447a-b1fb-0971ec9a097d</ns0:ChannelTransctionId>\r\n        <ns0:Auth_key>YWRtaW4=</ns0:Auth_key>\r\n      </RequestHeader>\r\n      <CheckEligibilityServiceRequestPayload>\r\n        <requestType>1</requestType>\r\n        <Operator>\r\n          <employeeIdType>1</employeeIdType>\r\n          <operatorTCN>fabd81c5-bb81-46a9-9bcc-de402ba5837f</operatorTCN>\r\n          <EmployeeId>1233329999</EmployeeId>\r\n        </Operator>\r\n        <Person>\r\n          <personId>{v2c}{AES/ECB/PKCS5Padding}{default-key-alias_1646810792369}{e3uYmrz/CLAH+uQu4Ybi/g==}</personId>\r\n          <nationality>{v2c}{AES/ECB/PKCS5Padding}{default-key-alias_1646810792369}{fFcvMytR+/w1uwpFvGyCqQ==}</nationality>\r\n          <IdType>1</IdType>\r\n          <exceptionflag>0</exceptionflag>\r\n        </Person>\r\n        <Mobile>\r\n          <subscriptionType>0</subscriptionType>\r\n          <msisdnType>V</msisdnType>\r\n        </Mobile>\r\n      </CheckEligibilityServiceRequestPayload>\r\n    </CheckEligibilityServiceRequestMessage>\r\n  </soapenv:Body>\r\n</soapenv:Envelope>",
+        "type": "JSON"
+    },
+    "createdWhen": 1673533504319,
+    "folderId": null,
+    "hasWritePermissions": true,
+    "httpMethod": "POST",
+    "id": "{{itemId}}",
+    "modifiedWhen": 1710171822440,
+    "name": "Test Kuber",
+    "order": 7,
+    "permissionFolderId": null,
+    "postScripts": "console.log(\"post log\")\nconsole.info(\"post info\")\nconsole.error(\"post error\")\nconsole.debug(\"post debug\")\nconsole.warn(\"post warn\")\nconsole.warn(\"pre warn\");",
+    "preScripts": "console.log(\"pre log\");\nconsole.info(\"pre info\");\nconsole.error(\"pre error\");\nconsole.debug(\"pre debug\");\nconsole.warn(\"pre warn\");\nconsole.warn(\"pre warn\");",
+    "projectId": "{{projectId}}",
+    "requestHeaders": [
+    ],
+    "requestParams": [
+    ],
+    "sourceId": null,
+    "transportType": "SOAP",
+    "url": "https://atp-itf-stubs-prod.atpkub.managed.cloud/mockingbird-transport-soap-http/ea2be7c4-b9f2-4d63-a4b1-5d94075fcc9f/semati/checkEligibilityService"
+}
+--WebAppBoundary--
+
+### ALL CHANGES
+GET {{URL2}}history/changes/{{projectId}}/{{itemType}}/{{parentId}}?offset=0&limit=10
+Content-Type: application/json
+Authorization: {{bearer}}
+
+### RESTORE
+POST {{URL}}history/changes/{{projectId}}/{{itemType}}/{{parentId}}/restore/31
+Content-Type: application/json
+Authorization: {{bearer}}
+
+[]
+### COMPARE
+GET {{URL2}}history/changes/{{projectId}}/{{itemType}}/{{parentId}}/compare?versions=32,31
+Content-Type: application/json
+Authorization: {{bearer}}
+
+### CHANGE FOLDER
+PUT {{URL}}folders/{{parentId}}
+Authorization: {{bearer}}
+Content-Type: application/json
+
+{
+  "order": 1,
+  "name": "root",
+  "parentId": null,
+  "isAutoCookieDisabled": true,
+  "disableSslCertificateVerification": false,
+  "disableSslClientCertificate": true,
+  "disableFollowingRedirect": false,
+  "permissions": {
+    "isEnable": true,
+    "userAccess": [
+      "70ee9b7d-1f16-467c-b123-04014f903335",
+      "ee8ce6d3-2d41-4f9c-8853-7990decf29b2",
+      "8f52b310-6bd0-4717-9154-5556c6dde271"
+    ]
+  },
+  "projectId": "{{projectId}}"
+}
+
+### GET USERS
+POST http://localhost:8077/api/atp-users-backend/v1/api/v1/users/projects/{{projectId}}/users/info
+Authorization: {{bearer}}
+Content-Type: application/json
+
+[
+  "ee8ce6d3-2d41-4f9c-8853-7990decf29b2",
+  "70ee9b7d-1f16-467c-b123-04014f903335",
+  "8f52b310-6bd0-4717-9154-5556c6dde271"
+]
+
+### MOVE FOLDER
+POST {{URL}}folders/move
+Authorization: {{bearer}}
+Content-Type: application/json
+
+{
+  "projectId": "{{projectId}}",
+  "ids": [
+    "{{itemId}}"
+  ],
+  "toFolderId": "{{parentId}}"
+}

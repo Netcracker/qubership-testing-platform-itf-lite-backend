@@ -1,0 +1,81 @@
+openapi: 3.0.3
+info:
+  title: Api Documentation
+  description: Api Documentation
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+    description: Inferred Url
+tags:
+  - name: request-params-controller
+    description: Request params Controller
+paths:
+
+    '/atp-itf-lite/api/v1/request-params/{id}/disable':
+      post:
+        tags:
+          - request-params-controller
+        summary: disableRequestParam
+        operationId: disableRequestParam
+        parameters:
+          - name: id
+            in: path
+            description: Param id
+            schema:
+              type: string
+              format: uuid
+          - name: projectId
+            in: query
+            description: Project identifier
+            schema:
+              type: string
+              format: uuid
+          - name: requestId
+            in: query
+            description: Request identifier
+            schema:
+              type: string
+              format: uuid
+        responses:
+          '200':
+            description: OK
+          '401':
+            description: Unauthorized
+          '403':
+            description: Forbidden
+          '404':
+            description: Not Found
+    '/atp-itf-lite/api/v1/request-params/{id}/enable':
+      post:
+        tags:
+          - request-params-controller
+        summary: enableRequestParam
+        operationId: enableRequestParam
+        parameters:
+          - name: id
+            in: path
+            description: Param id
+            schema:
+              type: string
+              format: uuid
+          - name: projectId
+            in: query
+            description: Project identifier
+            schema:
+              type: string
+              format: uuid
+          - name: requestId
+            in: query
+            description: Request identifier
+            schema:
+              type: string
+              format: uuid
+        responses:
+          '200':
+            description: OK
+          '401':
+            description: Unauthorized
+          '403':
+            description: Forbidden
+          '404':
+            description: Not Found

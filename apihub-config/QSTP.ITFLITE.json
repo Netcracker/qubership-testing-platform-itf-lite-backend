@@ -1,0 +1,54 @@
+{
+ "projectId": "QSTP.ITFLITE",
+ "files": [
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/folder-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/history-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/models-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/open-shift-deployment-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/openapi-script-engine-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/openapi-auth-action-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/openapi-history-changes-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/request-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/request-headers-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/request-params-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/sse-controller-v1.yaml",
+   "publish": true
+  },
+  {
+   "fileId": "atp-itf-lite-rest-openapi-specifications/v1/user-settings-controller-v1.yaml",
+   "publish": true
+  }
+ ],
+ "refs": []
+}

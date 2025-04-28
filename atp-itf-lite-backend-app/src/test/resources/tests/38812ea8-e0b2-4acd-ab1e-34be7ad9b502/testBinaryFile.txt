@@ -1,0 +1,11 @@
+{
+	"name": "${localContextVar}",
+	"name": "${localContextVar}",
+	"id": "${iterDataVar}",
+	"projectName": "{{globalVar}}",
+	"testPlanId2": "{{unknownVar2}}",
+	"projectId": "b4f68440-7f1a-4e6a-9d03-34871b4ec8be",
+	"testPlanId": "{{collectionVar}}",
+	"testPlanName": "testPlan",
+	"testPlanId": "${unknownVar1}"
+}

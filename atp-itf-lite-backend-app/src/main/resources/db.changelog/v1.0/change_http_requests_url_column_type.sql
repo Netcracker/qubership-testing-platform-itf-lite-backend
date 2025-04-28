@@ -1,0 +1,1 @@
+ALTER TABLE http_requests ALTER COLUMN url TYPE TEXT;

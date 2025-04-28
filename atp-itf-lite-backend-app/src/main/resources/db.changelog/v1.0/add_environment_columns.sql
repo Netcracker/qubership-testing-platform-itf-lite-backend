@@ -1,0 +1,3 @@
+ALTER TABLE IF EXISTS requests
+    ADD COLUMN IF NOT EXISTS environment_id UUID,
+    ADD COLUMN IF NOT EXISTS environment_name VARCHAR(255);

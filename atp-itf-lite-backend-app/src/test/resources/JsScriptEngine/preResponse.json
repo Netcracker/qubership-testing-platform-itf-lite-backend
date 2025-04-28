@@ -1,0 +1,67 @@
+{
+  "postman": {
+    "globals": {
+      "ITF_LITE_GLOBALS_TEST": "globalsEncryptedUpdated",
+      "g1": "2"
+    },
+    "collectionVariables": {
+      "ITF_LITE_COLLECTIONVARIABLES_TEST": "collectionEncryptedUpdated",
+      "c1": "2"
+    },
+    "environment": {
+      "ITF_LITE_ENVIRONMENT_TEST": "environmentEncryptedUpdated",
+      "e1": "2",
+      "e2": "val2"
+    },
+    "iterationData": {
+      "ITF_LITE_ITERATIONDATA_TEST": "dataEncryptedUpdated"
+    },
+    "variables": {
+      "TEST": "localEncryptedUpdated"
+    },
+    "postmanRequest": {
+      "id": "2c6c89c9-4b8f-4202-851a-62a9661f6571",
+      "name": "test",
+      "url": {
+        "protocol": "http",
+        "host": [
+          "localohst"
+        ],
+        "port": "8080",
+        "path": [
+          "/path"
+        ],
+        "query": [
+          {
+            "key": "query_1",
+            "value": "q_value_1"
+          },
+          {
+            "key": "query_2",
+            "value": "q_value_2"
+          },
+          {
+            "key": "query_3",
+            "value": "q_value_3"
+          }
+        ]
+      },
+      "header": [
+        {
+          "key": "header_1",
+          "value": "h_value_1"
+        },
+        {
+          "key": "h_value_2",
+          "value": "header_2"
+        }
+      ],
+      "method": "POST",
+      "body": {
+        "mode": "raw",
+        "raw": "new body"
+      }
+    }
+  },
+  "testResults": []
+}

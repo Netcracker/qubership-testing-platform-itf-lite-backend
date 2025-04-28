@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: Api Documentation
+  description: Api Documentation
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+    description: Inferred Url
+tags:
+  - name: js-script-engine-controller
+    description: JS script engine controller
+paths:
+  '/api/v1/script/execute':
+    post:
+      tags:
+        - js-script-engine-controller
+      summary: execute Postman script
+      operationId: executePostmanScript
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/PostmanExecuteScriptRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'models-v1.yaml#/definitions/PostmanExecuteScriptResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found

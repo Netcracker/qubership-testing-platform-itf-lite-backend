@@ -1,0 +1,65 @@
+{
+  "info": {
+    "_postman_id": "9179bd6c-f8ff-4041-ba45-16ae5d28419d",
+    "name": "test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "http://localhost:8080/catalog/api/v1/projects/bulk/create",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJTb3hVenA2SWFBR29LU2xtYXpsYkVTcjdsNUhiN2tNbUdsUDhnRGRFMTNFIn0.eyJqdGkiOiI0MDA0MDM4OC01MzU2LTQzZWMtYTMxMy1hOWRiYjIyNmRlN2IiLCJleHAiOjE2NzY0NTE1MzMsIm5iZiI6MCwiaWF0IjoxNjc2NDQ3OTMzLCJpc3MiOiJodHRwczovL2F0cC1rZXljbG9hay1kZXYwNC5kZXYtYXRwLWNsb3VkLm5ldGNyYWNrZXIuY29tL2F1dGgvcmVhbG1zL2F0cDIiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNTIzMzdhY2MtYTZmZS00YzY4LTgyM2ItYmZiNjk5NTk3NTNlIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZnJvbnRlbmQiLCJub25jZSI6IjMiLCJhdXRoX3RpbWUiOjE2NzY0NDc5MzMsInNlc3Npb25fc3RhdGUiOiJmM2ZlM2U4Ni0zYzQzLTRkMzYtODU4YS1mNzFlZjZiNTdkMjAiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIioiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwiQVRQX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsIm5hbWUiOiJBZG1pbiBBZG1pbm92aWNoIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJnaXZlbl9uYW1lIjoiQWRtaW4iLCJmYW1pbHlfbmFtZSI6IkFkbWlub3ZpY2giLCJlbWFpbCI6InRlc3RAdGVzdCJ9.D4lc9uj2acv9tc9pTHbwzqKRQYSH0EzBjgc_lyZ561QDdmr9R-BWBrNEMgYC48av9ph1yEOpFoCmXOfYwOdXgFZvNHNqu9H_e2ChLvs1nRFb19VvLfeSEgBppNQ-EOOj1Q4of-6UiF5bMxYnFOupbR65Pq1QtI8FQGDbEPyEu4wcGlM456I9SGjqV364tH1kiFYphQD3SjmcIE19EY6pXSaNHgnh__mtKhNs7q6T8EDtgwAOWTcHnkkC3qFaRhlx7mK8xpbKAUSqkxbjxRGFpIT0tPV5sOgylrIg4BRWhmztRjRElvB8GkAJJuia44Eigfj83auexciKTZnDhy8yrw",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "test",
+              "value": "test",
+              "type": "text"
+            }
+          ],
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/catalog/api/v1/projects/bulk/create",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "catalog",
+            "api",
+            "v1",
+            "projects",
+            "bulk",
+            "create"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}

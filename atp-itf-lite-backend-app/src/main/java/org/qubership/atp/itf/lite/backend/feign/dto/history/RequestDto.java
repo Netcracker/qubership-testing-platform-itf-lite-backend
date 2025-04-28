@@ -1,0 +1,62 @@
+/*
+ * # Copyright 2024-2025 NetCracker Technology Corporation
+ * #
+ * # Licensed under the Apache License, Version 2.0 (the "License");
+ * # you may not use this file except in compliance with the License.
+ * # You may obtain a copy of the License at
+ * #
+ * #      http://www.apache.org/licenses/LICENSE-2.0
+ * #
+ * # Unless required by applicable law or agreed to in writing, software
+ * # distributed under the License is distributed on an "AS IS" BASIS,
+ * # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * # See the License for the specific language governing permissions and
+ * # limitations under the License.
+ */
+
+package org.qubership.atp.itf.lite.backend.feign.dto.history;
+
+import java.io.Serializable;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.Data;
+
+@JsonIgnoreProperties(
+  value = "entityType",
+  allowSetters = true
+)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "entityType", visible = true)
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = FolderHistoryChangeDto.class, name = "FOLDER"),
+  @JsonSubTypes.Type(value = HttpRequestHistoryDto.class, name = "HttpRequestHistory"),
+  @JsonSubTypes.Type(value = RequestDto.class, name = "REQUEST")
+})
+@JsonTypeName("Request")
+@Data
+public class RequestDto extends AbstractCompareEntityDto implements Serializable {
+
+  private static final long serialVersionUID = 1L;
+
+  private UUID id;
+  private String name;
+  private UUID projectId;
+  private String transportType;
+  private UUID folderId;
+  private Boolean disableSslCertificateVerification;
+  private Boolean disableSslClientCertificate;
+  private Boolean disableFollowingRedirect;
+  private AuthorizationDto authorization;
+  private Integer order;
+  private UUID sourceId;
+  private String preScripts;
+  private String postScripts;
+  private UUID permissionFolderId;
+  private Boolean hasWritePermissions;
+  private Boolean isAutoCookieDisabled;
+  private String documentation;
+  private ParentAuthDto parentAuth;
+}

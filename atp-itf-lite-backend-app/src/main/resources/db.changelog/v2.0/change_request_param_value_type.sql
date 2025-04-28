@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS request_params ALTER COLUMN value TYPE TEXT;

@@ -1,0 +1,228 @@
+openapi: 3.0.3
+info:
+  title: Api Documentation
+  description: Api Documentation
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+    description: Inferred Url
+tags:
+  - name: folder-controller
+    description: Folder Controller
+paths:
+  '/atp-itf-lite/api/v1/folders':
+    get:
+      tags:
+        - folder-controller
+      summary: getAllFolders
+      operationId: getAllFolders
+      parameters:
+        - name: projectId
+          in: query
+          description: Project identifier
+          required: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'models-v1.yaml#/definitions/Folder'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - folder-controller
+      summary: createFolder
+      operationId: createFolder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/FolderUpsetRequest'
+      responses:
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - folder-controller
+      summary: deleteFolders
+      operationId: deleteFolders
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/FolderDeleteRequest'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  '/atp-itf-lite/api/v1/folders/{id}':
+    put:
+      tags:
+        - folder-controller
+      summary: editFolder
+      operationId: editFolder
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/EditFolderRequest'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  '/atp-itf-lite/api/v1/folders/copy':
+    post:
+      tags:
+        - folder-controller
+      summary: copyFolders
+      operationId: copyFolders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/FolderCopyRequest'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  '/atp-itf-lite/api/v1/folders/move':
+    post:
+      tags:
+        - folder-controller
+      summary: moveFolders
+      operationId: moveFolders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/FolderMoveRequest'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  '/atp-itf-lite/api/v1/folders/heirs':
+    post:
+      tags:
+        - folder-controller
+      summary: findFolderHeirsCount
+      operationId: findFolderHeirsCount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/FolderDeleteRequest'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  '/atp-itf-lite/api/v1/folders/tree':
+    post:
+      tags:
+        - folder-controller
+      summary: buildFoldersAndRequestsTree
+      operationId: buildFoldersAndRequestsTree
+      parameters:
+        - name: onlyFolders
+          in: query
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/TreeRequest'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/atp-itf-lite/api/v1/folders/{id}/settings':
+    get:
+      tags:
+        - folder-controller
+      summary: get folder settings
+      operationId: getFolderSettings
+      parameters:
+        - name: id
+          in: path
+          description: request id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: 'models-v1.yaml#/definitions/Settings'
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found

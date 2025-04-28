@@ -1,0 +1,524 @@
+{
+	"info": {
+		"_postman_id": "663758a5-69b8-42b0-b952-349df4afe701",
+		"name": "Average collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "folder#1",
+			"item": [
+				{
+					"name": "folder#1_1",
+					"item": [
+						{
+							"name": "requestWithFormDataBody",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "key1",
+											"value": "textValue",
+											"description": "test",
+											"type": "text"
+										},
+										{
+											"key": "key2",
+											"description": "file",
+											"type": "file",
+											"src": "/C:/Users/user/Desktop/document.txt"
+										},
+										{
+											"key": "key3",
+											"description": "file",
+											"type": "file",
+											"src": []
+										},
+										{
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080"
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "requestWithUrlencodedBody",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "password",
+											"value": "password",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "username",
+											"type": "string"
+										},
+										{
+											"key": "grant_type",
+											"value": "password_credentials",
+											"type": "string"
+										},
+										{
+											"key": "scope",
+											"value": "scope",
+											"type": "string"
+										},
+										{
+											"key": "clientSecret",
+											"value": "clientSecret",
+											"type": "string"
+										},
+										{
+											"key": "clientId",
+											"value": "12345",
+											"type": "string"
+										},
+										{
+											"key": "accessTokenUrl",
+											"value": "localhost",
+											"type": "string"
+										},
+										{
+											"key": "headerPrefix",
+											"value": "Bearer",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "key1",
+											"value": "val1",
+											"type": "default"
+										},
+										{
+											"key": "key2",
+											"type": "default"
+										},
+										{
+											"type": "default"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "requestWithBinaryBody",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "/C:/Users/Desktop/postmanCollection/average_collection.json"
+									}
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "requestWithGraphQLBody",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SomeHeaders",
+								"value": "123",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\r\n    continents {\r\n        code, name\r\n    }\r\n}   ",
+								"variables": ""
+							},
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://countries.trevorblades.com/",
+							"protocol": "https",
+							"host": [
+								"countries",
+								"trevorblades",
+								"com"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "requestWithXML",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ4MHlzOEJ4N2lncm1BSnRvMkdzWFpnaUlMTnJTQV9aMk12TENTX2RWZjZ3In0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<Response>\r\n    <ResponseCode>0</ResponseCode>\r\n    <ResponseMessage>Success</ResponseMessage>\r\n</Response>",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "?key1=val1",
+							"query": [
+								{
+									"key": "key1",
+									"value": "val1"
+								},
+								{
+									"key": "key2",
+									"value": "val2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "requestWithInheritFromParentAuthType",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080"
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "token",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "requestWithJsonBody",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "scope",
+							"value": "scope",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "clientSecret",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "12345",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "localhost",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Header1",
+						"value": "true",
+						"type": "default"
+					},
+					{
+						"key": "Header2",
+						"value": "123",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"jsonValue\":\"value\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://abstracturl.com/firstPath/secondPath?firstParam=string&secondParam=1&thirdParam=123",
+					"protocol": "http",
+					"host": [
+						"abstracturl",
+						"com"
+					],
+					"path": [
+						"firstPath",
+						"secondPath"
+					],
+					"query": [
+						{
+							"key": "firstParam",
+							"value": "string",
+							"description": "description"
+						},
+						{
+							"key": "secondParam",
+							"value": "1"
+						},
+						{
+							"key": "thirdParam",
+							"value": "123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "requestWithUnsupportedMethod",
+			"request": {
+				"method": "PURGE",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "requestWithStringUrl",
+			"request": {
+				"method": "GET",
+				"url": "http://abstracturl.com/firstPath/secondPath?firstParam=string&secondParam=1&thirdParam=123"
+			},
+			"response": []
+		},
+		{
+			"name": "requestWithRawBodyWithoutLanguageOption",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Header1",
+						"value": "true",
+						"type": "default"
+					},
+					{
+						"key": "Header2",
+						"value": "123",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "bodyText"
+				},
+				"url": {
+					"raw": "http://abstracturl.com/firstPath/secondPath?firstParam=string&secondParam=1&thirdParam=123",
+					"protocol": "http",
+					"host": [
+						"abstracturl",
+						"com"
+					],
+					"path": [
+						"firstPath",
+						"secondPath"
+					],
+					"query": [
+						{
+							"key": "firstParam",
+							"value": "string",
+							"description": "description"
+						},
+						{
+							"key": "secondParam",
+							"value": "1"
+						},
+						{
+							"key": "thirdParam",
+							"value": "123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "requestWithNoAuth",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://abstracturl.com/firstPath/secondPath?firstParam=string&secondParam=1&thirdParam=123",
+					"protocol": "http",
+					"host": [
+						"abstracturl",
+						"com"
+					],
+					"path": [
+						"firstPath",
+						"secondPath"
+					],
+					"query": [
+						{
+							"key": "firstParam",
+							"value": "string",
+							"description": "description"
+						},
+						{
+							"key": "secondParam",
+							"value": "1"
+						},
+						{
+							"key": "thirdParam",
+							"value": "123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "requestWithAuthAsJsonObject",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BO_Token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://abstracturl.com/firstPath/secondPath?firstParam=string&secondParam=1&thirdParam=123",
+					"protocol": "http",
+					"host": [
+						"abstracturl",
+						"com"
+					],
+					"path": [
+						"firstPath",
+						"secondPath"
+					],
+					"query": [
+						{
+							"key": "firstParam",
+							"value": "string",
+							"description": "description"
+						},
+						{
+							"key": "secondParam",
+							"value": "1"
+						},
+						{
+							"key": "thirdParam",
+							"value": "123"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

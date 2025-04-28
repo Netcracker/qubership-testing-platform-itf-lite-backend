@@ -1,0 +1,45 @@
+### saveParamsForGetAccessCode DEV02
+POST https://atp-public-gateway-dev02.atp2k8.managed.cloud/api/atp-itf-lite-backend/v1/atp-itf-lite/api/v1/authAction/saveParamsForGetAccessCode
+Content-Type: application/json
+Authorization: {{bearer}}
+
+{
+  "projectId":"528767fc-c5af-46bf-9c4f-2e6d020cf072",
+  "sseId":"5df4a9e4-751a-4e5c-9373-1ac2ace3bde1",
+  "accessTokenUrl":"http://test.com",
+  "clientId":"test",
+  "clientSecret":"test",
+  "scope":"test",
+  "state":"test"
+}
+
+### saveCode DEV02
+https://atp-public-gateway-dev02.atp2k8.managed.cloud/api/atp-itf-lite-backend/v1/atp-itf-lite/api/v1/authAction/saveCode/5df4a9e4-751a-4e5c-9373-1ac2ace3bde1?code=text&state=state
+Content-Type: application/json
+
+
+### CONNECT LOCALHOST
+GET http://localhost:8080/atp-itf-lite/api/v1/sse/requests/connect?projectId={{projectId}}&sseId={{sseId}}
+Content-Type: text/event-stream
+Authorization: {{bearer}}
+
+### saveParamsForGetAccessCode LOCALHOST
+POST http://localhost:8080/atp-itf-lite/api/v1/authAction/saveParamsForGetAccessCode
+Content-Type: application/json
+Authorization: {{bearer}}
+
+{
+  "projectId":"{{projectId}}",
+  "sseId":"{{sseId}}",
+  "accessTokenUrl":"https://atp-keycloak-dev04.atp2k8.managed.cloud/auth/realms/atp2/protocol/openid-connect/token",
+  "clientId":"test_auth_code",
+  "clientSecret":"{{clientSecret}}",
+  "redirectUri": "http://localhost:8080/atp-itf-lite/api/v1/authAction/saveCode/57384e84-73d7-4a0f-a5e7-80ee5c6886a1",
+  "scope":"openid",
+  "state":"state"
+}
+
+### saveCode LOCALHOST
+https://atp-keycloak-dev04.atp2k8.managed.cloud/auth/realms/atp2/protocol/openid-connect/auth?redirect_uri=http://localhost:8080/atp-itf-lite/api/v1/authAction/saveCode/57384e84-73d7-4a0f-a5e7-80ee5c6886a1&state=state&response_type=code&client_id=test_auth_code&scope=openid
+Content-Type: application/json
+###

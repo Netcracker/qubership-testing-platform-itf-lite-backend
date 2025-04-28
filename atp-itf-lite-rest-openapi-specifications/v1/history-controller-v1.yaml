@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  title: Api Documentation
+  description: Api Documentation
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+    description: Inferred Url
+tags:
+  - name: history-controller
+    description: History Controller
+paths:
+  '/atp-itf-lite/api/v1/history':
+    get:
+      tags:
+        - history-controller
+      summary: getExecutionHistoryDetails
+      operationId: getExecutionHistoryDetails
+      parameters:
+        - name: historyItemId
+          in: path
+          description: history item id
+          schema:
+            type: string
+            format: uuid
+        - name: type
+          in: query
+          description: transport type name
+          schema:
+            type: string
+            enum: [REST,SOAP,Diameter]
+        - name: projectId
+          in: query
+          description: project id
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'models-v1.yaml#/definitions/HistoryRequestDetailsResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - request-controller
+      summary: getExecutionsHistory
+      operationId: getExecutionsHistory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'models-v1.yaml#/definitions/HistorySearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'models-v1.yaml#/definitions/PaginatedResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/atp-itf-lite/api/v1/history/executors':
+    get:
+      tags:
+        - history-controller
+      summary: getExecutorsInRequestExecutionHistory
+      operationId: getExecutorsInRequestExecutionHistory
+      parameters:
+        - name: projectId
+          in: query
+          description: project id
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found

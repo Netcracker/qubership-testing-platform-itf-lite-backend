@@ -1,0 +1,948 @@
+[
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "b11a50c0-5727-4548-ae8b-956531c9e254",
+    "name": "DATE",
+    "description": "Returns current date with reported format in some timezone (optional argument). e.g: $DATE('dd.MM.yyyy hh:mm:ss', 'GMT+3')",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(format, timeZone) {    var date = new Packages.java.util.Date();    if(format.equals(\"millis\")){        return date.getTime().toString();        }    var print = new Packages.java.text.SimpleDateFormat(format);    if(timeZone != null){    var timezone = Packages.java.util.TimeZone.getTimeZone(timeZone);    print.setTimeZone(timezone);    }    return print.format(date);}",
+    "parameters": [
+      {
+        "uuid": "d87b5227-5d54-405f-90b5-328e133a4e33",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": "dd.MM.yyyy hh:mm:ss",
+        "optional": false
+      },
+      {
+        "uuid": "bfdabc88-ddfe-43c8-b851-d01d5558fe67",
+        "name": "timezone",
+        "description": "General timezone for displaying the date, e.g: 'GMT+8'",
+        "defaultValue": null,
+        "optional": true
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "616ae595-d82b-43f9-b4f9-3bbb246662dc",
+    "name": "GET_DAY",
+    "description": "Returns day of the reported date with reported format in some timezone(optional argument), e.g: $GET_DAY('9.06.2013', 'dd.MM.yyyy')",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(date, format, timeZone) {     var calendar = Packages.java.util.Calendar.getInstance();          if(timeZone != null){            var timezone = Packages.java.util.TimeZone.getTimeZone(timeZone);            calendar.setTimeZone(timezone);        }       if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));            }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        }    return calendar.get(Packages.java.util.Calendar.DAY_OF_MONTH);}",
+    "parameters": [
+      {
+        "uuid": "b805ab3f-48e5-4734-a30a-6d0d9c2272ff",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "da5f6e20-1e8b-4995-a35a-9027d81f7ccd",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "b7fceb71-1537-4320-a991-8c97f89c9a7d",
+        "name": "timezone",
+        "description": "General timezone for displaying the date, e.g: 'GMT+8'",
+        "defaultValue": null,
+        "optional": true
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "6f9bd750-36e3-406b-89de-47736d73dd6f",
+    "name": "GET_HOUR",
+    "description": "Returns hours of the reported date with reported format in some timezone(optional argument), e.g: $GET_HOUR('9.06.2013 15:12:11', 'dd.MM.yyyy hh:mm:ss', 'GMT+3')",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(date, format, timeZone) {     var calendar = Packages.java.util.Calendar.getInstance();          if(timeZone != null){            var timezone = Packages.java.util.TimeZone.getTimeZone(timeZone);            calendar.setTimeZone(timezone);        }       if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));            }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        }    return calendar.get(Packages.java.util.Calendar.HOUR_OF_DAY);}",
+    "parameters": [
+      {
+        "uuid": "e1f25f36-8f4c-44a5-8153-c92aa4b74e26",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "d8ae9144-3bc4-4556-ab38-cbbf1c83cf61",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "1dd6270a-936d-42fc-9558-70af1ae375e6",
+        "name": "timezone",
+        "description": "General timezone for displaying the date, e.g: 'GMT+8'",
+        "defaultValue": null,
+        "optional": true
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "d6c3c8e1-fda8-455d-b246-c684887a6d16",
+    "name": "GET_MIN",
+    "description": "Returns minutes of the reported date with reported format in some timezone(optional argument), e.g: $GET_MIN('9.06.2013 15:12:11', 'dd.MM.yyyy hh:mm:ss', 'GMT+3')",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(date, format, timeZone) {     var calendar = Packages.java.util.Calendar.getInstance();          if(timeZone != null){            var timezone = Packages.java.util.TimeZone.getTimeZone(timeZone);            calendar.setTimeZone(timezone);        }       if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));            }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        }    return calendar.get(Packages.java.util.Calendar.MINUTE);}",
+    "parameters": [
+      {
+        "uuid": "d897b652-c34e-41af-bb9e-c874179dc610",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "65164b12-edb8-4b03-9ae1-7858c7aca4d6",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "21ffee39-522d-4c05-ac7d-8768aa72d105",
+        "name": "timezone",
+        "description": "General timezone for displaying the date, e.g: 'GMT+8'",
+        "defaultValue": null,
+        "optional": true
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "b6a3abdf-acca-45fe-9aa5-a1a83004f87e",
+    "name": "GET_MONTH",
+    "description": "Returns month of the reported date with reported format in some timezone(optional argument), e.g: $GET_MONTH('9.06.2013', 'dd.MM.yyyy')",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(date, format, timeZone) {     var calendar = Packages.java.util.Calendar.getInstance();          if(timeZone != null){            var timezone = Packages.java.util.TimeZone.getTimeZone(timeZone);            calendar.setTimeZone(timezone);        }       if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));            }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        }    return Packages.java.lang.Integer.parseInt(calendar.get(Packages.java.util.Calendar.MONTH)+1);}",
+    "parameters": [
+      {
+        "uuid": "9928a317-d1b4-4082-9fb8-0539ad8aafc2",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "5e383722-618b-45ab-b383-c741698d8a05",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "fa626218-28f7-42fa-87a5-5adbebd2a8fc",
+        "name": "timezone",
+        "description": "General timezone for displaying the date, e.g: 'GMT+8'",
+        "defaultValue": null,
+        "optional": true
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "d2cceff0-645e-46b3-b14c-e200486e4f69",
+    "name": "GET_SEC",
+    "description": "Returns seconds of the reported date with reported format in some timezone(optional argument), e.g: $GET_SEC('9.06.2013 15:12:11', 'dd.MM.yyyy hh:mm:ss')",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(date, format, timeZone) {     var calendar = Packages.java.util.Calendar.getInstance();          if(timeZone != null){            var timezone = Packages.java.util.TimeZone.getTimeZone(timeZone);            calendar.setTimeZone(timezone);        }       if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));            }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        }    return calendar.get(Packages.java.util.Calendar.SECOND);}",
+    "parameters": [
+      {
+        "uuid": "20b6e3e5-5def-4d3e-8ed2-9f9cf1ad663f",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "7752d703-75a2-4c85-b430-55afdfb8c334",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "2a4e05b8-5e6e-40e3-869b-3608a89d1691",
+        "name": "timezone",
+        "description": "General timezone for displaying the date, e.g: 'GMT+8'",
+        "defaultValue": null,
+        "optional": true
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "bdc0eccf-30da-4d93-981a-b439cfd343f2",
+    "name": "GET_YEAR",
+    "description": "Returns year of the reported date with reported format in some timezone(optional argument), e.g: $GET_YEAR('9.06.2013', 'dd.MM.yyyy')",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(date, format, timeZone) {     var calendar = Packages.java.util.Calendar.getInstance();          if(timeZone != null){            var timezone = Packages.java.util.TimeZone.getTimeZone(timeZone);            calendar.setTimeZone(timezone);        }       if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));            }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        }    return calendar.get(Packages.java.util.Calendar.YEAR);}",
+    "parameters": [
+      {
+        "uuid": "63584b7b-f329-44a3-bd32-aa082e9ce01b",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "433a2703-ece3-4d17-8dcd-6ca0fce54563",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": null,
+        "optional": false
+      },
+      {
+        "uuid": "18759ac7-ecf8-4c3e-a357-311cb21d0ab0",
+        "name": "timezone",
+        "description": "General timezone for displaying the date, e.g: 'GMT+8'",
+        "defaultValue": null,
+        "optional": true
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "c887cea4-4e48-42cf-9044-b21ce2db6c08",
+    "name": "MOVE_DATE",
+    "description": "The macro is used to display shift relative to parameter move.Exp: $MOVE_DATE(\"-1d+1h\") shows yesterday and time on 1 hour more than current timeValue is allowed for move parameter:'d': DATE,'h': HOUR_OF_DAY,'m': MINUTE's': SECOND,'M': MONTH,'y': YEAR",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "var RE_PARSE_MOVE = /([+-]\\d+)(\\w+)/g;var calendar = Packages.java.util.Calendar.getInstance();var calendarMap = {}; calendarMap['d] = {    'd': calendar.DATE,    'h': calendar.HOUR_OF_DAY,    'm': calendar.MINUTE,    's': calendar.SECOND,    'M': calendar.MONTH,    'y': calendar.YEAR}; function calc(value, type) {    calendar.add(type, value);}function doMove(move) {    var match;    if (!RE_PARSE_MOVE.test(move)) {        throw new TypeError('Incorrect move syntax');    }    RE_PARSE_MOVE.lastIndex = 0;    while (match = RE_PARSE_MOVE.exec(move)) {        var value = match[1],            type = match[2];      if (calendarMap[type] === undefined) {            throw new TypeError(\"Undefined type of date operation: \" + type)        }        calc(value, calendarMap[type]);    }}function main(move, format) {    doMove(move);    var date = calendar.getTime();    if (format) {        var print = new Packages.java.text.SimpleDateFormat(format);        return print.format(date);    }    return date;}",
+    "parameters": [
+      {
+        "uuid": "6382d913-4d3a-418f-9464-9550162c5cf1",
+        "name": "move",
+        "description": "The parameter is used to indicate how to move current date/time: -1d is to move current date-time to 1 day back +5h is to move current date-time to 5 hours forward",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "365626db-094f-42d1-bd4c-6e60c1167e5f",
+        "name": "format",
+        "description": "The parameter is used to set format of date-time showing",
+        "defaultValue": "dd.MM.yyyy hh:mm:ss",
+        "optional": true
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "4bb5e455-36d1-45ba-aa71-9d92f91aba0d",
+    "name": "RAND",
+    "description": "Returns a random integer with the specified length.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(digit) {    digit = Math.abs(parseInt(digit));    min = Math.pow(10,digit - 1);    max = Math.pow(10,digit) - 1;            var result = Math.floor(Math.random() * (max - min + 1)) + min;    return result.toString();}",
+    "parameters": [
+      {
+        "uuid": "e086443d-6f49-4df1-8401-e392e89ddbb7",
+        "name": "digit",
+        "description": "",
+        "defaultValue": "1",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "71e21a4e-2c0a-401a-91c7-722ff4748583",
+    "name": "RANDBETWEEN",
+    "description": "Returns the next pseudorandom number between first argument value(inclusive) and second argument value (inclusive).",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(min, max) {    min = parseInt(min);    max = parseInt(max);        if(max < min) {        var temp = max;        max = min;        min = temp;    }        var result = Math.floor(Math.random() * (max - min + 1)) + min;    return result.toString();}",
+    "parameters": [
+      {
+        "uuid": "40609a3f-5b97-4d2e-b679-08cda02a16d8",
+        "name": "max",
+        "description": "",
+        "defaultValue": "100",
+        "optional": true
+      },
+      {
+        "uuid": "d1f5afe3-a549-4394-a4f7-5effa353f0a8",
+        "name": "min",
+        "description": "",
+        "defaultValue": "1",
+        "optional": true
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "ff13968c-095f-4c9e-98eb-34bcc0dc8e15",
+    "name": "RAND_UUID",
+    "description": "Returns random UUID",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {    var result = java.util.UUID.randomUUID();    return result.toString();}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "cf8c553b-b6f3-4285-8e23-72e1969f8b29",
+    "name": "UUID",
+    "description": "Returns random UUID",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {    var result = java.util.UUID.randomUUID();    return result.toString();}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "39b39b7f-bab5-41e3-b53b-239012f3f752",
+    "name": "SHIFT_HOUR",
+    "description": "Returns new date, after correcting hour of the reported date to the value (can be negative), e.g: $SHIFT_HOUR('-2', '9.06.2013 15:12:11', 'dd.MM.yyyy hh:mm:ss') will return '9.06.2013 13:12:11'",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(value, date, format) {     var calendar = Packages.java.util.Calendar.getInstance();        if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));        var newHour = calendar.get(Packages.java.util.Calendar.HOUR)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.HOUR, newHour);        return calendar.getTimeInMillis();        }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        var newHour = calendar.get(Packages.java.util.Calendar.HOUR)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.HOUR, newHour);        return sdf.format(calendar.getTime());        }}",
+    "parameters": [
+      {
+        "uuid": "b28b23d5-5ef5-4b0d-8e5e-bc030bea2531",
+        "name": "value",
+        "description": "Hours to add (or subtract), e.g: '2'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "24733c4a-a7a6-456d-8f15-f101b4a550f7",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "f9696341-0c5d-4bef-bf45-d64e1870505d",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "9c8c70eb-dce5-40b5-a926-a5e9dda407f8",
+    "name": "SHIFT_MIN",
+    "description": "Returns new date, after correcting minute of the reported date to the value (can be negative), e.g: $SHIFT_MIN('-2', '9.06.2013 15:12:11', 'dd.MM.yyyy hh:mm:ss') will return '9.06.2013 15:10:11'",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(value, date, format) {     var calendar = Packages.java.util.Calendar.getInstance();        if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));        var newMinutes = calendar.get(Packages.java.util.Calendar.MINUTE)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.MINUTE, newMinutes );        return calendar.getTimeInMillis();        }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        var newMinutes = calendar.get(Packages.java.util.Calendar.MINUTE)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.MINUTE, newMinutes );        return sdf.format(calendar.getTime());        }}",
+    "parameters": [
+      {
+        "uuid": "bba09c57-9f9f-418d-aef9-3c1cbd196f8e",
+        "name": "value",
+        "description": "Hours to add (or subtract), e.g: '2'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "9a223a2d-6634-4df1-ba4b-720e0f150ce7",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "338375e6-f652-4fe3-bae4-1bda3b6db411",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "3445f321-ad9e-4f02-9ef6-d2077cad313d",
+    "name": "SHIFT_MONTH",
+    "description": "Returns new date, after correcting month of the reported date to the value (can be negative), e.g: $SHIFT_MONTH('2', '9.06.2013', 'dd.MM.yyyy') will return '9.08.2013'.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(value, date, format) {       var calendar = Packages.java.util.Calendar.getInstance();        if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));        var newMonth = calendar.get(Packages.java.util.Calendar.MONTH)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.MONTH, newMonth);        return calendar.getTimeInMillis();        }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        var newMonth = calendar.get(Packages.java.util.Calendar.MONTH)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.MONTH, newMonth);        return sdf.format(calendar.getTime());        }}",
+    "parameters": [
+      {
+        "uuid": "40860c9f-512d-4f64-b043-19e71024c002",
+        "name": "value",
+        "description": "Hours to add (or subtract), e.g: '2'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "2dc2b691-36f1-48aa-8050-ea19e2ae96b7",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "86963bfd-31cd-4bcd-b7dc-c83a0ce86bf0",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "f5863a22-cfde-4891-8b4a-c4b5b376fd07",
+    "name": "SHIFT_SEC",
+    "description": "Returns new date, after correcting seconds of the reported date to the value (can be negative), e.g: $SHIFT_SEC('-2', '9.06.2013 15:12:11', 'dd.MM.yyyy hh:mm:ss') will return '9.06.2013 15:12:09'",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(value, date, format) {     var calendar = Packages.java.util.Calendar.getInstance();        if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));        var newSeconds = calendar.get(Packages.java.util.Calendar.SECOND)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.SECOND, newSeconds );        return calendar.getTimeInMillis();        }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        var newSeconds = calendar.get(Packages.java.util.Calendar.SECOND)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.SECOND, newSeconds);        return sdf.format(calendar.getTime());        }}",
+    "parameters": [
+      {
+        "uuid": "1149fed5-6754-4d99-a90e-23a89b3e1d62",
+        "name": "value",
+        "description": "Hours to add (or subtract), e.g: '2'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "38d53639-789d-47e4-a046-5df69ef73827",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "dbcef404-e18c-4442-9722-89de37ea844f",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "6a691fbb-5754-41e7-850b-b9f8371df603",
+    "name": "SHIFT_YEAR",
+    "description": "Returns new date, after correcting year of the reported date to the value (can be negative), e.g: $SHIFT_YEAR('2', '9.06.2013', 'dd.MM.yyyy') will return '9.06.2015'.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(value, date, format) {     var calendar = Packages.java.util.Calendar.getInstance();        if(format.equals(\"millis\")){        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));        var newYear = calendar.get(Packages.java.util.Calendar.YEAR)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.YEAR, newYear);        return calendar.getTimeInMillis();        }    else {        var sdf = new Packages.java.text.SimpleDateFormat(format);        var date1 = sdf.parse(date);        calendar.setTimeInMillis(date1.getTime());        var newYear = calendar.get(Packages.java.util.Calendar.YEAR)+Packages.java.lang.Integer.parseInt(value);        calendar.set(Packages.java.util.Calendar.YEAR, newYear);        return sdf.format(calendar.getTime());        }}",
+    "parameters": [
+      {
+        "uuid": "07f4abd6-f1d3-48c7-b76e-11b16e1cf288",
+        "name": "value",
+        "description": "Hours to add (or subtract), e.g: '2'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "6216334a-3045-4035-8fc3-6a84cea2e2e8",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "cbebb690-0d91-4ba9-9550-3dfd2b1500d1",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "57508aae-234c-46f2-956e-0b43a7a086d5",
+    "name": "SHIFT_DAY",
+    "description": "Returns new date, after correcting year of the reported date to the value (can be negative), e.g: $SHIFT_YEAR('2', '9.06.2013', 'dd.MM.yyyy') will return '9.06.2015'.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(value, date, format) {\n     var calendar = Packages.java.util.Calendar.getInstance();        if(format.equals(\"millis\")){\n        calendar.setTimeInMillis(Packages.java.lang.Long.parseLong(date));\n        var newDay = calendar.get(Packages.java.util.Calendar.DAY_OF_MONTH)+Packages.java.lang.Integer.parseInt(value);\n        calendar.set(Packages.java.util.Calendar.DAY_OF_MONTH, newDay);\n        return calendar.getTimeInMillis();\n        }\n    else {\n        var sdf = new Packages.java.text.SimpleDateFormat(format);\n        var date1 = sdf.parse(date);\n        calendar.setTimeInMillis(date1.getTime());\n        var newDay= calendar.get(Packages.java.util.Calendar.DAY_OF_MONTH)+Packages.java.lang.Integer.parseInt(value);\n        calendar.set(Packages.java.util.Calendar.DAY_OF_MONTH, newDay);\n        return sdf.format(calendar.getTime());\n        }\n}",
+    "parameters": [
+      {
+        "uuid": "9c4702b5-9389-45f2-9710-129c5c790353",
+        "name": "value",
+        "description": "Hours to add (or subtract), e.g: '2'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "c55ad8c4-6575-4865-b1c5-a3b8627ab4f4",
+        "name": "date",
+        "description": "Date in specified format, e.g: '2015-01-12 10:30:00'",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "a8f0cf40-2faf-4dcd-8db0-121c971c43c5",
+        "name": "format",
+        "description": "Date and time pattern string, e.g: 'yyyy-MM-dd HH:mm:ss'",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "36d93e7e-e8bf-4bca-8869-a55821ea0e86",
+    "name": "ENV_VARIABLE",
+    "description": "Macro returns value of variable from Test Environment by name of variable.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(variableName) {\n    if (contextMap != null) {\n        var envId = contextMap.get('ENV_ID');\n        if (envId == null) {\n            return 'ENV_ID is absent in context'\n        }\n        var environment = contextMap.get(envId);\n        if (environment == null) {\n            return 'ENVIRONMENT with id' + envId + ' is absent in context'\n        }\n        var systems = environment.values().toArray();\n        for (var i = 0; i < systems.length; i++) {\n            var conns = systems[i].values().toArray();\n            for (var j = 0; j < conns.length; j++) {\n                var connParams = conns[j];\n                if (connParams.get(variableName) != null) {\n                    return connParams.get(variableName);\n                }\n            }\n        }\n        return 'Unknown ENVIRONMENT VARIABLE' + variableName;\n    }\n}",
+    "parameters": [
+      {
+        "uuid": "69f9e4bb-7139-43bf-a5bd-5e26bce507ed",
+        "name": "variableName",
+        "description": "",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "2a0ace95-456b-4c2a-b90a-7c0973f72d54",
+    "name": "RES_VARIABLE",
+    "description": "Macro returns value of variable from Test Environment by name of variable.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(systemName, variableName) {\n    if (contextMap != null) {\n        var envId = Packages.java.lang.String.valueOf(contextMap.get('ENV_ID'));\n        if (envId == null) {\n            return 'ENV_ID is absent in context'\n        }\n        var environment = contextMap.get(envId);\n        if (environment != null && environment.get(systemName) != null) {\n                 var connName = variableName;\n            var partsOfStr = Packages.org.apache.commons.lang.StringUtils.split(variableName, '.');\n            if (partsOfStr != null) {\n                connName = partsOfStr[0];\n            }\n            var conns = environment.get(systemName);\n            if (connName === variableName && conns != null) {\n                var connsArray = conns.values().toArray();\n                for (var j = 0; j < connsArray.length; j++) {\n                    var connParams = connsArray[j];\n                    if (connParams.get(variableName) != null) {\n                        return connParams.get(variableName);\n                    }\n                }\n            } else if(conns != null){\n                var connParams = conns.get(connName);\n                if (connParams.get(partsOfStr[1]) != null) {\n                    return connParams.get(partsOfStr[1]);\n                }\n            }\n        } else {\n            return 'Unknown SYSTEM ' + systemName;\n        }\n        return 'Unknown ENVIRONMENT VARIABLE ' + variableName + ' for system ' + systemName;\n    }\n}",
+    "parameters": [
+      {
+        "uuid": "e9e5ba3a-1995-4b18-89a0-d18955d18c19",
+        "name": "systemName",
+        "description": "",
+        "defaultValue": "",
+        "optional": false
+      },
+      {
+        "uuid": "5ec258af-5ad5-42a4-9980-975762a956ef",
+        "name": "variableName",
+        "description": "",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "05fee512-4b60-4ce6-88bf-9c12c0eff764",
+    "name": "EXECUTION_REQUEST_ID",
+    "description": "Returns ID of Execution Request.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('EXECUTION_REQUEST_ID') != null) ? contextMap.get('EXECUTION_REQUEST_ID') : 'Unknown EXECUTION_REQUEST_ID';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "d15a42e1-37c4-4052-a15a-4bdbc1ade18e",
+    "name": "EXECUTION_REQUEST_KEY",
+    "description": "Returns key of Execution Request.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('EXECUTION_REQUEST_KEY') != null) ? contextMap.get('EXECUTION_REQUEST_KEY') : 'Unknown EXECUTION_REQUEST_KEY' ;\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "7cc6aba5-7590-410d-96f8-3a378f0d2e96",
+    "name": "EXECUTION_REQUEST_NAME",
+    "description": "Returns name of Execution Request.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('EXECUTION_REQUEST_NAME') != null) ? contextMap.get('EXECUTION_REQUEST_NAME') : 'Unknown EXECUTION_REQUEST_NAME' ;\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "65d0a042-b912-4613-8e7c-96f4d66fa847",
+    "name": "EXECUTION_REQUEST_NUMBER",
+    "description": "Returns number of Execution Request.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('EXECUTION_REQUEST_NUMBER') != null) ? contextMap.get('EXECUTION_REQUEST_NUMBER') : 'Unknown EXECUTION_REQUEST_NUMBER';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "ac5ce698-1dc0-4022-b544-6bc6b4a2b272",
+    "name": "EXECUTION_REQUEST_SHORT_NAME",
+    "description": "Returns short name of Execution Request.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('EXECUTION_REQUEST_SHORT_NAME') != null) ? contextMap.get('EXECUTION_REQUEST_SHORT_NAME') : 'Unknown EXECUTION_REQUEST_SHORT_NAME';}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "4afed895-8047-4139-8273-eab7f2cfdafd",
+    "name": "SDS_DATA_SET",
+    "description": "This macro returns the name of Service Data Set which is default for TestCase or is used during TestRun execution.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('DATASET_NAME') != null) ? contextMap.get('DATASET_NAME') : 'Unknown DATASET_NAME';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "657e2cf9-d351-4235-a620-4bad4ef9c683",
+    "name": "SDS_DATA_SET_LIST",
+    "description": "TThis macro returns the name of Service Data Set List which Data Set is default for TestCase or is used during TestRun execution.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('DATASET_STORAGE_NAME') != null) ? contextMap.get('DATASET_STORAGE_NAME') : 'Unknown DATASET_STORAGE_NAME' ;\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "8eda2de9-962b-4450-9645-acbf38a8f8bb",
+    "name": "SDS_FULL_NAME",
+    "description": "This macro returns a full name of Service Data Set.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('VISIBILITY_AREA_NAME') != null && contextMap.get('DATASET_STORAGE_NAME') != null && contextMap.get('DATASET_NAME') != null)\n\t? contextMap.get('VISIBILITY_AREA_NAME') + \"|\" + contextMap.get('DATASET_STORAGE_NAME') + \"|\" + contextMap.get('DATASET_NAME')\n\t: 'Unknown VISIBILITY_AREA_NAME or DATASET_STORAGE_NAME or DATASET_NAME';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "dffda4d5-97c6-4996-8deb-a4d785c232ab",
+    "name": "SDS_VISIBILITY_AREA",
+    "description": "This macro returns the name of Service Visibility Area which Data Set is default for TestCase or is used during TestRun execution.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('VISIBILITY_AREA_NAME') != null) ? contextMap.get('VISIBILITY_AREA_NAME'): 'Unknown VISIBILITY_AREA_NAME';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "760d588b-330d-41b7-9425-36f425a8936a",
+    "name": "TEST_CASE_NAME",
+    "description": "Returns name of Test Case.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('TEST_CASE_NAME') != null) ? contextMap.get('TEST_CASE_NAME') : 'Unknown TEST_CASE_NAME';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "e12e5815-2032-47dd-870e-88d9f0844584",
+    "name": "TEST_CASE_SHORT_NAME",
+    "description": "Returns short name of Test Case.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('TEST_CASE_SHORT_NAME') != null) ? contextMap.get('TEST_CASE_SHORT_NAME') : 'Unknown TEST_CASE_SHORT_NAME';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "7f0312ae-161f-4d71-885d-1b7bae622ac6",
+    "name": "TEST_ENV_NAME",
+    "description": "Macro returns name of environment configuration used in a test.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('TEST_ENV_NAME') != null) ? contextMap.get('TEST_ENV_NAME') : 'Unknown TEST_ENV_NAME';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "5d679317-bb62-49f2-8765-1e6de9dfa3af",
+    "name": "TEST_RUN_ID",
+    "description": "Returns ID of Test Run.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('TEST_RUN_ID') != null) ? contextMap.get('TEST_RUN_ID') : 'Unknown TEST_RUN_ID';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "173b4eea-b10a-4b7c-934e-e80b7e7814e6",
+    "name": "TEST_RUN_KEY",
+    "description": "Returns key of Test Run.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {\n    return (contextMap != null && contextMap.get('TEST_RUN_KEY') != null) ? contextMap.get('TEST_RUN_KEY') : 'Unknown TEST_RUN_KEY';\n}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "6ae0c109-e495-4d72-806b-fce26ec76d32",
+    "name": "TEST_RUN_NAME",
+    "description": "Returns name of Test Run.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {    return (contextMap != null && contextMap.get('TEST_RUN_NAME') != null) ? contextMap.get('TEST_RUN_NAME') : 'Unknown TEST_RUN_NAME';}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "b304f7b6-309e-4d1e-8fd1-3c0a7e00d064",
+    "name": "TEST_RUN_NUMBER",
+    "description": "Returns number of Test Run.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {    return (contextMap != null && contextMap.get('TEST_RUN_NUMBER') != null) ? contextMap.get('TEST_RUN_NUMBER') : 'Unknown TEST_RUN_NUMBER' ;}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "1f177539-7811-4dc2-a932-0a8b627b9ee2",
+    "name": "TEST_RUN_SHORT_NAME",
+    "description": "Returns short name of Test Run.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main() {    return (contextMap != null && contextMap.get('TEST_RUN_SHORT_NAME') != null) ? contextMap.get('TEST_RUN_SHORT_NAME') : 'Unknown TEST_RUN_SHORT_NAME';}",
+    "parameters": [],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "58c0030c-6391-4515-8857-3d93fcb5c773",
+    "name": "CONTEXT",
+    "description": "Returns short name of Test Run.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(variableName) {    return (contextMap != null && contextMap.get(variableName) != null) ? contextMap.get(variableName) : 'Unknown '+variableName;}",
+    "parameters": [
+      {
+        "uuid": "69f9e4bb-7139-43bf-a5bd-5e26bce507e1",
+        "name": "variableName",
+        "description": "",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "d65a34be-58d1-4cfc-90dc-5393a94c0411",
+    "name": "DATA_SET_SERVICE_VALUE",
+    "description": "Returns data set service value. e.g. $DATA_SET_SERVICE_VALUE(\"Ben's Cases.Top Offerings.Internet Dedicada.SLOs.Gestão Smart.MRC\") = 100.00",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(path) { return (contextMap != null && contextMap.get(path) != null) ? contextMap.get(path) : 'Unknown '+path; }",
+    "parameters": [
+      {
+        "uuid": "b193cda4-42ca-41c5-a7df-0bd9b1038ac0",
+        "name": "path",
+        "description": "",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "37d7387a-927f-4e4d-9e23-ed6140262227",
+    "name": "RANDOM",
+    "description": "Returns random chars.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(random) {\n    var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    var result = '';\n    \n    random.split('').forEach(function(item, i, arr) {\n        if (item == '$') {\n            var n = 0;\n\t\twhile (n == 0) {\n\t        n = Math.floor(Math.random()*10);\n\t    }\n\t    result = result.concat(n);\n        } else if (item == '&') {\n            result = result.concat(possible.charAt(Math.floor(Math.random() * possible.length)));\n        } else {\n            result = result.concat(item);\n        }    \n    });\n    return result;\n}",
+    "parameters": [
+      {
+        "uuid": "69f9e4bb-7139-43bf-a5bd-5e26bce507e2",
+        "name": "random",
+        "description": "",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  },
+  {
+    "_class": "org.qubership.atp.macros.core.model.Macros",
+    "uuid": "ff201000-ef6a-4a8a-9f77-6559436b9c7c",
+    "name": "CHARS",
+    "description": "Returns random lower case chars.",
+    "projectUuid": null,
+    "engine": "javascript",
+    "content": "function main(count) {\n    var result = '';\n    var characters = 'abcdefghijklmnopqrstuvwxyz';\n    for (var i = 0; i < count; i++) {\n        result += characters.charAt(Math.floor(Math.random() * count));\n    }\n    return result;\n}",
+    "parameters": [
+      {
+        "uuid": "69f9e4bb-7139-43bf-a5bd-5e26bce507e3",
+        "name": "count",
+        "description": "",
+        "defaultValue": "",
+        "optional": false
+      }
+    ],
+    "createdBy": null,
+    "createdWhen": null,
+    "modifiedBy": null,
+    "modifiedWhen": null
+  }
+]

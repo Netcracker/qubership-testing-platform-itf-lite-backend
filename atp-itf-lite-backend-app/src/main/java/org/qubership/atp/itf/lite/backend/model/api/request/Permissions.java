@@ -1,0 +1,65 @@
+/*
+ * # Copyright 2024-2025 NetCracker Technology Corporation
+ * #
+ * # Licensed under the Apache License, Version 2.0 (the "License");
+ * # you may not use this file except in compliance with the License.
+ * # You may obtain a copy of the License at
+ * #
+ * #      http://www.apache.org/licenses/LICENSE-2.0
+ * #
+ * # Unless required by applicable law or agreed to in writing, software
+ * # distributed under the License is distributed on an "AS IS" BASIS,
+ * # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * # See the License for the specific language governing permissions and
+ * # limitations under the License.
+ */
+
+package org.qubership.atp.itf.lite.backend.model.api.request;
+
+import java.util.Set;
+import java.util.UUID;
+
+import org.qubership.atp.itf.lite.backend.model.entities.PermissionEntity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Permissions {
+
+    private boolean isEnable;
+    private Set<UUID> userAccess;
+
+    /**
+     * Constructor with {@link PermissionEntity} argument.
+     *
+     * @param permissionEntity {@link PermissionEntity}
+     */
+    public Permissions(PermissionEntity permissionEntity) {
+        this.isEnable = permissionEntity.isEnable();
+        this.userAccess = permissionEntity.getUserAccess() == null
+                ? null
+                : permissionEntity.getUserAccess().keySet();
+    }
+
+    /**
+     * Setter isEnable.
+     *
+     * @param enable enable
+     */
+    public void setIsEnable(boolean enable) {
+        isEnable = enable;
+    }
+
+    /**
+     * get is enable.
+     *
+     * @return isEnable
+     */
+    public boolean getIsEnable() {
+        return isEnable;
+    }
+}

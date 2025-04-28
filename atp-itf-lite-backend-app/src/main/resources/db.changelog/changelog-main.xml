@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="0" author="itf-lite">
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+        </sql>
+    </changeSet>
+
+    <changeSet id="1" author="itf-lite">
+        <sqlFile path="db.changelog/install/install.sql"/>
+    </changeSet>
+
+    <changeSet id="2" author="itf-lite">
+        <validCheckSum>8:d10e5721d625e0facf8a9b2810e60dd8</validCheckSum>
+        <sqlFile path="db.changelog/v1.0/diameter_protocol_changes.sql"/>
+    </changeSet>
+
+    <changeSet id="3" author="itf-lite">
+        <validCheckSum>8:c135d8b6e9a6f95e66615235854520cf</validCheckSum>
+        <sqlFile path="db.changelog/v1.0/diameter_change_varchar_to_text.sql"/>
+    </changeSet>
+
+    <changeSet id="4" author="itf-lite">
+        <sqlFile path="db.changelog/v1.0/add_shedlock_table.sql"/>
+    </changeSet>
+
+    <changeSet id="5" author="itf-lite">
+        <sqlFile path="db.changelog/v1.0/add_executions_history.sql"/>
+    </changeSet>
+
+    <changeSet id="6" author="itf-lite">
+        <sqlFile path="db.changelog/v1.0/orphan_removal.sql"/>
+    </changeSet>
+
+    <changeSet id="7" author="itf-lite">
+        <sqlFile path="db.changelog/v1.0/add_environment_columns.sql"/>
+    </changeSet>
+
+    <changeSet id="8" author="itf-lite">
+        <sqlFile path="db.changelog/v1.0/change_http_requests_url_column_type.sql"/>
+    </changeSet>
+
+    <changeSet id="9" author="itf-lite">
+        <sqlFile path="db.changelog/v1.0/add_disabled_field.sql"/>
+        <comment>Add new column 'disabled' to request headers and params tables. Need to disable\enable some header or
+            param when executing request.</comment>
+    </changeSet>
+
+    <changeSet id="10" author="itf-lite">
+        <sqlFile path="db.changelog/v1.0/add_request_authorization.sql"/>
+        <comment>Added request authorization.</comment>
+    </changeSet>
+
+    <changeSet id="11" author="itf-lite">
+        <sqlFile path="db.changelog/v1.0/add_order_field.sql"/>
+        <comment>Add new column 'position' to request and folder tables. Need for its sorting.</comment>
+    </changeSet>
+
+    <changeSet id="12" author="itf-lite">
+        <customChange class="org.qubership.atp.itf.lite.backend.dataaccess.migration.FolderRequestsOrderMigrationTask"/>
+        <comment>Order migration task for requests and folders</comment>
+    </changeSet>
+
+    <changeSet id="13" author="itf-lite">
+        <sqlFile path="db.changelog/v1.0/add_export_request_table.sql"/>
+        <comment>add export request table</comment>
+    </changeSet>
+
+    <changeSet id="14" author="itf-lite">
+        <preConditions onFail="CONTINUE">
+            <changeLogPropertyDefined property="service.entities.migration.enabled" value="true"/>
+        </preConditions>
+        <comment>Sending service entities to kafka topic.</comment>
+        <customChange class="org.qubership.atp.itf.lite.backend.db.migration.v2.ServiceEntitiesMigrationCustomChange">
+            <param name="serviceName" value="${spring.application.name}"/>
+        </customChange>
+    </changeSet>
+    
+    <changeSet id="15" author="itf-lite">
+        <sqlFile path="v2.0/add_column_source_id_for_folders_table.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v2.0/add_column_source_id_for_requests_table.sql" relativeToChangelogFile="true"/>
+        <comment>[ATPII-37017] add source_id column for export/import process</comment>
+    </changeSet>
+
+    <changeSet id="16" author="itf-lite">
+        <sqlFile
+                path="db.changelog/v2.0/update_request_executions_and_request_export_tables_for_multi_replica.sql"/>
+        <comment>update request_executions and request_export tables for multi-replica</comment>
+    </changeSet>
+
+    <changeSet id="17" author="itf-lite">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth2_request_authorizations"/>
+        </preConditions>
+        <sqlFile
+                path="db.changelog/v2.0/update_grant_type_values_in_oauth_authorizations.sql"/>
+        <comment>update grant_type values in oauth authorizations table. Use 'PASSWORD_CREDENTIALS' instead of
+            'PASSWORD'</comment>
+    </changeSet>
+
+    <changeSet id="18" author="itf-lite">
+        <sqlFile path="db.changelog/v2.0/change_request_param_value_type.sql"/>
+        <comment>change request param value type to 'TEXT'</comment>
+        <rollback>
+            <sqlFile path="db.changelog/v2.0/rollback/change_request_param_value_type_to_varchar.sql"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="19" author="itf-lite">
+        <sqlFile path="v2.0/create_actions_table.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v2.0/add_send_request_action.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-42330 added Itf Lite actions</comment>
+    </changeSet>
+
+    <changeSet id="20" author="itf-lite">
+        <sqlFile path="v2.0/update_send_request_action_name.sql" relativeToChangelogFile="true"/>
+        <comment>Update Itf Lite action name</comment>
+    </changeSet>
+
+    <changeSet id="21" author="itf-lite">
+        <sqlFile path="v3.0/add_pre_post_scripts.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-42794 update request model to support pre-/post- scripts</comment>
+    </changeSet>
+
+    <changeSet id="22" author="itf-lite">
+        <sqlFile path="v3.0/update_execution_history_with_scripts.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43306 LOG to history pre/post execution result for manual execution</comment>
+    </changeSet>
+
+    <changeSet id="23" author="itf-lite">
+        <sqlFile path="v3.0/add_execute_folder_actions.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43416 Add new actions in ITF-Lite</comment>
+    </changeSet>
+
+    <changeSet id="24" author="itf-lite">
+        <sqlFile path="v3.0/add_bearer_authorization_table.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43235 added request 'Bearer' auth type table</comment>
+    </changeSet>
+
+    <changeSet id="25" author="itf-lite">
+        <sqlFile path="v3.0/add_graphql_query_and_variables.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43497 Expand requestBody for HTTP Requests of GraphQL body type with 2 new fields: query, variables</comment>
+    </changeSet>
+
+    <changeSet id="26" author="itf-lite">
+        <sqlFile path="v3.0/update_history_details.sql" relativeToChangelogFile="true"/>
+        <comment>Update RequestExecutionDetails model to support new request body</comment>
+    </changeSet>
+
+    <changeSet id="27" author="itf-lite">
+        <sqlFile path="v3.0/add_grant_type_authorization_code.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43222 Authorization Code Grant Type Support</comment>
+    </changeSet>
+
+    <changeSet id="28" author="itf-lite">
+        <sqlFile path="v3.0/create_table_for_form_data_parts.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43018 Support new type for REST: form-data</comment>
+    </changeSet>
+
+    <changeSet id="29" author="itf-lite">
+        <sqlFile path="v3.0/add_permissions_folder_id_collumn.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-42680 Set write folder permissions</comment>
+    </changeSet>
+
+    <changeSet id="30" author="itf-lite">
+        <sqlFile path="v3.0/create_cookie_table.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-42313 Add Cookies support in ITF Lite</comment>
+    </changeSet>
+
+    <changeSet id="31" author="itf-lite">
+        <sqlFile path="v3.0/console_log.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43334 Support console.log</comment>
+    </changeSet>
+
+    <changeSet id="32" author="itf-lite">
+        <sqlFile path="v3.0/add_configuring_ssl_certificate.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43668 Configuring SSL certificate at request level for mTLS requests</comment>
+    </changeSet>
+
+    <changeSet id="33" author="itf-lite">
+        <sqlFile path="v3.0/add_columns_context_vairables_cookies_cookie_header.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43937 ITFLite stop save global variables after start second pod</comment>
+    </changeSet>
+
+    <changeSet id="34" author="itf-lite">
+        <sqlFile path="v3.0/add_column_description_for_request_and_folder.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43242 Documentation in the ITF Lite</comment>
+    </changeSet>
+
+    <changeSet id="35" author="itf-lite">
+        <sqlFile path="v3.0/add_basic_authorization_table.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-44078 Extend count of authorization types. Added Basic Auth table.</comment>
+    </changeSet>
+
+    <changeSet id="36" author="itf-lite">
+        <sqlFile path="v3.0/update_authorization.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-44078 Extend count of authorization types. Added inherit from parent auth type</comment>
+    </changeSet>
+
+    <changeSet id="37" author="itf-lite">
+        <sqlFile path="v3.0/update_oauth_table.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-44078 Extend count of authorization types. Added token field for AUTHORIZATION_CODE grantType</comment>
+    </changeSet>
+
+    <changeSet id="38" author="itf-lite">
+        <sqlFile path="v3.0/update_http_request_body.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-44024 Update body for binary request</comment>
+    </changeSet>
+
+    <changeSet id="39" author="itf-lite">
+        <sqlFile path="v3.0/folder_history_change.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-44030 add permission, child folders and child requests information for Folder history</comment>
+    </changeSet>
+
+    <changeSet id="40-1" author="itf-lite">
+        <sqlFile path="v3.0/create_javers_tables.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-45097 atp-itf-lite-backend fails due to absent jv_snapshot relation</comment>
+    </changeSet>
+    <changeSet id="40" author="itf-lite">
+        <sqlFile path="v3.0/add_snapshot_indexes.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-44025 Add jv_snapshot indexes</comment>
+    </changeSet>
+
+    <changeSet id="41" author="itf-lite">
+        <sqlFile path="v3.0/update_request_headers_table_with_generated_field.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-44463 add generated column to the request_headers table</comment>
+    </changeSet>
+
+    <changeSet id="42" author="itf-lite">
+        <sqlFile path="v3.0/correct_fk_for_delete.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-44678 correct FK for delete</comment>
+    </changeSet>
+    <changeSet id="43" author="itf-lite">
+        <sqlFile path="v3.0/add_request_snapshots_table.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-45686 Implement request tab snapshot logic</comment>
+    </changeSet>
+
+    <changeSet id="43" author="itf-lites">
+        <sqlFile path="v3.0/add_collection_run_tables.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-43252 add collection run tables</comment>
+    </changeSet>
+
+    <changeSet id="44" author="itf-lite">
+        <sqlFile path="v3.0/update_authorization_id_null_for_requests.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-45169 Import ITF Lite with error</comment>
+    </changeSet>
+
+    <changeSet id="45" author="itf-lite">
+        <sqlFile path="v3.0/update_folders_requests_with_disable_auto_encoding_attribute.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-45297 add attribute disable auto encoding on folders and requests</comment>
+    </changeSet>
+
+    <changeSet id="46" author="itf-lite">
+        <sqlFile path="v3.0/add_response_body_byte_column_to_request_execution_details_table.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-45938 added column for byte array representation of response body</comment>
+    </changeSet>
+
+    <changeSet id="47" author="itf-lite">
+        <sqlFile path="v3.0/add_oauth1_authorization.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-46393 added new OAuth1 request authorization type</comment>
+    </changeSet>
+
+    <changeSet id="48" author="itf-lite">
+        <sqlFile path="v3.0/update_request_params_table_with_generated_field.sql" relativeToChangelogFile="true"/>
+        <comment>ATPII-46393 update request params table with generated field</comment>
+    </changeSet>
+</databaseChangeLog>

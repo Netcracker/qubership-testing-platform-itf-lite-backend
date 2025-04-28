@@ -1,0 +1,170 @@
+{
+	"info": {
+		"_postman_id": "34a7ed1a-db64-4295-b88c-bdc04e068fc8",
+		"name": "dev222",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "New Folder",
+			"item": [
+				{
+					"name": "New Request",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"asd\r",
+									"asdasd\r",
+									"asddsa*\\{asd}\r",
+									"\r",
+									"setImmediateas"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "client_authentication",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "{{$Client Secret}}",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "{{$Client ID}}",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "{{$Access Token URL}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "{{$headerKey}}",
+								"value": "{{$headerV}}",
+								"description": "{{$descHeader}}hh",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "asdsad{{$bodyyy}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://atp-catalogue-dev01.atp2k8.managed.cloud/project/8a638a23-077c-470f-875c-ff828daccfcd/itf-lite/?asd=asd&{{$guid}}={{$timestamp}}",
+							"protocol": "https",
+							"host": [
+								"atp-catalogue-dev01",
+								"atp2k8",
+								"managed",
+								"cloud"
+							],
+							"path": [
+								"project",
+								"8a638a23-077c-470f-875c-ff828daccfcd",
+								"itf-lite",
+								""
+							],
+							"query": [
+								{
+									"key": "asd",
+									"value": "asd"
+								},
+								{
+									"key": "{{$guid}}",
+									"value": "{{$timestamp}}",
+									"description": "{{$descr}}asdsa"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"{$user scrip}\r",
+							"blablalb"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "body",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://atp-catalogue-dev01.atp2k8.managed.cloud/project/8a638a23-077c-470f-875c-ff828daccfcd/itf-lite/?keyParam=valueParam&{{$guid}}={{$timestamp}}",
+					"protocol": "https",
+					"host": [
+						"atp-catalogue-dev01",
+						"atp2k8",
+						"managed",
+						"cloud"
+					],
+					"path": [
+						"project",
+						"8a638a23-077c-470f-875c-ff828daccfcd",
+						"itf-lite",
+						""
+					],
+					"query": [
+						{
+							"key": "keyParam",
+							"value": "valueParam",
+							"description": "desParam"
+						},
+						{
+							"key": "{{$guid}}",
+							"value": "{{$timestamp}}",
+							"description": "{{$des}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

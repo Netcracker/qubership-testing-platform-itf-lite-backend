@@ -1,0 +1,1480 @@
+swagger: '2.0'
+info:
+  title: Api Documentation
+  description: Api Documentation
+  version: '1.0'
+host: 'localhost:8080'
+basePath: /
+tags:
+paths:
+definitions:
+  HistoryRequestDetailsResponse:
+    type: object
+    properties:
+      requestExecution:
+        $ref: '#/definitions/RequestExecution'
+      requestBody:
+        type: string
+      responseBody:
+        type: string
+      errorMessage:
+        type: string
+      requestPreScript:
+        type: string
+      requestPostScript:
+        type: string
+      consoleLogs:
+        type: array
+        items:
+          $ref: '#/definitions/ConsoleLog'
+      contextVariables:
+        type: array
+        items:
+          $ref: '#/definitions/ContextVariable'
+      requestHeaders:
+        type: array
+        items:
+          $ref: '#/definitions/RequestHeader'
+      responseHeaders:
+        type: array
+        items:
+          type: object
+      capabilitiesExchangeRequest:
+        type: string
+      watchdogDefaultTemplate:
+        type: string
+      properties:
+        type: object
+        additionalProperties:
+          type: string
+  Permissions:
+    type: object
+    properties:
+      userAccess:
+        type: string
+        format: uuid
+        additionalProperties:
+          type: string
+      isEnable:
+        type: boolean
+    title: Permissions
+  Permission:
+    type: object
+    properties:
+      userAccess:
+        type: array
+        items:
+          type: string
+      isEnable:
+        type: boolean
+    title: Permissions
+  RequestEntityEditDocumentation:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      description:
+        type: string
+      type:
+        type: string
+        enum: [ FOLDER,REQUEST ]
+  EntityType:
+    type: string
+    enum:
+      - FOLDER
+      - REQUEST
+  RequestDocumentation:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      type:
+        items:
+          $ref: '#/definitions/EntityType'
+      transportType:
+        type: string
+        enum: [ REST,SOAP,Diameter ]
+      requestParams:
+        type: array
+        items:
+          $ref: '#/definitions/RequestParam'
+      requestHeaders:
+        type: array
+        items:
+          $ref: '#/definitions/RequestHeader'
+      requestBody:
+        items:
+          $ref: '#/definitions/RequestBody'
+      capabilitiesExchangeRequest:
+        type: string
+      watchdogDefaultTemplate:
+        type: string
+      connectionLayer:
+        type: string
+      responseType:
+        type: string
+      messageFormat:
+        type: string
+      dictionaryType:
+        type: string
+      responseTimeout:
+        type: integer
+      description:
+        type: string
+  FolderTreeSearchRequest:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      parentId:
+        type: string
+        format: uuid
+      name:
+        type: string
+  TreeFolderDocumentationResponse:
+    type: object
+    properties:
+      totalNumber:
+        type: integer
+        format: int32
+      flagIds:
+        type: object
+  Folder:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      projectId:
+        type: string
+        format: uuid
+      parentId:
+        type: string
+        format: uuid
+      permissionFolderId:
+        type: string
+        format: uuid
+      disableSslCertificateVerification:
+        type: boolean
+      disableSslClientCertificate:
+        type: boolean
+      disableFollowingRedirect:
+        type: boolean
+      description:
+        type: string
+  FolderHistoryChange:
+    allOf:
+      - $ref: "#/definitions/AbstractCompareEntity"
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      parentFolder:
+        type: string
+      disableSslCertificateVerification:
+        type: boolean
+      disableSslClientCertificate:
+        type: boolean
+      disableFollowingRedirect:
+        type: boolean
+      isAutoCookieDisabled:
+        type: boolean
+      authorization:
+        $ref: '#/definitions/Authorization'
+      description:
+        type: string
+      permission:
+        $ref: "#/definitions/Permission"
+      childFolders:
+        type: array
+        items:
+          type: string
+      requests:
+        type: array
+        items:
+          type: string
+    title: Folder
+  FolderUpsetRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      projectId:
+        type: string
+        format: uuid
+      parentId:
+        type: string
+        format: uuid
+      disableSslCertificateVerification:
+        type: boolean
+      disableSslClientCertificate:
+        type: boolean
+      disableFollowingRedirect:
+        type: boolean
+      permissionFolderId:
+        type: string
+        format: uuid
+      permissions:
+        type: array
+        items:
+          $ref: '#/definitions/Permissions'
+      description:
+        type: string
+    title: FolderUpsetRequest
+  EditFolderRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      projectId:
+        type: string
+        format: uuid
+      parentId:
+        type: string
+        format: uuid
+      disableSslCertificateVerification:
+        type: boolean
+      disableSslClientCertificate:
+        type: boolean
+      disableFollowingRedirect:
+        type: boolean
+      permissionFolderId:
+        type: string
+        format: uuid
+      permissions:
+        type: array
+        items:
+          $ref: '#/definitions/Permissions'
+    title: EditFolderRequest
+  FolderCopyRequest:
+    type: object
+    properties:
+      ids:
+        uniqueItems: true
+        type: array
+        items:
+          type: string
+          format: uuid
+      toFolderId:
+        type: string
+        format: uuid
+      projectId:
+        type: string
+        format: uuid
+    title: FolderCopyRequest
+  FolderMoveRequest:
+    type: object
+    properties:
+      ids:
+        uniqueItems: true
+        type: array
+        items:
+          type: string
+          format: uuid
+      toFolderId:
+        type: string
+        format: uuid
+      projectId:
+        type: string
+        format: uuid
+    title: FolderMoveRequest
+  FolderDeleteRequest:
+    type: object
+    properties:
+      ids:
+        uniqueItems: true
+        type: array
+        items:
+          type: string
+          format: uuid
+      projectId:
+        type: string
+        format: uuid
+    title: FolderDeleteRequest
+  TreeRequest:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      parentId:
+        type: string
+        format: uuid
+      search:
+        type: string
+    title: TreeRequest
+  Request:
+    allOf:
+      - $ref: '#/definitions/AbstractCompareEntity'
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      projectId:
+        type: string
+        format: uuid
+      transportType:
+        type: string
+      folderId:
+        type: string
+        format: uuid
+      disableSslCertificateVerification:
+        type: boolean
+      disableSslClientCertificate:
+        type: boolean
+      disableFollowingRedirect:
+        type: boolean
+      authorization:
+        $ref: '#/definitions/Authorization'
+      order:
+        type: integer
+      sourceId:
+        type: string
+        format: uuid
+      preScripts:
+        type: string
+      postScripts:
+        type: string
+      permissionFolderId:
+        type: string
+        format: uuid
+      hasWritePermissions:
+        type: boolean
+      isAutoCookieDisabled:
+        type: boolean
+      documentation:
+        type: string
+      parentAuth:
+        $ref: '#/definitions/ParentAuth'
+    title: Request
+  Authorization:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      type:
+        type: string
+      headerPrefix:
+        type: string
+      grantType:
+        type: string
+      authUrl:
+        type: string
+      url:
+        type: string
+      clientId:
+        type: string
+      clientSecret:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+      scope:
+        type: string
+      state:
+        type: string
+      token:
+        type: string
+  HttpRequest:
+    allOf:
+      - $ref: '#/definitions/Request'
+    type: object
+    properties:
+      httpMethod:
+        type: string
+      url:
+        type: string
+      requestParams:
+        type: array
+        items:
+          $ref: '#/definitions/RequestParam'
+      requestHeaders:
+        type: array
+        items:
+          $ref: '#/definitions/RequestHeader'
+      body:
+        $ref: '#/definitions/RequestBody'
+    title: HttpRequest
+  DiameterRequest:
+    allOf:
+      - $ref: '#/definitions/Request'
+    type: object
+    properties:
+      host:
+        type: string
+      port:
+        type: string
+      capabilitiesExchangeRequest:
+        type: string
+      watchdogDefaultTemplate:
+        type: string
+      connectionLayer:
+        type: string
+      responseType:
+        type: string
+      messageFormat:
+        type: string
+      dictionaryType:
+        type: string
+      responseTimeout:
+        type: integer
+      body:
+        $ref: '#/definitions/RequestBody'
+    title: DiameterRequest
+  RequestBody:
+    type: object
+    properties:
+      content:
+        type: string
+      query:
+        type: string
+      variables:
+        type: string
+      type:
+        type: string
+      formDataBody:
+        type: array
+        items:
+          $ref: '#/definitions/FormDataPart'
+      binaryBody:
+        type: object
+        properties:
+          fileName:
+            type: string
+          fileId:
+            type: string
+            format: uuid
+    title: RequestBody
+  FormDataPart:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      key:
+        type: string
+      type:
+        type: string
+      value:
+        type: string
+      fileId:
+        type: string
+      fileSize:
+        type: integer
+      contentType:
+        type: string
+      description:
+        type: string
+      disabled:
+        type: boolean
+    title: FormDataPart
+  RequestEntityCreateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      projectId:
+        type: string
+        format: uuid
+      folderId:
+        type: string
+        format: uuid
+      transportType:
+        type: string
+      body:
+        type: object
+        properties:
+          content:
+            type: string
+          query:
+            type: string
+          variables:
+            type: string
+          type:
+            type: string
+    title: RequestEntityCreateRequest
+  RequestEntityEditRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      projectId:
+        type: string
+        format: uuid
+      body:
+        type: object
+        properties:
+          content:
+            type: string
+          query:
+            type: string
+          variables:
+            type: string
+          type:
+            type: string
+      disableSslCertificateVerification:
+        type: boolean
+      disableSslClientCertificate:
+        type: boolean
+      disableFollowingRedirect:
+        type: boolean
+    title: RequestEntityEditRequest
+  RequestEntitySaveRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      projectId:
+        type: string
+        format: uuid
+      folderId:
+        type: string
+        format: uuid
+      transportType:
+        type: string
+      preScripts:
+        type: string
+      postScripts:
+        type: string
+      contextVariables:
+        type: array
+        items:
+          $ref: '#/definitions/ContextVariable'
+      postmanCookie:
+        type: array
+        items:
+          $ref: '#/definitions/PostmanCookie'
+    title: RequestEntitySaveRequest
+  HttpRequestEntitySaveRequest:
+    allOf:
+      $ref: '#/definitions/RequestEntitySaveRequest'
+    type: object
+    properties:
+      httpMethod:
+        type: string
+      url:
+        type: string
+      requestParams:
+        type: array
+        items:
+          $ref: '#/definitions/RequestParam'
+      requestHeaders:
+        type: array
+        items:
+          $ref: '#/definitions/RequestHeader'
+      body:
+        type: object
+        properties:
+          content:
+            type: string
+          query:
+            type: string
+          variables:
+            type: string
+          type:
+            type: string
+    title: HttpRequestEntitySaveRequest
+  DiameterRequestEntitySaveRequest:
+    allOf:
+      $ref: '#/definitions/RequestEntitySaveRequest'
+    type: object
+    properties:
+      host:
+        type: string
+      port:
+        type: string
+      capabilitiesExchangeRequest:
+        type: string
+      watchdogDefaultTemplate:
+        type: string
+      connectionLayer:
+        type: string
+      responseType:
+        type: string
+      messageFormat:
+        type: string
+      dictionaryType:
+        type: string
+      responseTimeout:
+        type: integer
+      body:
+        type: object
+        properties:
+          content:
+            type: string
+          query:
+            type: string
+          variables:
+            type: string
+          type:
+            type: string
+    title: DiameterRequestEntitySaveRequest
+  RequestParam:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      key:
+        type: string
+      value:
+        type: string
+      description:
+        type: string
+      disabled:
+        type: boolean
+    title: RequestParam
+  RequestHeader:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      key:
+        type: string
+      value:
+        type: string
+      description:
+        type: string
+      disabled:
+        type: boolean
+    title: RequestHeader
+  RequestEntityBaseRequest:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      folderId:
+        type: string
+        format: uuid
+    title: RequestEntityBaseRequest
+  RequestEntityCopyRequest:
+    allOf:
+      $ref: '#/definitions/RequestEntityBaseRequest'
+      type: object
+    title: RequestEntityCopyRequest
+  RequestEntityMoveRequest:
+    allOf:
+      $ref: '#/definitions/RequestEntityBaseRequest'
+      type: object
+    title: RequestEntityMoveRequest
+  RequestEntitiesBaseRequest:
+    type: object
+    properties:
+      requestIds:
+        type: array
+        items:
+          type: string
+          format: uuid
+      projectId:
+        type: string
+        format: uuid
+      folderId:
+        type: string
+        format: uuid
+    title: RequestEntitiesBaseRequest
+  RequestEntitiesCopyRequest:
+    allOf:
+      $ref: '#/definitions/RequestEntitiesBaseRequest'
+      type: object
+    title: RequestEntitiesCopyRequest
+  RequestEntitiesMoveRequest:
+    allOf:
+      $ref: '#/definitions/RequestEntitiesBaseRequest'
+      type: object
+    title: RequestEntitiesMoveRequest
+  RequestEntitiesDeleteRequest:
+    type: object
+    properties:
+      requestIds:
+        type: array
+        items:
+          type: string
+          format: uuid
+    title: RequestEntitiesDeleteRequest
+  RequestExecutionResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      responseHeaders:
+        type: array
+        items:
+          type: object
+      body:
+        type: string
+      statusCode:
+        type: string
+      statusText:
+        type: string
+      duration:
+        type: integer
+      cookies:
+        type: array
+        items:
+          $ref: '#/definitions/CookieDto'
+    title: RequestExecutionResponse
+  RequestExportResponse:
+    type: object
+    properties:
+      curlRequest:
+        type: string
+    title: RequestExportResponse
+  CurlStringImportRequest:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      requestString:
+        type: string
+    title: CurlStringImportRequest
+  RequestExecution:
+    type: object
+    properties:
+      url:
+        type: string
+      name:
+        type: string
+      projectId:
+        type: string
+        format: uuid
+      transportType:
+        type: string
+        enum: [ REST,SOAP,Diameter ]
+      executedWhen:
+        type: string
+        format: date-time
+      executor:
+        type: string
+      statusCode:
+        type: string
+      statusText:
+        type: string
+      duration:
+        type: integer
+    title: RequestExecution
+
+  HttpRequestExecutionDetails:
+    type: object
+    properties:
+      requestExecution:
+        $ref: '#/definitions/RequestExecution'
+      request_body:
+        type: string
+      request_headers:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: string
+      response_body:
+        type: string
+      response_headers:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: string
+      error_message:
+        type: string
+      consoleLogs:
+        type: array
+        items:
+          $ref: '#/definitions/ConsoleLog'
+    title: HttpRequestExecutionDetails
+
+  DiameterRequestExecutionDetails:
+    type: object
+    properties:
+      requestExecution:
+        $ref: '#/definitions/RequestExecution'
+      capabilitiesExchangeRequest:
+        type: string
+      watchdogDefaultTemplate:
+        type: string
+      properties:
+        type: object
+        additionalProperties:
+          type: string
+      requestBody:
+        type: string
+      responseBody:
+        type: string
+      errorMessage:
+        type: string
+    title: DiameterRequestExecutionDetails
+
+  HistorySearchRequest:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      offset:
+        type: integer
+      limit:
+        type: integer
+      filters:
+        $ref: '#/definitions/HistoryFilteringParams'
+      sort:
+        type: array
+        items:
+          $ref: '#/definitions/SortParams'
+    title: HistorySearchRequest
+
+  HistoryFilteringParams:
+    type: object
+    properties:
+      executor:
+        type: array
+        items:
+          type: string
+      request:
+        type: array
+        items:
+          type: string
+      type:
+        type: string
+        enum: [ REST,SOAP,Diameter ]
+    title: HistoryFilteringParams
+
+  PaginatedResponse:
+    type: object
+    properties:
+      total:
+        type: integer
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/RequestExecution'
+    title: PaginatedResponse
+
+  UserSettings:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      createdWhen:
+        type: string
+        format: date-time
+      modifiedWhen:
+        type: string
+        format: date-time
+      userId:
+        type: string
+        format: uuid
+      visibleColumns:
+        type: array
+        items:
+          type: string
+    title: UserSettings
+
+  SortParams:
+    type: object
+    properties:
+      column:
+        type: string
+      sortType:
+        type: string
+        enum: [ ASC,DESC ]
+    title: SortParams
+
+  RequestMiaExportRequest:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      requestIds:
+        type: array
+        items:
+          type: string
+          format: uuid
+      miaPath:
+        type: string
+    title: RequestMiaExportRequest
+
+  RequestItfExportRequest:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      requestIds:
+        type: array
+        items:
+          type: string
+          format: uuid
+      itfUrl:
+        type: string
+      systemId:
+        type: integer
+      operationId:
+        type: integer
+      requestIdsReceiversMap:
+        type: object
+        additionalProperties:
+          type: integer
+    title: RequestItfExportRequest
+
+  Action:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      createdWhen:
+        type: string
+        format: date-time
+      modifiedWhen:
+        type: string
+        format: date-time
+      description:
+        type: string
+      deprecated:
+        type: boolean
+  PostmanExecuteScriptRequest:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      postman:
+        $ref: '#/definitions/Postman'
+      script:
+        type: string
+  PostmanExecuteScriptResponse:
+    type: object
+    properties:
+      postman:
+        $ref: '#/definitions/Postman'
+      testResults:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            async:
+              type: boolean
+            skipped:
+              type: boolean
+            passed:
+              type: boolean
+            error:
+              type: object
+              properties:
+                name:
+                  type: string
+                message:
+                  type: string
+                showDiff:
+                  type: boolean
+                actual:
+                  type: object
+                operator:
+                  type: string
+                stack:
+                  type: string
+                httpResponseExceptionType:
+                  type: string
+                  enum:
+                    - DECRYPT_EXCEPTION
+                    - ENCRYPT_EXCEPTION
+                    - EXECUTION_EXCEPTION
+                    - UNAVAILABLE_EXCEPTION
+                    - POSTMAN_SANDBOX_CONTEXT_EXCEPTION
+            index:
+              type: number
+      consoleLogs:
+        type: array
+        items:
+          $ref: '#/definitions/ConsoleLog'
+      hasNextRequest:
+        type: boolean
+      nextRequest:
+        type: string
+  Postman:
+    type: object
+    properties:
+      postmanRequest:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+          name:
+            type: string
+          url:
+            $ref: '#/definitions/PostmanUrl'
+          header:
+            type: array
+            items:
+              $ref: '#/definitions/Header'
+          method:
+            type: string
+          body:
+            $ref: '#/definitions/PostmanBody'
+      postmanResponse:
+        type: object
+        properties:
+          status:
+            type: string
+          code:
+            type: integer
+          header:
+            type: array
+            items:
+              $ref: '#/definitions/Header'
+          body:
+            type: string
+          responseTime:
+            type: integer
+      globals:
+        $ref: '#/definitions/MapObjects'
+      collectionVariables:
+        $ref: '#/definitions/MapObjects'
+      environment:
+        $ref: '#/definitions/MapObjects'
+      iterationData:
+        $ref: '#/definitions/MapObjects'
+      variables:
+        $ref: '#/definitions/MapObjects'
+      cookies:
+        type: array
+        items:
+          $ref: '#/definitions/PostmanCookie'
+  PostmanCookie:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  PostmanUrl:
+    type: object
+    properties:
+      protocol:
+        type: string
+      host:
+        type: array
+        items:
+          type: string
+      port:
+        type: string
+      path:
+        type: array
+        items:
+          type: string
+      query:
+        type: array
+        items:
+          $ref: '#/definitions/Header'
+  PostmanBody:
+    type: object
+    properties:
+      mode:
+        $ref: '#/definitions/PostmanRequestBodyMode'
+      raw:
+        type: string
+      file:
+        type: string
+      graphql:
+        $ref: '#/definitions/PostmanGraphQLBody'
+      formdata:
+        type: array
+        items:
+          $ref: '#/definitions/PostmanFormDataPart'
+  MapObjects:
+    type: object
+    additionalProperties:
+      type: object
+  Header:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: object
+  PostmanRequestBodyMode:
+    type: string
+    enum:
+      - "raw"
+      - "file"
+      - "graphql"
+      - "formdata"
+  ContextVariable:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: object
+      contextVariableType:
+        $ref: '#/definitions/ContextVariableType'
+  ContextVariableType:
+    enum:
+      - GLOBAL
+      - COLLECTION
+      - DATA
+      - ENVIRONMENT
+      - LOCAL
+  PostmanGraphQLBody:
+    type: object
+    properties:
+      query:
+        type: string
+      variables:
+        type: string
+      operationName:
+        type: string
+  PostmanFormDataPart:
+    type: object
+    properties:
+      key:
+        type: string
+      type:
+        $ref: '#/definitions/PostmanFormDataPartType'
+      value:
+        type: string
+      src:
+        type: string
+      fileName:
+        type: string
+      contentType:
+        type: string
+      description:
+        type: object
+        properties:
+          content:
+            type: string
+          type:
+            type: string
+      disabled:
+        type: boolean
+  PostmanFormDataPartType:
+    type: string
+    enum:
+      - "text"
+      - "file"
+  ConsoleLog:
+    type: object
+    properties:
+      level:
+        type: string
+      message:
+        type: string
+      timestamp:
+        type: integer
+        format: int64
+  GetAccessCodeParameters:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      sseId:
+        type: string
+        format: uuid
+      accessTokenUrl:
+        type: string
+      clientId:
+        type: string
+      clientSecret:
+        type: string
+      scope:
+        type: string
+      state:
+        type: string
+      redirectUri:
+        type: string
+  HistoryItemResponse:
+    type: object
+    properties:
+      pageInfo:
+        $ref: '#/definitions/PageInfo'
+      historyItems:
+        type: array
+        items:
+          $ref: '#/definitions/HistoryItem'
+  HistoryItemType:
+    type: string
+    enum:
+      - folder
+      - request
+  HistoryItem:
+    type: object
+    properties:
+      type:
+        $ref: '#/definitions/HistoryItemType'
+      version:
+        type: integer
+        minimum: 1
+        description: commit number of current changes
+      modifiedWhen:
+        type: string
+      modifiedBy:
+        type: string
+      added:
+        type: array
+        items:
+          type: string
+      deleted:
+        type: array
+        items:
+          type: string
+      changed:
+        type: array
+        items:
+          type: string
+  AbstractEntityVersioning:
+    title: AbstractEntityVersioning
+    type: object
+    properties:
+      description:
+        type: string
+      modifiedBy:
+        type: string
+      modifiedWhen:
+        type: string
+      name:
+        type: string
+
+  AbstractCompareEntity:
+    type: object
+    properties:
+      createdWhen:
+        type: long
+      modifiedWhen:
+        type: long
+      createdBy:
+        type: string
+      modifiedBy:
+        type: string
+      entityType:
+        $ref: '#/definitions/HistoryItemType'
+    discriminator:
+      propertyName: entityType
+      mapping:
+        'FOLDER': '#/definitions/FolderHistoryChange'
+        'REQUEST': '#/definitions/Request'
+
+  CompareEntityResponse:
+    title: CompareEntityResponse
+    type: object
+    properties:
+      compareEntity:
+        $ref: '#/definitions/AbstractCompareEntity'
+      revision:
+        type: string
+  PageInfo:
+    type: object
+    properties:
+      offset:
+        type: integer
+      limit:
+        type: integer
+      itemsTotalCount:
+        type: integer
+  CookiesDto:
+    type: object
+    properties:
+      domain:
+        type: string
+      cookies:
+        type: array
+        items:
+          $ref: '#/definitions/CookieDto'
+  CookieDto:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+      disabled:
+        type: boolean
+  Settings:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      createdWhen:
+        type: integer
+      modifiedWhen:
+        type: integer
+      isAutoCookieDisabled:
+        type: boolean
+      disableSslCertificateVerification:
+        type: boolean
+      disableSslClientCertificate:
+        type: boolean
+      disableFollowingRedirect:
+        type: boolean
+  ImportCollectionsRequest:
+    type: object
+    properties:
+      projectId:
+        type: string
+        format: uuid
+      collectionName:
+        type: string
+      targetFolderId:
+        type: string
+        format: uuid
+  ImportCollectionsResponse:
+    type: object
+    properties:
+      requestName:
+        type: string
+      requestId:
+        type: string
+        format: uuid
+      collectionName:
+        type: string
+      comment:
+        type: string
+      importStatus:
+        $ref: '#/definitions/ImportCollectionStatus'
+      errorType:
+        $ref: '#/definitions/ImportCollectionError'
+      formDataPartId:
+        type: string
+        format: uuid
+  ImportCollectionStatus:
+    enum:
+      - ERROR
+      - WARNING
+  ImportCollectionError:
+    enum:
+      - FORMDATA_FILE_REQUIRED
+      - BINARY_FILE_REQUIRED
+  GroupResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      type:
+        $ref: '#/definitions/EntityType'
+      createdWhen:
+        type: string
+        format: date
+      order:
+        type: integer
+      children:
+        type: array
+        items:
+          $ref: '#/definitions/GroupResponse'
+      permissions:
+        $ref: '#/definitions/Permissions'
+      hasWritePermissions:
+        type: boolean
+      authType:
+        $ref: '#/definitions/RequestAuthorizationType'
+      parentAuth:
+        $ref: '#/definitions/ParentAuth'
+  CollectionExecuteRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      treeNodes:
+        type: array
+        items:
+          $ref: '#/definitions/GroupResponse'
+      environmentIds:
+        type: array
+        items:
+          type: string
+          format: uuid
+      emailRecipients:
+        type: string
+      emailTemplateId:
+        type: string
+        format: uuid
+      emailSubject:
+        type: string
+      taToolIds:
+        type: array
+        items:
+          type: string
+          format: uuid
+      flags:
+        type: array
+        items:
+          type: string
+      logCollectorTemplateId:
+        type: string
+        format: uuid
+      projectId:
+        type: string
+        format: uuid
+      testPlanId:
+        type: string
+        format: uuid
+      isMandatoryCheck:
+        type: boolean
+      isSsmCheck:
+        type: boolean
+      isIgnoreFailedChecks:
+        type: boolean
+      threadCount:
+        type: integer
+      dataSetStorageId:
+        type: string
+        format: uuid
+      dataSetId:
+        type: string
+        format: uuid
+      contextVariables:
+        type: array
+        items:
+          $ref: '#/definitions/ContextVariable'
+      propagateCookies:
+        type: boolean
+  RequestAuthorizationType:
+    type: string
+    enum:
+      - OAUTH2
+      - BEARER
+      - BASIC
+      - INHERIT_FROM_PARENT
+  ParentAuth:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      type:
+        $ref: '#/definitions/RequestAuthorizationType'

@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS request_execution_details ADD COLUMN IF NOT EXISTS console_logs TEXT;

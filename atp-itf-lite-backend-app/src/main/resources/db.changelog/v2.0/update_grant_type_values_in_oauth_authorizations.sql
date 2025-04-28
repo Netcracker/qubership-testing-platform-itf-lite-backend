@@ -1,0 +1,1 @@
+UPDATE oauth2_request_authorizations SET grant_type = 'PASSWORD_CREDENTIALS' where grant_type = 'PASSWORD'

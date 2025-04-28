@@ -1,0 +1,251 @@
+{
+  "info" : {
+    "schema" : "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "name" : "folder#2"
+  },
+  "item" : [ {
+    "id" : "00000000-0000-0000-0000-000000000005",
+    "name" : "folder#2_1",
+    "item" : [ {
+      "id" : "00000000-0000-0001-0000-000000000003",
+      "name" : "POST with prerequest and User AUTHORIZATION binary body",
+      "description" : "POST with prerequest and User AUTHORIZATION binary body",
+      "event" : [ {
+        "listen" : "prerequest",
+        "script" : {
+          "exec" : [ "some prerequest script" ],
+          "type" : "text/javascript"
+        }
+      } ],
+      "request" : {
+        "description" : "POST with prerequest and User AUTHORIZATION binary body",
+        "method" : "POST",
+        "header" : [ {
+          "key" : "h1",
+          "value" : "v1",
+          "description" : "descr1",
+          "disabled" : true
+        } ],
+        "body" : {
+          "mode" : "file",
+          "file" : {
+            "src" : "collection/Files/00000000-0000-0001-0000-000000000003/fileName.txt"
+          },
+          "disabled" : false
+        },
+        "url" : {
+          "raw" : "https://3.com/projectId/{{projectId}}",
+          "protocol" : "https",
+          "host" : [ "3", "com" ],
+          "path" : [ "projectId", "{{projectId}}" ]
+        },
+        "auth" : {
+          "type" : "oauth2",
+          "oauth2" : [ {
+            "key" : "addTokenTo",
+            "value" : "header",
+            "type" : "string"
+          }, {
+            "key" : "headerPrefix",
+            "value" : "Bearer",
+            "type" : "string"
+          }, {
+            "key" : "grant_type",
+            "value" : "password_credentials",
+            "type" : "string"
+          }, {
+            "key" : "authUrl",
+            "type" : "string"
+          }, {
+            "key" : "accessTokenUrl",
+            "value" : "https://accessTokenUrl",
+            "type" : "string"
+          }, {
+            "key" : "clientId",
+            "value" : "clientId",
+            "type" : "string"
+          }, {
+            "key" : "username",
+            "value" : "username",
+            "type" : "string"
+          }, {
+            "key" : "scope",
+            "type" : "string"
+          }, {
+            "key" : "state",
+            "type" : "string"
+          } ]
+        }
+      },
+      "response" : [ ]
+    } ]
+  }, {
+    "id" : "00000000-0000-0000-0000-000000000006",
+    "name" : "folder#2_2",
+    "item" : [ {
+      "id" : "00000000-0000-0001-0000-000000000004",
+      "name" : "POST with pre and post and Client AUTHORIZATION formdata body",
+      "description" : "POST with pre and post and Client AUTHORIZATION formdata body",
+      "event" : [ {
+        "listen" : "prerequest",
+        "script" : {
+          "exec" : [ "it is pre script" ],
+          "type" : "text/javascript"
+        }
+      }, {
+        "listen" : "test",
+        "script" : {
+          "exec" : [ "it is post script" ],
+          "type" : "text/javascript"
+        }
+      } ],
+      "request" : {
+        "description" : "POST with pre and post and Client AUTHORIZATION formdata body",
+        "method" : "POST",
+        "body" : {
+          "mode" : "formdata",
+          "formdata" : [ {
+            "key" : "k1",
+            "value" : "v1",
+            "description" : "descr1",
+            "type" : "text"
+          }, {
+            "key" : "k2",
+            "value" : "v2",
+            "description" : "descr2",
+            "type" : "text"
+          }, {
+            "key" : "f1",
+            "description" : "descr3",
+            "type" : "file",
+            "src" : "collection/Files/00000000-0000-0001-0000-000000000004/file1.txt"
+          }, {
+            "key" : "f2",
+            "description" : "descr4",
+            "type" : "file",
+            "src" : "collection/Files/00000000-0000-0001-0000-000000000004/file2"
+          } ],
+          "disabled" : false
+        },
+        "url" : {
+          "raw" : "https://4.com/projectId/{{projectId}}?q1=v1&q2",
+          "protocol" : "https",
+          "host" : [ "4", "com" ],
+          "path" : [ "projectId", "{{projectId}}" ],
+          "query" : [ {
+            "key" : "q1",
+            "value" : "v1"
+          }, {
+            "key" : "q2"
+          } ]
+        },
+        "auth" : {
+          "type" : "oauth2",
+          "oauth2" : [ {
+            "key" : "addTokenTo",
+            "value" : "header",
+            "type" : "string"
+          }, {
+            "key" : "headerPrefix",
+            "value" : "Bearer",
+            "type" : "string"
+          }, {
+            "key" : "grant_type",
+            "value" : "client_credentials",
+            "type" : "string"
+          }, {
+            "key" : "authUrl",
+            "type" : "string"
+          }, {
+            "key" : "accessTokenUrl",
+            "value" : "https://accessTokenUrl",
+            "type" : "string"
+          }, {
+            "key" : "clientId",
+            "value" : "clientId",
+            "type" : "string"
+          }, {
+            "key" : "username",
+            "type" : "string"
+          }, {
+            "key" : "scope",
+            "type" : "string"
+          }, {
+            "key" : "state",
+            "type" : "string"
+          } ]
+        }
+      },
+      "response" : [ ]
+    } ]
+  }, {
+    "id" : "00000000-0000-0001-0000-000000000005",
+    "name" : "POST with code AUTHORIZATION GraphQl body",
+    "description" : "POST with code AUTHORIZATION GraphQl body",
+    "request" : {
+      "description" : "POST with code AUTHORIZATION GraphQl body",
+      "method" : "POST",
+      "body" : {
+        "mode" : "graphql",
+        "graphql" : {
+          "query" : "{\"query\"}",
+          "variables" : "{variables for graphql}"
+        },
+        "disabled" : false
+      },
+      "url" : {
+        "raw" : "https://5.com:8080/projectId/{{projectId}}?q1=v1&q2",
+        "protocol" : "https",
+        "host" : [ "5", "com" ],
+        "port" : "8080",
+        "path" : [ "projectId", "{{projectId}}" ],
+        "query" : [ {
+          "key" : "q1",
+          "value" : "v1"
+        }, {
+          "key" : "q2"
+        } ]
+      },
+      "auth" : {
+        "type" : "oauth2",
+        "oauth2" : [ {
+          "key" : "addTokenTo",
+          "value" : "header",
+          "type" : "string"
+        }, {
+          "key" : "headerPrefix",
+          "value" : "Bearer",
+          "type" : "string"
+        }, {
+          "key" : "grant_type",
+          "value" : "client_credentials",
+          "type" : "string"
+        }, {
+          "key" : "authUrl",
+          "type" : "string"
+        }, {
+          "key" : "accessTokenUrl",
+          "value" : "https://accessTokenUrl",
+          "type" : "string"
+        }, {
+          "key" : "clientId",
+          "value" : "clientId",
+          "type" : "string"
+        }, {
+          "key" : "username",
+          "type" : "string"
+        }, {
+          "key" : "scope",
+          "type" : "string"
+        }, {
+          "key" : "state",
+          "type" : "string"
+        } ]
+      }
+    },
+    "response" : [ ]
+  } ],
+  "auth" : {
+    "type" : "noauth"
+  }
+}

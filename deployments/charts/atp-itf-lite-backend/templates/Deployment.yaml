@@ -1,0 +1,99 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: '{{ .Values.SERVICE_NAME }}'
+  labels:
+    app: '{{ .Values.SERVICE_NAME }}'
+    name: '{{ .Values.SERVICE_NAME }}'
+    servicetype: '{{ .Values.SERVICE_TYPE }}'
+spec:
+  strategy:
+    type: RollingUpdate
+  replicas: {{ .Values.NODES_COUNT }}
+  selector:
+    matchLabels:
+      name: '{{ .Values.SERVICE_NAME }}'
+      app: '{{ .Values.SERVICE_NAME }}'
+      deploymentconfig: '{{ .Values.SERVICE_NAME }}'
+  template:
+    metadata:
+      labels:
+        name: '{{ .Values.SERVICE_NAME }}'
+        app: '{{ .Values.SERVICE_NAME }}'
+        deploymentconfig: '{{ .Values.SERVICE_NAME }}'
+        servicetype: '{{ .Values.SERVICE_TYPE }}'
+    spec:
+      terminationGracePeriodSeconds: 60
+      {{- if .Values.SECURITY_CONTEXT_ENABLED }}
+      securityContext:
+        runAsUser: {{ .Values.SECURITY_RUN_AS_USER }}
+        fsGroup: {{ .Values.SECURITY_FS_GROUP }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector: {{- .Values.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.HEAPDUMP_ENABLED }}
+      volumes:
+        - name: heapdumps
+          emptyDir: {}
+      {{- end }}
+      containers:
+        - name: '{{ .Values.SERVICE_NAME }}'
+          image: '{{ .Values.DOCKER_TAG }}'
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: '{{ .Values.MEMORY_REQUEST }}'
+              cpu: '{{ .Values.CPU_REQUEST }}'
+            limits:
+              memory: '{{ .Values.MEMORY_LIMIT }}'
+              cpu: '{{ .Values.CPU_LIMIT }}'
+          {{- if .Values.HEAPDUMP_ENABLED }}
+          volumeMounts:
+            - mountPath: /tmp/diagnostic
+              name: heapdumps
+          {{- end }}
+          ports:
+            - containerPort: 8080
+              name: web
+          env:
+            {{- include "env.cloud" . | indent 12 }}
+            - name: CLOUD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: SERVICE_POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+          livenessProbe:
+            httpGet:
+              path: /rest/deployment/liveness
+              port: 8080
+              scheme: HTTP
+              httpHeaders:
+                - name: Content-Type
+                  value: application/json
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            failureThreshold: 10
+            timeoutSeconds: 6
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /rest/deployment/readiness
+              port: 8080
+              scheme: HTTP
+              httpHeaders:
+                - name: Content-Type
+                  value: application/json
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            failureThreshold: 10
+            timeoutSeconds: 6
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/atp-itf-lite/pre-stop.sh" ]

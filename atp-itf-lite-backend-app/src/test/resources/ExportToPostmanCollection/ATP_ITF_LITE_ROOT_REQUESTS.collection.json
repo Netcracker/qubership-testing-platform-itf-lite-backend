@@ -1,0 +1,26 @@
+{
+  "info" : {
+    "schema" : "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "name" : "ATP_ITF_LITE_ROOT_REQUESTS"
+  },
+  "item" : [ {
+    "id" : "00000000-0000-0003-0000-000000000001",
+    "name" : "GET.NO_BODY.NO_AUTHORIZATION",
+    "description" : "GET.NO_BODY.NO_AUTHORIZATION",
+    "request" : {
+      "description" : "GET.NO_BODY.NO_AUTHORIZATION",
+      "method" : "GET",
+      "body" : {
+        "disabled" : false
+      },
+      "url" : {
+        "raw" : "someurl",
+        "host" : [ "someurl" ]
+      },
+      "auth" : {
+        "type" : "noauth"
+      }
+    },
+    "response" : [ ]
+  } ]
+}

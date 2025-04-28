@@ -1,0 +1,1 @@
+UPDATE actions SET name = 'Execute request "uuid"', description = 'Execute request in Itf Lite using provided uuid' where name = 'Execute request "requestPath"'

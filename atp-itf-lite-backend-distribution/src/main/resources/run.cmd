@@ -1,0 +1,1 @@
+java --add-opens java.base/java.lang=ALL-UNNAMED -Dspring.config.location=".\config\application.properties" -cp "config/;lib/*" org.qubership.atp.itf.lite.backend.Main

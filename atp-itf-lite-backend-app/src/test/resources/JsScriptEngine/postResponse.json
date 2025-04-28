@@ -1,0 +1,83 @@
+{
+  "postman": {
+    "globals": {},
+    "collectionVariables": {},
+    "environment": {},
+    "iterationData": {},
+    "variables": {},
+    "postmanRequest": {
+      "id": "051fa7d3-1e78-47ae-9dc2-fe4c3fc26678",
+      "name": "test",
+      "url": {
+        "protocol": "http",
+        "host": [
+          "localohst"
+        ],
+        "port": "8080",
+        "path": [
+          "/path"
+        ],
+        "query": []
+      },
+      "header": [
+        {
+          "key": "header1",
+          "value": "value1"
+        }
+      ],
+      "method": "GET",
+      "body": {
+        "mode": "raw",
+        "raw": ""
+      }
+    },
+    "cookies": [
+            {
+              "key": "Cookie_1",
+              "value": "Cookie_1=value; Path=/;"
+            }
+          ],
+    "postmanResponse": {
+      "body": "test",
+      "code": 200,
+      "header": [
+        {
+          "key": "key1",
+          "value": "val1"
+        },
+        {
+          "key": "key2",
+          "value": "value2"
+        }
+      ],
+      "responseTime": 0,
+      "status": "OK"
+    }
+  },
+  "testResults": [
+    {
+      "name": "check that equals to 1",
+      "async": false,
+      "skipped": false,
+      "passed": true,
+      "error": null,
+      "index": 0
+    },
+    {
+      "name": "check that equals to 2",
+      "async": false,
+      "skipped": false,
+      "passed": false,
+      "error": {
+        "name": "AssertionError",
+        "message": "expected 2 to deeply equal 1",
+        "showDiff": true,
+        "actual": 2,
+        "expected": 1,
+        "operator": "strictEqual",
+        "stack": "Error: expected 2 to deeply equal 1\n    at eval (eval at exec (evalmachine.<anonymous>:66:1816816), <anonymous>:4:64)\n    at Postman.e.test (evalmachine.<anonymous>:66:10289)\n    at Object.eval (eval at exec (evalmachine.<anonymous>:66:1816816), <anonymous>:4:4)\n    at u.exec (evalmachine.<anonymous>:66:1816851)\n    at t.exports (evalmachine.<anonymous>:66:5826)\n    at Object.<anonymous> (evalmachine.<anonymous>:66:8141)\n    at evalmachine.<anonymous>:15:26\n    at Array.forEach (<anonymous>)\n    at Object.emit (evalmachine.<anonymous>:14:59)\n    at evalmachine.<anonymous>:59:24"
+      },
+      "index": 1
+    }
+  ]
+}

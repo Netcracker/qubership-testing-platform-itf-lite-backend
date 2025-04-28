@@ -1,0 +1,61 @@
+openapi: 3.0.3
+info:
+  title: Api Documentation
+  description: Api Documentation
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+    description: Inferred Url
+tags:
+  - name: cache-evict-controller
+    description: Cache Evict Controller
+paths:
+  '/atp-itf-lite/api/v1/cache/evict/certificate':
+    post:
+      tags:
+        - cache-evict-controller
+      summary: projectCertificateCacheEvict
+      operationId: projectCertificateCacheEvict
+      parameters:
+        - name: projectId
+          in: query
+          description: projectId
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  '/atp-itf-lite/api/v1/cache/evict/environment':
+    post:
+      tags:
+        - cache-evict-controller
+      summary: environmentSystemsCacheEvict
+      operationId: environmentSystemsCacheEvict
+      parameters:
+        - name: environmentId
+          in: query
+          description: environmentId
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found

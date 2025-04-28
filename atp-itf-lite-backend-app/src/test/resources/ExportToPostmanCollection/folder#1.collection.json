@@ -1,0 +1,94 @@
+{
+  "info" : {
+    "schema" : "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "name" : "folder#1"
+  },
+  "item" : [ {
+    "id" : "00000000-0000-0000-0000-000000000002",
+    "name" : "folder#1_1",
+    "item" : [ {
+      "id" : "00000000-0000-0001-0000-000000000001",
+      "name" : "GET.RAW_BODY.NO_AUTHORIZATION",
+      "description" : "GET.RAW_BODY.NO_AUTHORIZATION",
+      "request" : {
+        "description" : "GET.RAW_BODY.NO_AUTHORIZATION",
+        "method" : "GET",
+        "body" : {
+          "mode" : "raw",
+          "raw" : "{\"raw\":\"text\"}",
+          "disabled" : false
+        },
+        "url" : {
+          "raw" : "https://1.com",
+          "protocol" : "https",
+          "host" : [ "1", "com" ]
+        },
+        "auth" : {
+          "type" : "bearer",
+          "bearer" : [ {
+            "key" : "token",
+            "value" : "it is token bearer",
+            "type" : "string"
+          } ]
+        }
+      },
+      "response" : [ ]
+    } ]
+  }, {
+    "id" : "00000000-0000-0000-0000-000000000003",
+    "name" : "folder#1_2",
+    "item" : [ {
+      "id" : "00000000-0000-0001-0000-000000000002",
+      "name" : "SOAP NO_AUTHORIZATION",
+      "description" : "SOAP NO_AUTHORIZATION",
+      "request" : {
+        "description" : "SOAP NO_AUTHORIZATION",
+        "method" : "GET",
+        "header" : [ {
+          "key" : "h1",
+          "value" : "v1",
+          "description" : "descr1",
+          "disabled" : false
+        } ],
+        "body" : {
+          "mode" : "raw",
+          "raw" : "<tag>raw</tag>",
+          "disabled" : false
+        },
+        "url" : {
+          "raw" : "https://2.com",
+          "protocol" : "https",
+          "host" : [ "2", "com" ]
+        },
+        "auth" : {
+          "type" : "noauth"
+        }
+      },
+      "response" : [ ]
+    } ]
+  }, {
+    "id" : "00000000-0000-0001-0000-000000000006",
+    "name" : "With inherit auth type",
+    "description" : "With inherit auth type",
+    "request" : {
+      "description" : "With inherit auth type",
+      "method" : "GET",
+      "url" : {
+        "raw" : "http://localhost:8080",
+        "protocol" : "http",
+        "host" : [ "localhost" ],
+        "port" : "8080"
+      },
+      "auth" : { }
+    },
+    "response" : [ ]
+  } ],
+  "auth" : {
+    "type" : "bearer",
+    "bearer" : [ {
+      "key" : "token",
+      "value" : "token",
+      "type" : "string"
+    } ]
+  }
+}

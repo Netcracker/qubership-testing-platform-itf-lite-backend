@@ -1,0 +1,59 @@
+#!/usr/bin/env sh
+## all parameter coming from OpenShift
+
+## Set up routes.json
+# *** Set JVM options
+JAVA_OPTIONS="${JAVA_OPTIONS} -XX:+PrintFlagsFinal"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dlog.graylog.on=${GRAYLOG_ON:-false}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dlog.graylog.host=${GRAYLOG_HOST}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dlog.graylog.port=${GRAYLOG_PORT}"
+
+if [ "${ATP_INTERNAL_GATEWAY_ENABLED}" = "true" ]; then
+    echo "Internal gateway integration is enabled."
+    FEIGN_ATP_CATALOGUE_NAME=${FEIGN_ATP_INTERNAL_GATEWAY_NAME}
+    FEIGN_ATP_ITF_LITE_SCRIPT_ENGINE_NAME=${FEIGN_ATP_INTERNAL_GATEWAY_NAME}
+    FEIGN_ATP_ITF_NAME=${FEIGN_ATP_INTERNAL_GATEWAY_NAME}
+    FEIGN_ATP_USERS_NAME=${FEIGN_ATP_INTERNAL_GATEWAY_NAME}
+    FEIGN_ATP_ENVIRONMENTS_NAME=${FEIGN_ATP_INTERNAL_GATEWAY_NAME}
+    FEIGN_ATP_NOTIFICATION_NAME=${FEIGN_ATP_INTERNAL_GATEWAY_NAME}
+    FEIGN_ATP_EI_NAME=${FEIGN_ATP_INTERNAL_GATEWAY_NAME}
+    FEIGN_ATP_RAM_NAME=${FEIGN_ATP_INTERNAL_GATEWAY_NAME}
+    FEIGN_ATP_MACROS_NAME=${FEIGN_ATP_INTERNAL_GATEWAY_NAME}
+else
+    echo "Internal gateway integration is disabled."
+    FEIGN_ATP_CATALOGUE_ROUTE=
+    FEIGN_ATP_ITF_LITE_SCRIPT_ENGINE_ROUTE=
+    FEIGN_ATP_ITF_ROUTE=
+    FEIGN_ATP_USERS_ROUTE=
+    FEIGN_ATP_ENVIRONMENTS_ROUTE=
+    FEIGN_ATP_NOTIFICATION_ROUTE=
+    FEIGN_ATP_EI_ROUTE=
+    FEIGN_ATP_RAM_ROUTE=
+    FEIGN_ATP_MACROS_ROUTE=
+fi
+
+
+export HAZELCAST_SERVER_ADDRESS="${HAZELCAST_ADDRESS%%:*}"
+export HAZELCAST_SERVER_PORT="${HAZELCAST_ADDRESS##*:}"
+
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dei.gridfs.database=${EI_GRIDFS_DB:?}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dei.gridfs.host=${EI_GRIDFS_DB_ADDR:-$GRIDFS_DB_ADDR}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dei.gridfs.port=${EI_GRIDFS_DB_PORT:-$GRIDFS_DB_PORT}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dei.gridfs.user=${EI_GRIDFS_USER:?}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dei.gridfs.password=${EI_GRIDFS_PASSWORD:?}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dspring.config.location=${SPRING_CONFIG_LOCATION:-./config/application.properties}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dspring.cloud.bootstrap.location=./config/bootstrap.properties"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dram.adapter.type=${ADAPTER_TYPE:?}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dbootstrap.servers=${KAFKA_SERVERS:?}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.topic.name=${KAFKA_LOGRECORD_TOPIC:?}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.topic.partitions.number=${KAFKA_LOGRECORD_TOPIC_PARTITIONS:-1}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.topic.replication.factor=${KAFKA_LOGRECORD_TOPIC_REPLICATION_FACTOR:-3}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.context.topic.name=${KAFKA_LOGRECORD_CONTEXT_TOPIC:?}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.context.topic.partitions.number=${KAFKA_LOGRECORD_CONTEXT_TOPIC_PARTITIONS:-1}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.context.topic.replication.factor=${KAFKA_LOGRECORD_CONTEXT_TOPIC_REPLICATION_FACTOR:-3}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.scripts.topic.name=${KAFKA_LOGRECORD_SCRIPTS_TOPIC:?}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.scripts.partitions.number=${KAFKA_LOGRECORD_SCRIPTS_TOPIC_PARTITIONS:-1}"
+JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.scripts.replication.factor=${KAFKA_LOGRECORD_SCRIPTS_TOPIC_REPLICATION_FACTOR:-3}"
+JAVA_OPTIONS="${JAVA_OPTIONS} --add-opens java.base/java.lang=ALL-UNNAMED"
+
+/usr/bin/java -XX:MaxRAM=${MAX_RAM:-1024m} ${JAVA_OPTIONS} -cp "./config/:./lib/*" org.qubership.atp.itf.lite.backend.Main

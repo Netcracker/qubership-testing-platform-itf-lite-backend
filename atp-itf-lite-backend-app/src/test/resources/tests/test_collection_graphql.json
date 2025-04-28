@@ -1,0 +1,543 @@
+{
+  "info": {
+    "_postman_id": "9f7b071a-88ab-47e7-9fc2-36afad3a8bd2",
+    "name": "ZAIN_ABC",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "[ABC] GQL Customer Search",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query listCustomers($offset: Int, $limit: Int, $filter: [String!]) {\r\n  listCustomers\r\n    @filter(filters: $filter)\r\n    @limit(limit: $limit, offset: $offset) {\r\n    id\r\n    id\r\n    name\r\n    customerNumber\r\n \r\n    customerSince\r\n    createdBy\r\n    product {\r\n      id\r\n      name\r\n      characteristic {\r\n        value\r\n        name\r\n        __typename\r\n      }\r\n      __typename\r\n    }\r\n    relatedParty {\r\n      atReferredType\r\n      id\r\n      name\r\n      role\r\n      __typename\r\n    }\r\n    engagedParty {\r\n      atReferredType\r\n      id\r\n      name\r\n      origin {\r\n        ... on Individual {\r\n          id\r\n          birthDate\r\n          individualIdentification {\r\n            type\r\n            identificationId\r\n            __typename\r\n          }\r\n          contactMedium {\r\n            type\r\n            characteristic {\r\n              type\r\n              city\r\n              phoneNumber\r\n              emailAddress\r\n              __typename\r\n            }\r\n            __typename\r\n          }\r\n          __typename\r\n        }\r\n        __typename\r\n      }\r\n      __typename\r\n    }\r\n    __typename\r\n  }\r\n}",
+            "variables": "{\r\n    \"filter\": [\r\n        \"documentId.eq=1122334500\"\r\n       ],\r\n    \"offset\": 0,\r\n    \"limit\": 20\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL Customer Search Copy",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query listPartyRoles($filters: [String!]) {\r\n  listPartyRoles @filter(filters: $filters) {\r\n    type {\r\n      id\r\n      name\r\n      __typename\r\n    }\r\n    note {\r\n      text\r\n      __typename\r\n    }\r\n    name\r\n    contactMedium {\r\n      id\r\n      characteristic {\r\n        type\r\n        emailAddress\r\n        phoneNumber\r\n        faxNumber\r\n        street1\r\n        street2\r\n        postCode\r\n        city\r\n        country\r\n        stateOrProvince\r\n        extendedAttributes\r\n        billingData {\r\n          addressFormat\r\n          __typename\r\n        }\r\n        __typename\r\n      }\r\n      preferred\r\n      preferredNotification\r\n      type\r\n      __typename\r\n    }\r\n    engagedParty {\r\n      id\r\n      atReferredType\r\n      origin {\r\n        ... on Individual {\r\n          id\r\n          familyName\r\n          middleName\r\n          givenName\r\n          gender\r\n          birthDate\r\n          languageRef {\r\n            isoCode\r\n            __typename\r\n          }\r\n          individualIdentification {\r\n            id\r\n            type\r\n            identificationId\r\n            description\r\n            validFor {\r\n              endDateTime\r\n              __typename\r\n            }\r\n            attachment {\r\n              url\r\n              __typename\r\n            }\r\n            __typename\r\n          }\r\n          contactMedium {\r\n            id\r\n            type\r\n            preferred\r\n            preferredNotification\r\n            characteristic {\r\n              type\r\n              emailAddress\r\n              phoneNumber\r\n              faxNumber\r\n              socialProfile\r\n              addressId\r\n              street1\r\n              street2\r\n              postCode\r\n              city\r\n              country\r\n              stateOrProvince\r\n              extendedAttributes\r\n              __typename\r\n            }\r\n            contactHour {\r\n              startTime\r\n              endTime\r\n              dayOfWeek\r\n              __typename\r\n            }\r\n            __typename\r\n          }\r\n          __typename\r\n        }\r\n        ... on Organization {\r\n          id\r\n          tradingName\r\n          type\r\n          nameType\r\n          externalReference {\r\n            href\r\n            type\r\n            __typename\r\n          }\r\n          contactMedium {\r\n            id\r\n            type\r\n            characteristic {\r\n              type\r\n              emailAddress\r\n              phoneNumber\r\n              street1\r\n              street2\r\n              postCode\r\n              city\r\n              country\r\n              stateOrProvince\r\n              extendedAttributes\r\n              billingData {\r\n                addressFormat\r\n                __typename\r\n              }\r\n              __typename\r\n            }\r\n            __typename\r\n          }\r\n          organizationParentRelationship {\r\n            id\r\n            description\r\n            relationshipType\r\n            validFor {\r\n              startDateTime\r\n              endDateTime\r\n              __typename\r\n            }\r\n            origin {\r\n              tradingName\r\n              __typename\r\n            }\r\n            __typename\r\n          }\r\n          organizationChildRelationship {\r\n            id\r\n            description\r\n            relationshipType\r\n            validFor {\r\n              startDateTime\r\n              endDateTime\r\n              __typename\r\n            }\r\n            origin {\r\n              tradingName\r\n              __typename\r\n            }\r\n            __typename\r\n          }\r\n          __typename\r\n        }\r\n        __typename\r\n      }\r\n      __typename\r\n    }\r\n    id\r\n    products {\r\n      id\r\n      name\r\n      origin {\r\n        id\r\n        name\r\n        ... on Product {\r\n          id\r\n          name\r\n          parentProductId\r\n          rootProductId\r\n          characteristic {\r\n            ... on ProductCharacteristic {\r\n              id\r\n              name\r\n              value\r\n              attributeId\r\n              __typename\r\n            }\r\n            __typename\r\n          }\r\n          __typename\r\n        }\r\n        __typename\r\n      }\r\n      atReferredType\r\n      __typename\r\n    }\r\n    validFor {\r\n      endDateTime\r\n      startDateTime\r\n      __typename\r\n    }\r\n    relatedParty {\r\n      id\r\n      atReferredType\r\n      origin {\r\n        ... on Customer {\r\n          id\r\n          name\r\n          status\r\n          engagedParty {\r\n            atReferredType\r\n            __typename\r\n          }\r\n          __typename\r\n        }\r\n        ... on PartyRole {\r\n          id\r\n          engagedParty {\r\n            id\r\n            __typename\r\n          }\r\n          __typename\r\n        }\r\n        __typename\r\n      }\r\n      __typename\r\n    }\r\n    __typename\r\n  }\r\n}\r\n",
+            "variables": "{\r\n  \"filters\": [\r\n    \"relatedParty.id=9163457506013382430\",\r\n    \"relatedParty.@referredType=Customer\",\r\n    \"engagedParty.id=9163457512113382439\",\r\n    \"engagedParty.@referredType=Individual\"\r\n  ]\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL listBillingAccounts",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "fragment ZainBillingAccount on BillingAccount {\r\n  accountingMethod\r\n  accountNumber\r\n  accountUnbilled\r\n  balance {\r\n    accountBalance\r\n    adjustedAccountBalance\r\n    currencyCode\r\n    onlineBalance\r\n    unbilledUsage\r\n    unpaidSpend\r\n    __typename\r\n  }\r\n  billingAccountSegmentHistory {\r\n    date\r\n    reason\r\n    segment {\r\n      name\r\n      __typename\r\n    }\r\n    user\r\n    __typename\r\n  }\r\n  billStructure {\r\n    cycleSpecification {\r\n      dateShift\r\n      frequency\r\n      id\r\n      origin {\r\n        frequency\r\n        __typename\r\n      }\r\n      __typename\r\n    }\r\n    format {\r\n      id\r\n      name\r\n      __typename\r\n    }\r\n    presentationMedia {\r\n      id\r\n      name\r\n      __typename\r\n    }\r\n    __typename\r\n  }\r\n  contact {\r\n    contactMedium {\r\n      characteristic {\r\n        addressId\r\n        city\r\n        country\r\n        emailAddress\r\n        phoneNumber\r\n        postCode\r\n        stateOrProvince\r\n        street\r\n        type\r\n        __typename\r\n      }\r\n      id\r\n      type\r\n      __typename\r\n    }\r\n    contactName\r\n    contactType\r\n    partyRoleType\r\n    relatedParty {\r\n      id\r\n      origin {\r\n        ... on PartyRole {\r\n          contactMedium {\r\n            characteristic {\r\n              addressId\r\n              city\r\n              country\r\n              emailAddress\r\n              phoneNumber\r\n              postCode\r\n              stateOrProvince\r\n              street\r\n              type\r\n              __typename\r\n            }\r\n            id\r\n            type\r\n            __typename\r\n          }\r\n          engagedParty {\r\n            origin {\r\n              ... on Individual {\r\n                familyName\r\n                givenName\r\n                id\r\n                middleName\r\n                __typename\r\n              }\r\n              __typename\r\n            }\r\n            __typename\r\n          }\r\n          __typename\r\n        }\r\n        __typename\r\n      }\r\n      __typename\r\n    }\r\n    __typename\r\n  }\r\n  creditClass {\r\n    id\r\n    name\r\n    __typename\r\n  }\r\n  creditLimit {\r\n    value\r\n    __typename\r\n  }\r\n  currentLifecycleState\r\n  currentLifecycleStateStartDtm\r\n  currentLifecycleStateTimeoutDtm\r\n  cvasLoanInfo {\r\n    loanAmount\r\n    loanFee\r\n    __typename\r\n  }\r\n  defaultAccountCurrency {\r\n    id\r\n    __typename\r\n  }\r\n  defaultPaymentMethod {\r\n    id\r\n    origin {\r\n      atType\r\n      details {\r\n        ... on TokenizedCard {\r\n          brand\r\n          lastFourDigits\r\n          __typename\r\n        }\r\n        ... on BankAccountTransfer {\r\n          accountNumber\r\n          accountNumberType\r\n          bank\r\n          __typename\r\n        }\r\n        ... on BankAccountDebit {\r\n          accountNumber\r\n          accountNumberType\r\n          bank\r\n          __typename\r\n        }\r\n        __typename\r\n      }\r\n      id\r\n      validFor {\r\n        endDateTime\r\n        __typename\r\n      }\r\n      __typename\r\n    }\r\n    __typename\r\n  }\r\n  extendedAttributes\r\n  id\r\n  invoicingCompany\r\n  lastBillDate\r\n  name\r\n  nextBillDate\r\n  notificationLanguage\r\n  numberOfFailedAttempts\r\n  paymentMandate {\r\n    paymentMethod {\r\n      atReferredType\r\n      id\r\n      __typename\r\n    }\r\n    validFor {\r\n      endDateTime\r\n      startDateTime\r\n      __typename\r\n    }\r\n    __typename\r\n  }\r\n  prepaid\r\n  relatedParty {\r\n    id\r\n    name\r\n    role\r\n    __typename\r\n  }\r\n  segment {\r\n    id\r\n    name\r\n    __typename\r\n  }\r\n  state\r\n  taxInclusive\r\n  type\r\n  updateSegmentInBI\r\n  voucherRechargeBlocked\r\n  __typename\r\n}\r\n\r\nquery listBillingAccounts($customerIdFilter: String!, $relatedPartyTypeFilter: String!, $offset: Int, $limit: Int) {\r\n  listBillingAccounts @limit(limit: $limit, offset: $offset) @filter(filters: [$customerIdFilter, $relatedPartyTypeFilter]) {\r\n    ...ZainBillingAccount\r\n    __typename\r\n  }\r\n}",
+            "variables": "{\r\n  \"customerIdFilter\": \"relatedParty.id=3167442816790759558\",\r\n  \"relatedPartyTypeFilter\": \"relatedParty.role=Customer\",\r\n  \"offset\": 0,\r\n  \"limit\": 10\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL searchBillingAccount",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query searchBillingAccount($filter: [String!]) {\r\n    searchBillingAccount @ filter(filters: $filter) {\r\n        id\r\n        name\r\n        billingMethod{\r\n            id\r\n            name\r\n        }\r\n        accountNumber\r\n        status\r\n        customer{\r\n            id\r\n            name\r\n            }\r\n        relatedProducts{\r\n            id\r\n            name\r\n            status\r\n            }\r\n\r\n    }\r\n}\r\n",
+            "variables": "{\r\n    \"filter\": [\r\n        \"msisdn=590110865\"\r\n    ]\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL getBillingAccount",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query getBillingAccount($billingAccountId: String!) {\r\n  getBillingAccount(id: $billingAccountId) {\r\n    id\r\n    name\r\n    type\r\n    state\r\n\r\n\r\n    currentLifecycleState\r\n    currentLifecycleStateStartDtm\r\n    currentLifecycleStateTimeoutDtm\r\n\r\n\r\n    extendedAttributes\r\n    accountNumber\r\n    accountingMethod\r\n    taxInclusive\r\n    balance {\r\n      accountBalance\r\n      unbilledUsage\r\n      unpaidSpend\r\n      adjustedAccountBalance\r\n      __typename\r\n    }\r\n        accountStatus {\r\n            id \r\n            name\r\n        }    \r\n   }}",
+            "variables": "{\r\n  \"billingAccountId\": \"9164113061113485394\"\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL getBillingAccount Copy",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query getBillingAccount($billingAccountId: String!) {\r\n  getBillingAccount(id: $billingAccountId) {\r\n    id\r\n    name\r\n    type\r\n    state\r\n\r\n\r\n    currentLifecycleState\r\n    currentLifecycleStateStartDtm\r\n    currentLifecycleStateTimeoutDtm\r\n\r\n\r\n    extendedAttributes\r\n    accountNumber\r\n    accountingMethod\r\n    taxInclusive\r\n    balance {\r\n      accountBalance\r\n      unbilledUsage\r\n      unpaidSpend\r\n      adjustedAccountBalance\r\n      __typename\r\n    }\r\n        accountStatus {\r\n            id \r\n            name\r\n        }    \r\n   }}",
+            "variables": "{\r\n  \"billingAccountId\": \"9164113061113485394\"\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL getIndividual",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "{\r\n    getIndividual(id: \"4163892312350487273\") {\r\n        fullName\r\n        individualIdentification {\r\n            otpRequired\r\n        }\r\n    }\r\n}",
+            "variables": ""
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL createPartyInteraction",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation createPartyInteraction ($input: PartyInteractionInput!) {\r\ncreatePartyInteraction(input: $input) {\r\n        atBaseType\r\n        atType\r\n        attachment\r\n        {\r\n            description\r\n            \r\n            id\r\n            mimeType\r\n            name\r\n            \r\n            \r\n            type\r\n            url\r\n            \r\n            content\r\n            \r\n            \r\n        }\r\n        channel\r\n        {\r\n            atType\r\n            href\r\n            id\r\n            name\r\n            role\r\n        }\r\n        \r\n        description\r\n        direction\r\n        href\r\n        id\r\n        interactionDate\r\n        {\r\n            startDateTime\r\n            endDateTime\r\n        }\r\n        note\r\n        {\r\n            author\r\n            date\r\n            text\r\n            id\r\n            isNoteVisibleForContact\r\n            atBaseType\r\n            isRelatedToStatusChange\r\n            updatedDate\r\n        }\r\n        reason\r\n        relatedParty\r\n        {\r\n            atReferredType\r\n            href\r\n            id\r\n            name\r\n            role\r\n        }\r\n        status\r\n        statusChangeDate\r\n        subReason\r\n        subStatus\r\n        \r\n        createdBy\r\n        {\r\n            id\r\n            name\r\n        }\r\n            }\r\n}",
+            "variables": "{\r\n        \"input\": {\r\n            \"atType\": \"Call\",\r\n            \"channel\": {\r\n                \"atType\": \"Call\",\r\n                \"id\": \"9163114044513168800\",\r\n                \"name\": \"Call\",\r\n                \"role\": \"Call\"\r\n            },\r\n            \"description\": \"123\",\r\n            \"direction\": \"Incoming\",\r\n            \"interactionDate\": {\r\n                \"startDateTime\": \"2022-05-25T07:27:19Z\",\r\n                \"endDateTime\": \"2022-05-25T07:27:19Z\"\r\n            },\r\n            \"reason\": \"Data Modification\",\r\n            \"relatedParty\": [\r\n                {\r\n                    \"atReferredType\": \"Customer Account\",\r\n                    \"id\": \"9163642259213377700\"\r\n                },\r\n                {\r\n                    \"atReferredType\": \"Individual\",\r\n                    \"id\": \"9163642253313377700\"\r\n                },\r\n                {\r\n                    \"atReferredType\": \"CustomerLocation\",\r\n                    \"id\": \"9163642257313377700\"\r\n                }\r\n            ],\r\n            \"createdBy\": {\r\n                \"id\": \"111\",\r\n                \"name\": \"sysadm\"\r\n            }\r\n            \r\n        }\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL createBillingAccount",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation createPartyInteraction ($input: PartyInteractionInput!) {\r\ncreatePartyInteraction(input: $input) {\r\n        atBaseType\r\n        atType\r\n        attachment\r\n        {\r\n            description\r\n            \r\n            id\r\n            mimeType\r\n            name\r\n            \r\n            \r\n            type\r\n            url\r\n            \r\n            content\r\n            \r\n            \r\n        }\r\n        channel\r\n        {\r\n            atType\r\n            href\r\n            id\r\n            name\r\n            role\r\n        }\r\n        \r\n        description\r\n        direction\r\n        href\r\n        id\r\n        interactionDate\r\n        {\r\n            startDateTime\r\n            endDateTime\r\n        }\r\n        note\r\n        {\r\n            author\r\n            date\r\n            text\r\n            id\r\n            isNoteVisibleForContact\r\n            atBaseType\r\n            isRelatedToStatusChange\r\n            updatedDate\r\n        }\r\n        reason\r\n        relatedParty\r\n        {\r\n            atReferredType\r\n            href\r\n            id\r\n            name\r\n            role\r\n        }\r\n        status\r\n        statusChangeDate\r\n        subReason\r\n        subStatus\r\n        \r\n        createdBy\r\n        {\r\n            id\r\n            name\r\n        }\r\n            }\r\n}",
+            "variables": "{\r\n        \"input\": {\r\n            \"atType\": \"Call\",\r\n            \"channel\": {\r\n                \"atType\": \"Call\",\r\n                \"id\": \"9163114044513168800\",\r\n                \"name\": \"Call\",\r\n                \"role\": \"Call\"\r\n            },\r\n            \"description\": \"123\",\r\n            \"direction\": \"Incoming\",\r\n            \"interactionDate\": {\r\n                \"startDateTime\": \"2022-05-25T07:27:19Z\",\r\n                \"endDateTime\": \"2022-05-25T07:27:19Z\"\r\n            },\r\n            \"reason\": \"Data Modification\",\r\n            \"relatedParty\": [\r\n                {\r\n                    \"atReferredType\": \"Customer Account\",\r\n                    \"id\": \"9163642259213377700\"\r\n                },\r\n                {\r\n                    \"atReferredType\": \"Individual\",\r\n                    \"id\": \"9163642253313377700\"\r\n                },\r\n                {\r\n                    \"atReferredType\": \"CustomerLocation\",\r\n                    \"id\": \"9163642257313377700\"\r\n                }\r\n            ],\r\n            \"createdBy\": {\r\n                \"id\": \"111\",\r\n                \"name\": \"sysadm\"\r\n            }\r\n            \r\n        }\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL generateOTPForIndividual",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation generateOTPForIndividual($individualId: String!) {\r\ngenerateOTPForIndividual(individual_id: $individualId)\r\n}",
+            "variables": "{\r\n\"individualId\": \"9163683982913474385\"\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL listQuotesFromDB",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query ListQuotesFromDB($filters: [String!],$offset: Int, $limit: Int )\r\n     {\r\n    listQuotesFromDB\r\n    @limit(limit: $limit, offset: $offset)\r\n    @filter(filters: $filters) {\r\n        id\r\n        name\r\n        description\r\n        state\r\n        quoteDate\r\n        validFor {\r\n            endDateTime\r\n            __typename\r\n        }\r\n        relatedParty {\r\n            id\r\n            atReferredType\r\n        }\r\n    }\r\n}",
+            "variables": "{\r\n    \"filters\": [\r\n        \"relatedParty.id=6165833501820528845\",\r\n        \"quote.salesOrderNumber=174024216\"\r\n    ],\r\n    \"offset\": 0,\r\n    \"limit\": 1\r\n    \r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL listQuotesFromDB Copy",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query ListQuotesFromDB($filters: [String!], $offset: Int, $limit: Int) {\r\n    listQuotesFromDB\r\n    @limit(limit: $limit, offset: $offset)\r\n    @filter(filters: $filters) {\r\n        id\r\n        attachments {\r\n            id\r\n            type {\r\n                id\r\n                name\r\n            }\r\n            name\r\n            createdBy\r\n            createdWhen\r\n            description\r\n            url\r\n            size{\r\n                amount\r\n                unit\r\n            }\r\n            validFor {\r\n                startDateTime\r\n                __typename\r\n            }\r\n            description\r\n            __typename\r\n        }\r\n        name\r\n        description\r\n        state\r\n        quoteDate\r\n        validFor {\r\n            endDateTime\r\n            __typename\r\n        }\r\n        relatedParty {\r\n            id\r\n            atReferredType\r\n        }\r\n    }\r\n}",
+            "variables": "{\r\n    \"filters\": [\r\n        \"relatedParty.id=4166014802760471803\"\r\n    ],\r\n    \"offset\": 0,\r\n    \"limit\": 5\r\n}"
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[ABC] GQL Temp Request Copy",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query listNationalities{listNationalities @sort(fields: [\"orderPopularity\",\"sematiCode\"])\r\n    {id \r\n    name\r\n    localisedName\r\n    isGCC\r\n    sematiCode\r\n    countryCode\r\n    orderPopularity    }}",
+            "variables": ""
+          }
+        },
+        "url": {
+          "raw": "{{ABC}}api/graphql-server/graphql",
+          "host": [
+            "{{ABC}}api"
+          ],
+          "path": [
+            "graphql-server",
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "random_5",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "transaction_created",
+      "value": "9163035596513153790",
+      "type": "default"
+    },
+    {
+      "key": "transaction_failed",
+      "value": "9163035593513153790",
+      "type": "default"
+    },
+    {
+      "key": "transaction_uncertain",
+      "value": "9163035595513153790",
+      "type": "default"
+    },
+    {
+      "key": "transaction_success",
+      "value": "9163035594513153790",
+      "type": "default"
+    },
+    {
+      "key": "operation_recharge",
+      "value": "9163060953713189239",
+      "type": "default"
+    },
+    {
+      "key": "operation_order_payment",
+      "value": "9163035655113153828",
+      "type": "default"
+    },
+    {
+      "key": "payment_method_bank_card",
+      "value": "9163415468013064295",
+      "type": "default"
+    },
+    {
+      "key": "today_date",
+      "value": ""
+    },
+    {
+      "key": "past_date",
+      "value": ""
+    },
+    {
+      "key": "future_date",
+      "value": ""
+    },
+    {
+      "key": "minus_so_fields",
+      "value": "orderItems.offer.(relationship,rules),orderItems.orderItems.offer.(relationship,rules)",
+      "type": "default"
+    }
+  ]
+}
