@@ -33,7 +33,7 @@
         <atp.crypt.version>0.0.20</atp.crypt.version>
         <atp.ei.lib.node>0.2.40</atp.ei.lib.node>
         <atp.integration.version>0.2.38</atp.integration.version>
-        <atp.macros.core.version>1.0.26</atp.macros.core.version>
+        <atp.macros.core.version>1.0.27</atp.macros.core.version>
         <atp.ram.version>2.2.205</atp.ram.version>
 
         <logstash.gelf.version>1.14.1</logstash.gelf.version>

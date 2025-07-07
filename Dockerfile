@@ -35,7 +35,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.21/community/" >/etc/apk/repo
 
 COPY deployments/install deployments/install
 COPY deployments/atp-common-scripts deployments/atp-common-scripts
-COPY build-context/qubership-testing-platform-itf-lite-backend/qubership-testing-platform-itf-lite-backend/qubership-atp-itf-lite-backend-distribution/target/ /tmp/
+COPY build-context/qubership-testing-platform-itf-lite-backend/qubership-testing-platform-itf-lite-backend/atp-itf-lite-backend-distribution/target/ /tmp/
 
 RUN mkdir -p dist/atp deployments/update && \
     cp -r deployments/install/* deployments/update/ && \
@@ -47,7 +47,7 @@ RUN adduser -D -H -h /atp -s /bin/bash -u 1007 atp && \
     echo "${JAVA_HOME}/bin/java \$@" >/usr/bin/java && \
     chmod a+x /usr/bin/java
 
-RUN unzip /tmp/qubership-atp-itf-lite-backend-distribution-*.zip -d $HOME_EX/ && \
+RUN unzip /tmp/atp-itf-lite-backend-distribution-*.zip -d $HOME_EX/ && \
     cp -r dist/atp /atp/ && chmod -R 775 /atp/ && \
     chown -R atp:root $HOME_EX/ && \
     find $HOME_EX -type f -name '*.sh' -exec chmod a+x {} + && \
