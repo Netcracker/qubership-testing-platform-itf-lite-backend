@@ -79,7 +79,7 @@ public class ActionService {
 
     /**
      * Execute action by request and environment id.
-     * @environmentId need for desire action strategy.
+     * @param environmentId is needed for desired action strategy.
      */
     public ExecuteStepResponse executeAction(ExecutionCollectionRequestExecuteRequest request,
                                              UUID environmentId) {
