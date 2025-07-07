@@ -5,11 +5,12 @@
     <parent>
         <artifactId>atp-itf-lite-parent</artifactId>
         <groupId>org.qubership.atp.itf.lite</groupId>
-        <version>${atp.service.version}</version>
+        <version>2.2.206-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>atp-itf-lite-backend-distribution</artifactId>
+    <name>atp-itf-lite-backend-distribution</name>
+
     <build>
         <plugins>
             <plugin>
