@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
 
-        <spring.boot.version>2.7.15</spring.boot.version>
+        <spring.boot.version>2.7.18</spring.boot.version>
         <spring.cloud.version>2021.0.8</spring.cloud.version>
 
         <atp.auth.version>1.2.60</atp.auth.version>
