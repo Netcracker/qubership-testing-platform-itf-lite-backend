@@ -62,9 +62,9 @@ jobs:
           dry-run: false
           tags: ${{steps.metadata.outputs.result}}
           download-artifact: true
-          custom-image-name: qubership-testing-platform-ram
-          download-artifact-path: build-context/qubership-testing-platform-ram/qubership-testing-platform-ram
-          component: '[{"name": "qubership-testing-platform-ram", "file": "./Dockerfile", "context": "."}]'
+          custom-image-name: qubership-testing-platform-itf-lite-backend
+          download-artifact-path: build-context/qubership-testing-platform-itf-lite-backend/qubership-testing-platform-itf-lite-backend
+          component: '[{"name": "qubership-testing-platform-itf-lite-backend", "file": "./Dockerfile", "context": "."}]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -75,7 +75,7 @@ jobs:
           dry-run: false
           tags: ${{steps.metadata.outputs.result}}
           download-artifact: false
-          custom-image-name: qubership-testing-platform-ram-transfer
-          component: '[{"name": "qubership-testing-platform-ram-transfer", "file": "docker-transfer/Dockerfile", "context": "."}]'
+          custom-image-name: qubership-testing-platform-itf-lite-backend-transfer
+          component: '[{"name": "qubership-testing-platform-itf-lite-backend-transfer", "file": "docker-transfer/Dockerfile", "context": "."}]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

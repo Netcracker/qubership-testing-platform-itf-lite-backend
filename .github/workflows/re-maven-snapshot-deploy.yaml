@@ -173,5 +173,5 @@ jobs:
         if: ${{ inputs.target-store == 'maven-central' }}
         uses: actions/upload-artifact@v4
         with:
-          name: qubership-testing-platform-ram
+          name: qubership-testing-platform-itf-lite-backend
           path: '**/target'
