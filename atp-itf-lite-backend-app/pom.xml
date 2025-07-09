@@ -423,10 +423,6 @@
                         <goals>
                             <goal>testResources</goal>
                         </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/test-basedir</outputDirectory>
-                            <overwrite>true</overwrite>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>clover-testResources</id>
