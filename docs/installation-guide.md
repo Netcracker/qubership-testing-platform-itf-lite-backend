@@ -39,7 +39,7 @@
 -DATP_CRYPTO_PRIVATE_KEY=
 ```
 
-**NOTE:** database will be pre-created by Liquidbase prescripts
+**NOTE:** database will be pre-created by Liquibase prescripts
 
 ## Full ENV VARs list per container
 
@@ -134,7 +134,7 @@
 | `KAFKA_ENVIRONMENT_TOPIC`                      | No        | dev04_environments_notification_topic                                            | Kafka environment topic name                         |
 | `KAFKA_ITF_LITE_EXECUTION_FINISH_PARTITIONS`   | No        | 1                                                                                | Kafka execution finish partitions number             |
 | `KAFKA_ITF_LITE_EXECUTION_FINISH_REPLICAS`     | No        | 3                                                                                | Kafka execution finish replicas number               |
-| `KAFKA_ITF_LITE_EXECUTION_FINISH_TOPIC`        | No        | dev04_itf_lite_execution_finish                                                  | Kafka execution finish topic name                    
+| `KAFKA_ITF_LITE_EXECUTION_FINISH_TOPIC`        | No        | dev04_itf_lite_execution_finish                                                  | Kafka execution finish topic name                    |
 | `KAFKA_LOGRECORD_TOPIC`                        | No        | dev04_orch_logrecord_topic                                                       | Kafka log record topic name                          |
 | `KEYCLOAK_AUTH_URL`                            | Yes       | url-to-keycloak-service/auth                                                     | Keycloak auth URL                                    |
 | `KEYCLOAK_ENABLED`                             | Yes       | true                                                                             | Enable or disable Keycloak integration               |
@@ -157,7 +157,7 @@
 | `SWAGGER_ENABLED`                              | No        | false                                                                            | Enable or disable Swagger integration                |
 | `ZIPKIN_ENABLE`                                | No        | true                                                                             | Enable or disable Zipkin distributed tracing         |
 | `ZIPKIN_PROBABILITY`                           | No        | 1.0                                                                              | Zipkin probability level                             |
-| `ZIPKIN_URL`                                   | No        | url-to-jaeger-service-collector (internal URL preferrable)                       | Zipkin host address                                  |                    |
+| `ZIPKIN_URL`                                   | No        | url-to-jaeger-service-collector (internal URL preferrable)                       | Zipkin host address                                  |
 
 ## Helm
 
@@ -165,3 +165,12 @@
 
 1. Install k8s locally
 2. Install Helm
+
+## How to deploy tool
+
+1. Build snapshot (artifacts and docker image) of https://github.com/Netcracker/qubership-testing-platform-itf-lite-backend in GitHub
+2. Clone repository to a place, available from your openshift/kubernetes where you need to deploy the tool to
+3. Navigate to <repository-root>/deployments/charts/atp-itf-lite-backend folder
+4. Check/change configuration parameters in the ./values.yaml file according to your services installed
+5. Execute the command: `helm install atp-itf-lite-backend`
+6. After installation is completed, check deployment health

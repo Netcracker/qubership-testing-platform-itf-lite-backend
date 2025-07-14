@@ -2,7 +2,7 @@
 
 ## 1. Clone repository `git clone <itf lite repo url>`
 
-## 2. Build the project `mvn clean install`
+## 2. Build the project `mvn -P github clean install`
 
 ## 3. Create new configuration
 
