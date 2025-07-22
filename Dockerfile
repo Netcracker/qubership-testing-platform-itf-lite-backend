@@ -53,6 +53,8 @@ RUN unzip /tmp/atp-itf-lite-backend-distribution-*.zip -d $HOME_EX/ && \
     find $HOME_EX -type f -name '*.sh' -exec chmod a+x {} + && \
     find $HOME_EX -type d -exec chmod 777 {} \;
 
+RUN find $HOME_EX -type f -name "*-sources.jar" -exec rm -f {} \;
+
 EXPOSE 8080
 USER atp
 
