@@ -22,6 +22,9 @@ import java.util.UUID;
 
 import org.qubership.atp.itf.lite.backend.feign.dto.history.ActionParameterDto;
 
+import lombok.Data;
+
+@Data
 public class ActionEntityDto implements Serializable {
 
   private static final long serialVersionUID = 1L;

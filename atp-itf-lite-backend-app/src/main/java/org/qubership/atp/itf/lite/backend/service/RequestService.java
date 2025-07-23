@@ -777,9 +777,9 @@ public class RequestService extends CrudService<Request> implements EntityHistor
      * Remove old formDta files, add new files and set file UUIDs.
      */
     public List<UUID> prepareFormDataRequest(RequestBody requestBody,
-                                        List<MultipartFile> files,
-                                        UUID id,
-                                        boolean isSnapshotFile) {
+                                             List<MultipartFile> files,
+                                             UUID id,
+                                             boolean isSnapshotFile) {
         List<UUID> fileIds = new ArrayList<>();
         if (Objects.nonNull(requestBody)) {
             List<FormDataPart> formDataParts = requestBody.getFormDataBody();
@@ -1334,7 +1334,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     }
 
     private List<ExecuteStepResponse> runSubCollection(ExecutionCollectionRequestExecuteRequest requestExecuteRequest,
-                                                 UUID environmentId, SaveRequestResolvingContext resolvingContext) {
+                                                       UUID environmentId, SaveRequestResolvingContext resolvingContext) {
         UUID testRunId = requestExecuteRequest.getTestRunId();
         log.debug("Execute sub collection from stack");
         List<ExecuteStepResponse> responses = new ArrayList<>();
@@ -1585,20 +1585,20 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         Stopwatch timer = Stopwatch.createStarted();
         TransportType transportType = request.getTransportType();
 
-            file.ifPresent(multipartFile -> ((HttpRequestEntitySaveRequest) request)
-                    .setFile(new FileData(null, multipartFile.getOriginalFilename())));
-            // Add saved files if any to request execution files
-            if (CollectionUtils.isEmpty(fileDataList)) {
-                fileDataList = gridFsService.getFilesDataByRequestId(request.getId());
-            } else {
-                List<FileData> finalFileDataListForFiltering = fileDataList;
-                List<FileData> gridFsFileDatas = gridFsService.getFilesDataByRequestId(
-                        request.getId()).stream().filter(fileData ->
-                                finalFileDataListForFiltering.stream().noneMatch(receivedFileData ->
-                                        receivedFileData.getFileName().equals(fileData.getFileName())))
-                        .collect(Collectors.toList());
-                fileDataList.addAll(gridFsFileDatas);
-            }
+        file.ifPresent(multipartFile -> ((HttpRequestEntitySaveRequest) request)
+                .setFile(new FileData(null, multipartFile.getOriginalFilename())));
+        // Add saved files if any to request execution files
+        if (CollectionUtils.isEmpty(fileDataList)) {
+            fileDataList = gridFsService.getFilesDataByRequestId(request.getId());
+        } else {
+            List<FileData> finalFileDataListForFiltering = fileDataList;
+            List<FileData> gridFsFileDatas = gridFsService.getFilesDataByRequestId(
+                            request.getId()).stream().filter(fileData ->
+                            finalFileDataListForFiltering.stream().noneMatch(receivedFileData ->
+                                    receivedFileData.getFileName().equals(fileData.getFileName())))
+                    .collect(Collectors.toList());
+            fileDataList.addAll(gridFsFileDatas);
+        }
 
         validateRequestSizeLimits(request, transportType, file, fileDataList);
 
@@ -1701,46 +1701,46 @@ public class RequestService extends CrudService<Request> implements EntityHistor
      */
     private void validateRequestSizeLimits(RequestEntitySaveRequest request, TransportType transportType,
                                            Optional<MultipartFile> file, List<FileData> fileDataList) {
-            HttpRequestEntitySaveRequest httpRequestEntitySaveRequest = (HttpRequestEntitySaveRequest) request;
-            byte[] serializedHttpRequestEntitySaveRequest = SerializationUtils.serialize(httpRequestEntitySaveRequest);
-            long requestWithoutPostScriptSize = 0;
-            if (nonNull(serializedHttpRequestEntitySaveRequest)) {
-                requestWithoutPostScriptSize = serializedHttpRequestEntitySaveRequest.length;
+        HttpRequestEntitySaveRequest httpRequestEntitySaveRequest = (HttpRequestEntitySaveRequest) request;
+        byte[] serializedHttpRequestEntitySaveRequest = SerializationUtils.serialize(httpRequestEntitySaveRequest);
+        long requestWithoutPostScriptSize = 0;
+        if (nonNull(serializedHttpRequestEntitySaveRequest)) {
+            requestWithoutPostScriptSize = serializedHttpRequestEntitySaveRequest.length;
+        } else {
+            log.warn("Can't serialize http request entity save for request {}", request.getId());
+        }
+        if (nonNull(httpRequestEntitySaveRequest.getPostScripts())) {
+            byte[] serializedPostScripts = SerializationUtils.serialize(
+                    httpRequestEntitySaveRequest.getPostScripts());
+            long postScriptsSizeInBytes = 0;
+            if (nonNull(serializedPostScripts)) {
+                postScriptsSizeInBytes = serializedPostScripts.length;
             } else {
-                log.warn("Can't serialize http request entity save for request {}", request.getId());
+                log.warn("Can't serialize post scripts for request {}", request.getId());
             }
-            if (nonNull(httpRequestEntitySaveRequest.getPostScripts())) {
-                byte[] serializedPostScripts = SerializationUtils.serialize(
-                        httpRequestEntitySaveRequest.getPostScripts());
-                long postScriptsSizeInBytes = 0;
-                if (nonNull(serializedPostScripts)) {
-                    postScriptsSizeInBytes = serializedPostScripts.length;
-                } else {
-                    log.warn("Can't serialize post scripts for request {}", request.getId());
-                }
-                requestWithoutPostScriptSize = requestWithoutPostScriptSize - postScriptsSizeInBytes;
+            requestWithoutPostScriptSize = requestWithoutPostScriptSize - postScriptsSizeInBytes;
+        }
+        if (!CollectionUtils.isEmpty(fileDataList)) {
+            byte[] serializedFileDataList = SerializationUtils.serialize(fileDataList);
+            if (nonNull(serializedFileDataList)) {
+                requestWithoutPostScriptSize += serializedFileDataList.length;
+            } else {
+                log.warn("Can't serialize file data list for request {}", request.getId());
             }
-            if (!CollectionUtils.isEmpty(fileDataList)) {
-                byte[] serializedFileDataList = SerializationUtils.serialize(fileDataList);
-                if (nonNull(serializedFileDataList)) {
-                    requestWithoutPostScriptSize += serializedFileDataList.length;
-                } else {
-                    log.warn("Can't serialize file data list for request {}", request.getId());
-                }
+        }
+        if (file != null && file.isPresent()) {
+            try {
+                requestWithoutPostScriptSize += file.get().getBytes().length;
+            } catch (IOException exception) {
+                log.warn("Can't get bytes for binary file for request {}", request.getId(), exception);
             }
-            if (file != null && file.isPresent()) {
-                try {
-                    requestWithoutPostScriptSize += file.get().getBytes().length;
-                } catch (IOException exception) {
-                    log.warn("Can't get bytes for binary file for request {}", request.getId(), exception);
-                }
-            }
-            if (isNotEntityContentMeetLimit(requestWithoutPostScriptSize, true)) {
-                ItfLiteRequestSizeLimitException exception = new ItfLiteRequestSizeLimitException();
-                log.error("Request and pre-script are bigger than ITF-Lite's configured limit = {} Mb",
-                        requestResponseSizeProperties.getRequestSizeLimitInMb(), exception);
-                throw exception;
-            }
+        }
+        if (isNotEntityContentMeetLimit(requestWithoutPostScriptSize, true)) {
+            ItfLiteRequestSizeLimitException exception = new ItfLiteRequestSizeLimitException();
+            log.error("Request and pre-script are bigger than ITF-Lite's configured limit = {} Mb",
+                    requestResponseSizeProperties.getRequestSizeLimitInMb(), exception);
+            throw exception;
+        }
     }
 
     /**
@@ -2189,13 +2189,13 @@ public class RequestService extends CrudService<Request> implements EntityHistor
      */
     public Optional<FileBody> saveFileToFileSystemAndGridFs(UUID requestId, MultipartFile file,
                                                             TransportType transportType) throws IOException {
-            FileUtils.saveMultipartFileDictionaryToFileSystem(Constants.DEFAULT_BINARY_FILES_FOLDER, requestId,
-                    file);
-            gridFsService.removeFileByRequestId(requestId);
-            FileBody fileInfo = gridFsService.saveBinaryByRequestId(LocalDateTime.now().toString(), requestId,
-                    file.getInputStream(), file.getOriginalFilename(), file.getContentType());
-            log.debug("File for request {} was saved with parameters {}", requestId, fileInfo);
-            return Optional.of(fileInfo);
+        FileUtils.saveMultipartFileDictionaryToFileSystem(Constants.DEFAULT_BINARY_FILES_FOLDER, requestId,
+                file);
+        gridFsService.removeFileByRequestId(requestId);
+        FileBody fileInfo = gridFsService.saveBinaryByRequestId(LocalDateTime.now().toString(), requestId,
+                file.getInputStream(), file.getOriginalFilename(), file.getContentType());
+        log.debug("File for request {} was saved with parameters {}", requestId, fileInfo);
+        return Optional.of(fileInfo);
     }
 
     /**
@@ -2297,7 +2297,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         HttpEntity entity = response.getEntity();
         String body = "";
         if (nonNull(entity)) {
-            body = EntityUtils.toString(entity);
+            body = EntityUtils.toString(entity,StandardCharsets.UTF_8);
             ContentType contentType = ContentType.get(entity);
             Charset charset = contentType == null ? null : ContentType.get(entity).getCharset();
             responseSize += charset == null ? body.getBytes().length : body.getBytes(charset).length;

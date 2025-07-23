@@ -16,11 +16,16 @@
 
 package org.qubership.atp.itf.lite.backend.feign.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum PostmanRequestBodyModeDto {
-  
+  @JsonProperty("raw")
   RAW("raw"),
+  @JsonProperty("file")
   FILE("file"),
+  @JsonProperty("graphql")
   GRAPHQL("graphql"),
+  @JsonProperty("formdata")
   FORMDATA("formdata");
 
   private String value;

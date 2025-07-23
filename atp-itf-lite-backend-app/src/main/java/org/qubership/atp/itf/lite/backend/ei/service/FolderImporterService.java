@@ -19,6 +19,8 @@ package org.qubership.atp.itf.lite.backend.ei.service;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,11 +29,22 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOUtils;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.modelmapper.ModelMapper;
 import org.qubership.atp.ei.node.dto.ExportImportData;
 import org.qubership.atp.ei.node.services.ObjectLoaderFromDiskService;
+import org.qubership.atp.itf.lite.backend.enums.auth.RequestAuthorizationType;
 import org.qubership.atp.itf.lite.backend.exceptions.folders.ItfLiteImportFolderFileLoadException;
 import org.qubership.atp.itf.lite.backend.model.entities.Folder;
+import org.qubership.atp.itf.lite.backend.model.entities.auth.BasicRequestAuthorization;
+import org.qubership.atp.itf.lite.backend.model.entities.auth.BearerRequestAuthorization;
+import org.qubership.atp.itf.lite.backend.model.entities.auth.InheritFromParentRequestAuthorization;
+import org.qubership.atp.itf.lite.backend.model.entities.auth.OAuth2RequestAuthorization;
+import org.qubership.atp.itf.lite.backend.model.entities.auth.RequestAuthorization;
 import org.qubership.atp.itf.lite.backend.service.FolderService;
+import org.qubership.atp.itf.lite.backend.utils.JsonObject;
 import org.qubership.atp.itf.lite.backend.utils.StreamUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -46,6 +59,7 @@ public class FolderImporterService {
 
     private final ObjectLoaderFromDiskService objectLoaderFromDiskService;
     private final FolderService folderService;
+    private final ModelMapper modelMapper;
 
     /**
      * Imports folders.
@@ -63,7 +77,7 @@ public class FolderImporterService {
         folderFiles.forEach((folderId, filePath) -> {
             log.debug("importFolders starts import: {}.", folderId);
 
-            Folder folderObject = load(filePath, replacementMap, isReplacement);
+            Folder folderObject = load(filePath, replacementMap, isReplacement, new JSONParser());
             log.debug("Imports folder:{}", folderObject);
             if (folderObject == null) {
                 final String path = filePath.toString();
@@ -124,15 +138,79 @@ public class FolderImporterService {
         folderService.saveAll(rootFolderFolderObjects);
     }
 
-    private Folder load(Path filePath, Map<UUID, UUID> replacementMap, boolean isReplacement) {
+    private Folder load(Path filePath, Map<UUID, UUID> replacementMap, boolean isReplacement, JSONParser jsonParser) {
+        Folder folder;
         if (isReplacement) {
             log.debug("Load folder by path [{}] with replacementMap: {}", filePath, replacementMap);
-            return objectLoaderFromDiskService.loadFileAsObjectWithReplacementMap(filePath, Folder.class,
+            folder = objectLoaderFromDiskService.loadFileAsObjectWithReplacementMap(filePath, Folder.class,
                     replacementMap, true, false);
         } else {
             log.debug("Load folder by path [{}] without replacementMap", filePath);
-            return objectLoaderFromDiskService.loadFileAsObject(filePath, Folder.class);
+            folder = objectLoaderFromDiskService.loadFileAsObject(filePath, Folder.class);
         }
+        if (nonNull(folder)) {
+            log.debug("RequestAuthorization parsing for folder = {}", folder.getId());
+            folder.setAuthorization(parseRequestAuthorizationFolder(filePath, replacementMap, isReplacement,
+                    folder.getAuthorization(), jsonParser));
+            return folder;
+        }
+        return null;
+    }
+
+    private RequestAuthorization parseRequestAuthorizationFolder(Path filePath, Map<UUID, UUID> replacementMap,
+                                                                 boolean isReplacement,
+                                                                 RequestAuthorization requestAuthorization,
+                                                                 JSONParser parser) {
+        if (nonNull(requestAuthorization)) {
+            RequestAuthorizationType authType = requestAuthorization.getType();
+            switch (authType) {
+                case OAUTH2:
+                    return prepareRequestAuthFolder(filePath, replacementMap, isReplacement, parser,
+                            OAuth2RequestAuthorization.class);
+                case BASIC:
+                    return prepareRequestAuthFolder(filePath, replacementMap, isReplacement, parser,
+                            BasicRequestAuthorization.class);
+                case BEARER:
+                    return prepareRequestAuthFolder(filePath, replacementMap, isReplacement, parser,
+                            BearerRequestAuthorization.class);
+                case INHERIT_FROM_PARENT:
+                    return prepareRequestAuthFolder(filePath, replacementMap, isReplacement, parser,
+                            InheritFromParentRequestAuthorization.class);
+                default:
+                    log.warn("Request with type {} will not be parsing", authType);
+                    break;
+            }
+        }
+        log.debug("Request authorization not found in {}", filePath);
+        return requestAuthorization;
+    }
+
+    private <T extends RequestAuthorization> T prepareRequestAuthFolder(Path filePath, Map<UUID, UUID> replacementMap,
+                                                                        boolean isReplacement,
+                                                                        JSONParser parser,
+                                                                        Class<T> neededClass) {
+        try {
+            log.debug("Read request from {}", filePath);
+            String requestString = IOUtils.toString(Files.newInputStream(filePath));
+            JsonObject parsedFolderRequest = new JsonObject(parser.parse(requestString));
+            JsonObject authorizationJsonFolder = parsedFolderRequest.getObject("authorization");
+            if (authorizationJsonFolder == null) {
+                log.warn("Authorization field is missing or null in the parsed request from file {}", filePath);
+                return null;
+            }
+            log.debug("Map parsed request authorization into OAuth2RequestAuthorization");
+            T parsedRequestAuthorization = modelMapper.map(authorizationJsonFolder.getObj(), neededClass);
+            UUID parsedRequestAuthorizationId = parsedRequestAuthorization.getId();
+
+            if (isReplacement && replacementMap.containsKey(parsedRequestAuthorizationId)) {
+                log.debug("Replace request authorization id");
+                parsedRequestAuthorization.setId(replacementMap.get(parsedRequestAuthorizationId));
+            }
+            return parsedRequestAuthorization;
+        } catch (IOException | ParseException e) {
+            log.error("Can't get authorization from file {}.", filePath, e);
+        }
+        return null;
     }
 
     /**

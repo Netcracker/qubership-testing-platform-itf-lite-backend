@@ -34,6 +34,24 @@
 {{ printf "      key: %s" . }}
 {{- end }}
 {{- end }}
+
+{{- define "securityContext.pod" -}}
+runAsNonRoot: true
+seccompProfile:
+  type: "RuntimeDefault"
+{{- with .Values.podSecurityContext }}
+{{ toYaml . }}
+{{- end -}}
+{{- end -}}
+
+{{- define "securityContext.container" -}}
+allowPrivilegeEscalation: false
+capabilities:
+  drop: ["ALL"]
+{{- with .Values.containerSecurityContext }}
+{{ toYaml . }}
+{{- end -}}
+{{- end -}}
 {{/* Helper functions end */}}
 
 {{/* Environment variables to be used AS IS */}}
@@ -112,6 +130,10 @@ FEIGN_ATP_RAM_URL: "{{ .Values.FEIGN_ATP_RAM_URL }}"
 FEIGN_ATP_USERS_NAME: "{{ .Values.FEIGN_ATP_USERS_NAME }}"
 FEIGN_ATP_USERS_ROUTE: "{{ .Values.FEIGN_ATP_USERS_ROUTE }}"
 FEIGN_ATP_USERS_URL: "{{ .Values.FEIGN_ATP_USERS_URL }}"
+FEIGN_CONNECT_TIMEOUT: "{{ .Values.FEIGN_CONNECT_TIMEOUT }}"
+FEIGN_READ_TIMEOUT: "{{ .Values.FEIGN_READ_TIMEOUT }}"
+FEIGN_HTTPCLIENT_ENABLED: "{{ .Values.FEIGN_HTTPCLIENT_ENABLED }}"
+FEIGN_OKHTTP_ENABLED: "{{ .Values.FEIGN_OKHTTP_ENABLED }}"
 GET_ACCESS_TOKEN_RETENTION_CRON_EXPRESSION: "{{ .Values.GET_ACCESS_TOKEN_RETENTION_CRON_EXPRESSION }}"
 GRAYLOG_HOST: "{{ .Values.GRAYLOG_HOST }}"
 GRAYLOG_ON: "{{ .Values.GRAYLOG_ON }}"
