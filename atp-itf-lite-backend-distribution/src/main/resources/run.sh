@@ -56,4 +56,4 @@ JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.scripts.partitions.number=${KAFK
 JAVA_OPTIONS="${JAVA_OPTIONS} -Dkafka.logrecord.scripts.replication.factor=${KAFKA_LOGRECORD_SCRIPTS_TOPIC_REPLICATION_FACTOR:-3}"
 JAVA_OPTIONS="${JAVA_OPTIONS} --add-opens java.base/java.lang=ALL-UNNAMED"
 
-/usr/bin/java -XX:MaxRAM=${MAX_RAM:-2048m} ${JAVA_OPTIONS} -cp "./config/:./lib/*" org.qubership.atp.itf.lite.backend.Main
+/usr/bin/java -XX:MaxRAM=${MAX_RAM:-3072m} ${JAVA_OPTIONS} -cp "./config/:./lib/*" org.qubership.atp.itf.lite.backend.Main
