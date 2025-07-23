@@ -243,10 +243,10 @@ public class RequestImporterService {
      * @param parser json parser
      * @return RequestAuthorization extension according to RequestAuthorizationType
      */
-    private RequestAuthorization parseRequestAuthorization(Path filePath, Map<UUID, UUID> replacementMap,
-                                                           boolean isReplacement,
-                                                           RequestAuthorization requestAuthorization,
-                                                           JSONParser parser) {
+    public RequestAuthorization parseRequestAuthorization(Path filePath, Map<UUID, UUID> replacementMap,
+                                                          boolean isReplacement,
+                                                          RequestAuthorization requestAuthorization,
+                                                          JSONParser parser) {
         if (nonNull(requestAuthorization)) {
             RequestAuthorizationType authType = requestAuthorization.getType();
             switch (authType) {
@@ -281,10 +281,10 @@ public class RequestImporterService {
      * @param neededClass for cast to this class
      * @return preparing request authorization
      */
-    private <T extends RequestAuthorization> T prepareRequestAuth(Path filePath, Map<UUID, UUID> replacementMap,
-                                                                  boolean isReplacement,
-                                                                  JSONParser parser,
-                                                                  Class<T> neededClass) {
+    public <T extends RequestAuthorization> T prepareRequestAuth(Path filePath, Map<UUID, UUID> replacementMap,
+                                                                 boolean isReplacement,
+                                                                 JSONParser parser,
+                                                                 Class<T> neededClass) {
         try {
             log.debug("Read request from {}", filePath);
             String requestString = IOUtils.toString(Files.newInputStream(filePath));

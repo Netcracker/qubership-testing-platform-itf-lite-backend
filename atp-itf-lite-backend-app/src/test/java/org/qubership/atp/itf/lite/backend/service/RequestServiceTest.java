@@ -2847,7 +2847,7 @@ public class RequestServiceTest {
         requestService.get().writeResponseAsFile(UUID.randomUUID(), UUID.randomUUID(), responseMock);
 
         // then
-        assertArrayEquals(response.getBody().getBytes(StandardCharsets.ISO_8859_1),
+        assertArrayEquals(response.getBody().getBytes(StandardCharsets.UTF_8),
                 responseMock.getContentAsByteArray());
         assertTrue(responseMock.containsHeader(CONTENT_DISPOSITION));
         String headerValue = responseMock.getHeader(CONTENT_DISPOSITION);

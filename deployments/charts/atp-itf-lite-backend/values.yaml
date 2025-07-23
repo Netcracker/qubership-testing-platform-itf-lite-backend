@@ -34,6 +34,8 @@ FEIGN_ATP_ENVIRONMENTS_ROUTE: "api/atp-environments/v1"
 FEIGN_ATP_MACROS_URL: ""
 FEIGN_ATP_MACROS_NAME: "ATP-MACROS"
 FEIGN_ATP_MACROS_ROUTE: "api/atp-macros/v1"
+FEIGN_HTTPCLIENT_ENABLED: "false"
+FEIGN_OKHTTP_ENABLED: "true"
 ATP_ITF_LITE_CONNECTION_TIMEOUT: "30000"
 ATP_ITF_LITE_REQUEST_TIMEOUT: "30000"
 ATP_ITF_LITE_SOCKET_TIMEOUT: "480000"
@@ -52,13 +54,19 @@ CPU_REQUEST: "0.05"
 CPU_LIMIT: "0.5"
 MEMORY_REQUEST: "300Mi"
 MEMORY_LIMIT: "1.5Gi"
+# Resources for pre and postdeploy
+PRE_POST_CPU_REQUEST: "0.05"
+PRE_POST_CPU_LIMIT: "0.5"
+PRE_POST_MEMORY_REQUEST: "50Mi"
+PRE_POST_MEMORY_LIMIT: "500Mi"
+#
 SPRING_PROFILES: "default"
 KEYCLOAK_AUTH_URL: "https://atp-keycloak-service-address/auth"
 KEYCLOAK_ENABLED: "true"
 KEYCLOAK_REALM: "atp2"
 KEYCLOAK_CLIENT_NAME: "atp-itf-lite"
 KEYCLOAK_SECRET: "290238dd-5e4b-40ff-9b18-8b5ebcd628d5"
-MAX_RAM: "1024m"
+MAX_RAM: "2048m"
 EUREKA_CLIENT_ENABLED: "false"
 SERVICE_REGISTRY_URL: "http://atp-registry-service:8761/eureka"
 PG_DB_ADDR: "pg-common.postgrescluster.svc"
@@ -69,9 +77,10 @@ TLS_ENABLED: true
 # enabled is a flag to enable Security Context
 SECURITY_CONTEXT_ENABLED: false
 # runAsUser is the user ID used to run the container
-SECURITY_RUN_AS_USER: 1000
-# fsGroup is the group ID associated with the container
-SECURITY_FS_GROUP: 1000
+podSecurityContext:
+  runAsUser: 1000
+  fsGroup: 1000
+containerSecurityContext: {}
 # atp-itf-lite gridfs host
 GRIDFS_DB_ADDR: "mongos.mongocluster.svc"
 # atp-itf-lite gridfs port
@@ -128,6 +137,9 @@ KAFKA_NOTIFICATION_TOPIC_PARTITIONS: "1"
 FEIGN_ATP_NOTIFICATION_URL: ""
 FEIGN_ATP_NOTIFICATION_NAME: "ATP-NOTIFICATION"
 FEIGN_ATP_NOTIFICATION_ROUTE: "api/atp-notification/v1"
+## feign timeout
+FEIGN_CONNECT_TIMEOUT: "480000"
+FEIGN_READ_TIMEOUT: "480000"
 ######### ATP NOTIFICATION ##########
 JMX_ENABLE: "true"
 JMX_PORT: "3000"
