@@ -268,4 +268,15 @@
         <sqlFile path="v3.0/update_request_params_table_with_generated_field.sql" relativeToChangelogFile="true"/>
         <comment>ATPII-46393 update request params table with generated field</comment>
     </changeSet>
+
+    <changeSet id="49" author="itf-lite">
+        <sqlFile path="v3.0/add_request_params_and_request_headers_index.sql" relativeToChangelogFile="true"/>
+        <comment>PSUPATPII-6476 create index on request id for request param and request headers table</comment>
+    </changeSet>
+
+    <changeSet id="50" author="itf-lite">
+        <sqlFile path="v3.0/correct_fk_for_jv_global_id.sql" relativeToChangelogFile="true"/>
+        <comment>PSUPATPII-6454 correct FK for delete javers global id</comment>
+    </changeSet>
+
 </databaseChangeLog>

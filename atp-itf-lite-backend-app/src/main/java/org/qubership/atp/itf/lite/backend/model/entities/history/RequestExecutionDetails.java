@@ -117,7 +117,7 @@ public class RequestExecutionDetails extends AbstractEntity {
         this.requestExecution = requestExecution;
         this.requestBody = requestBody;
         if (response != null && response.getBody() != null) {
-            this.responseBodyByte = response.getBody().getBytes(StandardCharsets.ISO_8859_1);
+            this.responseBodyByte = response.getBody().getBytes(StandardCharsets.UTF_8);
         }
         this.errorMessage = RequestUtils.getErrorResponse(errorMessage);
         this.requestPreScript = request.getPreScripts();

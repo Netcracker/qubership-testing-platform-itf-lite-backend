@@ -26,8 +26,7 @@ spec:
       terminationGracePeriodSeconds: 60
       {{- if .Values.SECURITY_CONTEXT_ENABLED }}
       securityContext:
-        runAsUser: {{ .Values.SECURITY_RUN_AS_USER }}
-        fsGroup: {{ .Values.SECURITY_FS_GROUP }}
+        {{- include "securityContext.pod" . | nindent 8 }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector: {{- .Values.nodeSelector | toYaml | nindent 8 }}
@@ -40,6 +39,10 @@ spec:
       containers:
         - name: '{{ .Values.SERVICE_NAME }}'
           image: '{{ .Values.DOCKER_TAG }}'
+          {{- if .Values.SECURITY_CONTEXT_ENABLED }}
+          securityContext:
+            {{- include "securityContext.container" . | nindent 12 }}
+          {{- end }}
           imagePullPolicy: IfNotPresent
           resources:
             requests:

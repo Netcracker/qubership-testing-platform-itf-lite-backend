@@ -316,6 +316,12 @@
                 <groupId>org.qubership.atp</groupId>
                 <artifactId>atp-macros-core</artifactId>
                 <version>${atp.macros.core.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.script</groupId>
+                        <artifactId>script-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!--Other-->
@@ -343,6 +349,11 @@
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
                 <version>${byte-buddy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-okhttp</artifactId>
+                <version>11.10</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
