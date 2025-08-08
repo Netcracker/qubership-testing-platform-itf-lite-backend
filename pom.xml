@@ -6,6 +6,7 @@
     <artifactId>atp-itf-lite-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.2.215-SNAPSHOT</version>
+
     <modules>
         <module>atp-itf-lite-backend-app</module>
         <module>atp-itf-lite-backend-distribution</module>
