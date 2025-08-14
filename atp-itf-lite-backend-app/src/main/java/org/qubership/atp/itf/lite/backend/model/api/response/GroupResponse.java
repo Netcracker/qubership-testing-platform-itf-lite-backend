@@ -96,7 +96,8 @@ public class GroupResponse implements Comparable<GroupResponse> {
         }
 
         this.transportType = request.getTransportType();
-        if (!TransportType.Diameter.equals(request.getTransportType())) {
+        if (TransportType.REST.equals(request.getTransportType())
+                || TransportType.SOAP.equals(request.getTransportType())) {
             this.httpMethod = ((HttpRequest) request).getHttpMethod();
         }
     }
