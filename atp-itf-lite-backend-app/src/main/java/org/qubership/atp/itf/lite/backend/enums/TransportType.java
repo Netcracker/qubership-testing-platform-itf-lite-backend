@@ -22,8 +22,7 @@ import lombok.Getter;
 public enum TransportType {
 
     REST(TransportTypeNames.REST),
-    SOAP(TransportTypeNames.SOAP),
-    Diameter(TransportTypeNames.Diameter);
+    SOAP(TransportTypeNames.SOAP);
 
     private String name;
 
@@ -34,6 +33,5 @@ public enum TransportType {
     public static class TransportTypeNames {
         public static final String REST = "REST";
         public static final String SOAP = "SOAP";
-        public static final String Diameter = "Diameter";
     }
 }
