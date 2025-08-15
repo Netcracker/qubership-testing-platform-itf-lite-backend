@@ -12,6 +12,7 @@ import static org.qubership.atp.itf.lite.backend.mocks.EntitiesGenerator.generat
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
@@ -31,10 +32,12 @@ import org.qubership.atp.itf.lite.backend.model.api.request.HttpRequestEntitySav
 import org.qubership.atp.itf.lite.backend.model.api.request.auth.AuthorizationSaveRequest;
 import org.qubership.atp.itf.lite.backend.model.api.request.auth.BearerAuthorizationSaveRequest;
 import org.qubership.atp.itf.lite.backend.model.api.request.auth.OAuth2AuthorizationSaveRequest;
+import org.qubership.atp.itf.lite.backend.model.api.request.http.HttpHeaderSaveRequest;
 import org.qubership.atp.itf.lite.backend.model.entities.auth.RequestAuthorization;
 import org.qubership.atp.itf.lite.backend.utils.AuthorizationUtils;
 import org.qubership.atp.itf.lite.backend.utils.RequestTestUtils;
 import org.qubership.atp.macros.core.processor.Evaluator;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -108,6 +111,36 @@ class RequestAuthorizationServiceTest {
                         UUID.randomUUID(), evaluator, RequestTestUtils.generateContext())
         );
         assertEquals("Failed to find request authorization strategy implementation for auth type: null", exception.getMessage());
+    }
+
+    @Test
+    public void processRequestAuthorization_duplicatesAndMixedCasing_replacesWithSingleNewValue()
+            throws AtpDecryptException, JsonProcessingException {
+        // given
+        final UUID projectId = UUID.randomUUID();
+        HttpRequestEntitySaveRequest httpRequest = EntitiesGenerator.generateRandomHttpRequestEntitySaveRequest();
+        httpRequest.getRequestHeaders().add(new HttpHeaderSaveRequest("Authorization", "oldValue1", "", false, true));
+        httpRequest.getRequestHeaders().add(new HttpHeaderSaveRequest("authorization", "oldValue2", "", false, true));
+        httpRequest.getRequestHeaders().add(new HttpHeaderSaveRequest("AUTHORIZATION", "oldValue3", "", false, true));
+        AuthorizationSaveRequest auth = new BearerAuthorizationSaveRequest("token");
+        auth.setType(RequestAuthorizationType.BEARER);
+        httpRequest.setAuthorization(auth);
+        Evaluator evaluator = mock(Evaluator.class);
+        when(authRegistry.get().getRequestAuthorizationStrategy(RequestAuthorizationType.BEARER))
+                .thenReturn(new BearerAuthorizationStrategy(null));
+        // when
+        String result = service.get().processRequestAuthorization(projectId, httpRequest, httpRequest,
+                null, evaluator, null);
+        // then
+        Assertions.assertEquals("Bearer token", result);
+        long authCount = httpRequest.getRequestHeaders().stream()
+                .filter(h -> HttpHeaders.AUTHORIZATION.equalsIgnoreCase(h.getKey()))
+                .count();
+        Assertions.assertEquals(1, authCount, "Should contain exactly one Authorization header");
+        HttpHeaderSaveRequest authHeader = httpRequest.getRequestHeaders().stream()
+                .filter(h -> HttpHeaders.AUTHORIZATION.equalsIgnoreCase(h.getKey()))
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Authorization header not found"));
+        Assertions.assertEquals("Bearer token", authHeader.getValue());
     }
 
     @Test

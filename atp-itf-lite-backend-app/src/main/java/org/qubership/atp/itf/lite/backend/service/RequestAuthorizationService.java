@@ -123,9 +123,17 @@ public class RequestAuthorizationService {
 
     private void requestHeadersProcessing(Map<String, List<HttpHeaderSaveRequest>> headersMap,
                                           String authorizationHeaderValue, List<HttpHeaderSaveRequest> requestHeaders) {
-        if (!headersMap.containsKey(HttpHeaders.AUTHORIZATION)) {
-            requestHeaders.add(new HttpHeaderSaveRequest(
-                    HttpHeaders.AUTHORIZATION, authorizationHeaderValue, "", false, true));
+        requestHeaders.removeIf(headerSaveRequest -> {
+            String headerKey = headerSaveRequest.getKey();
+            return HttpHeaders.AUTHORIZATION.equalsIgnoreCase(headerKey);
+        });
+        if (authorizationHeaderValue != null) {
+            String headerValue = authorizationHeaderValue.trim();
+            if (!headerValue.isEmpty()) {
+                requestHeaders.add(new HttpHeaderSaveRequest(
+                        HttpHeaders.AUTHORIZATION, headerValue, "", false, true
+                ));
+            }
         }
     }
 
