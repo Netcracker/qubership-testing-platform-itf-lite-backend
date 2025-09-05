@@ -1,20 +1,20 @@
 # Qubership ITF Lite Installation Guide
 
-### 3rd party dependencies
+## 3rd party dependencies
 
 | Name       | Version | Mandatory/Optional | Comment                |
 |------------|---------|--------------------|------------------------|
 | PostgreSQL | 14+     | Mandatory          | JDBC connection string |
 | GridFS     | 4.2+    | Mandatory          | For storing files      |
 
-### HWE
+## HWE
 
 |                  | CPU request | CPU limit | RAM request | RAM limit |
 |------------------|-------------|-----------|-------------|-----------|
 | Dev level        | 50m         | 500m      | 300Mi       | 1500Mi    |
 | Production level | 50m         | 1500m     | 3Gi         | 3Gi       |
 
-### Minimal parameters set
+## Minimal parameters set
 
 ```properties
 -DKEYCLOAK_AUTH_URL=
@@ -39,14 +39,14 @@
 -DATP_CRYPTO_PRIVATE_KEY=
 ```
 
-**NOTE:** database will be pre-created by Liquidbase prescripts
+**NOTE:** database will be pre-created by Liquibase prescripts
 
-### Full ENV VARs list per container
+## Full ENV VARs list per container
 
 | Deploy Parameter Name                          | Mandatory | Example                                                                          | Description                                          |
 |------------------------------------------------|-----------|----------------------------------------------------------------------------------|------------------------------------------------------|
 | `ADAPTER_TYPE`                                 | No        | kafka                                                                            | Type of logging adapter                              |
-| `ATP_CATALOGUE_URL`                            | No        | https://atp-catalogue-devci.dev-atp-cloud.com                                    | Catalog service URL                                  |
+| `ATP_CATALOGUE_URL`                            | No        | url-to-catalogue-service                                                         | Catalog service URL                                  |
 | `ATP_HTTP_LOGGING`                             | No        | true                                                                             | Enable or Disable logging controls                   |
 | `ATP_HTTP_LOGGING_HEADERS`                     | No        | true                                                                             | Enable or Disable request headers logging            |
 | `ATP_HTTP_LOGGING_HEADERS_IGNORE`              | No        | Authorization                                                                    | Headers that will be ignored during logging          |
@@ -86,7 +86,7 @@
 | `EI_GRIDFS_DB`                                 | No        | dev04_ei_gridfs                                                                  | Export and import database name                      |
 | `EI_GRIDFS_DB_ADDR`                            | No        | mongos.mongocluster.svc                                                          | Export and import database host address              |
 | `EI_GRIDFS_DB_PORT`                            | No        | 27017                                                                            | Export and import database port number               |
-| `EI_SERVICE_URL`                               | No        | http://atp-export-import-dev04.atp2k8.managed.cloud                              | Export and import service URL                        |
+| `EI_SERVICE_URL`                               | No        | url-to-export-import-service                                                     | Export and import service URL                        |
 | `EUREKA_CLIENT_ENABLED`                        | No        | true                                                                             | Enable or disable Eureka                             |
 | `FEIGN_ATP_CATALOGUE_NAME`                     | No        | ATP-CATALOGUE                                                                    | Feign Catalog client name                            |
 | `FEIGN_ATP_CATALOGUE_ROUTE`                    | No        | api/atp-catalogue/v1                                                             | Feign Catalog client name route                      |
@@ -97,7 +97,7 @@
 | `FEIGN_ATP_INTERNAL_GATEWAY_NAME`              | No        | atp-internal-gateway                                                             | Feign Internal gateway client name                   |
 | `FEIGN_ATP_ITF_ENABLED`                        | No        | true                                                                             | Enable or disable ITF integration                    |
 | `FEIGN_ATP_ITF_LITE_SCRIPT_ENGINE_NAME`        | Yes       | ATP-IFT-LITE-SCRIPT-ENGINE                                                       | Feign Script Engine client name                      |
-| `FEIGN_ATP_ITF_LITE_SCRIPT_ENGINE_URL`         | Yes       | http://atp-itf-lite-script-engine:8080                                           | Feign Script Engine client URL                       |
+| `FEIGN_ATP_ITF_LITE_SCRIPT_ENGINE_URL`         | Yes       | url-to-itf-lite-script-engine-service                                            | Feign Script Engine client URL                       |
 | `FEIGN_ATP_ITF_NAME`                           | No        | ATP-ITF-EXECUTOR                                                                 | Feign ITF client name                                |
 | `FEIGN_ATP_ITF_ROUTE`                          | No        | api/atp-itf-executor/v1                                                          | Feign ITF client route                               |
 | `FEIGN_ATP_MACROS_NAME`                        | No        | ATP-MACROS                                                                       | Feign Macros client name                             |
@@ -134,9 +134,9 @@
 | `KAFKA_ENVIRONMENT_TOPIC`                      | No        | dev04_environments_notification_topic                                            | Kafka environment topic name                         |
 | `KAFKA_ITF_LITE_EXECUTION_FINISH_PARTITIONS`   | No        | 1                                                                                | Kafka execution finish partitions number             |
 | `KAFKA_ITF_LITE_EXECUTION_FINISH_REPLICAS`     | No        | 3                                                                                | Kafka execution finish replicas number               |
-| `KAFKA_ITF_LITE_EXECUTION_FINISH_TOPIC`        | No        | dev04_itf_lite_execution_finish                                                  | Kafka execution finish topic name                    
+| `KAFKA_ITF_LITE_EXECUTION_FINISH_TOPIC`        | No        | dev04_itf_lite_execution_finish                                                  | Kafka execution finish topic name                    |
 | `KAFKA_LOGRECORD_TOPIC`                        | No        | dev04_orch_logrecord_topic                                                       | Kafka log record topic name                          |
-| `KEYCLOAK_AUTH_URL`                            | Yes       | https://atp-keycloak-dev04.atp2k8.managed.cloud/auth                             | Keycloak auth URL                                    |
+| `KEYCLOAK_AUTH_URL`                            | Yes       | url-to-keycloak-service/auth                                                     | Keycloak auth URL                                    |
 | `KEYCLOAK_ENABLED`                             | Yes       | true                                                                             | Enable or disable Keycloak integration               |
 | `KEYCLOAK_REALM`                               | Yes       | atp2                                                                             | Keycloak realm name                                  |
 | `LOG_LEVEL`                                    | No        | INFO                                                                             | Service logging level                                |
@@ -152,12 +152,12 @@
 | `REMOTE_DUMP_PORT`                             | No        | 1710                                                                             | Remote dump service port value                       |
 | `SERVICE_ENTITIES_MIGRATION_ENABLED`           | No        | true                                                                             | Enable or disable entities migration                 |
 | `SERVICE_NAME`                                 | No        | atp-itf-lite-backend                                                             | Service system name                                  |
-| `SERVICE_REGISTRY_URL`                         | No        | http://atp-registry-service.dev04.svc:8761/eureka                                | Service registry endpoint URL                        |
+| `SERVICE_REGISTRY_URL`                         | No        | url-to-registry-service/eureka                                                   | Service registry endpoint URL                        |
 | `SPRING_PROFILES`                              | No        | default                                                                          | Spring active profiles                               |
 | `SWAGGER_ENABLED`                              | No        | false                                                                            | Enable or disable Swagger integration                |
 | `ZIPKIN_ENABLE`                                | No        | true                                                                             | Enable or disable Zipkin distributed tracing         |
 | `ZIPKIN_PROBABILITY`                           | No        | 1.0                                                                              | Zipkin probability level                             |
-| `ZIPKIN_URL`                                   | No        | http://jaeger-app-collector.jaeger.svc:9411                                      | Zipkin host address                                  |                    |
+| `ZIPKIN_URL`                                   | No        | url-to-jaeger-service-collector (internal URL preferrable)                       | Zipkin host address                                  |
 
 ## Helm
 
@@ -165,3 +165,12 @@
 
 1. Install k8s locally
 2. Install Helm
+
+## How to deploy tool
+
+1. Build snapshot (artifacts and docker image) of https://github.com/Netcracker/qubership-testing-platform-itf-lite-backend in GitHub
+2. Clone repository to a place, available from your openshift/kubernetes where you need to deploy the tool to
+3. Navigate to <repository-root>/deployments/charts/atp-itf-lite-backend folder
+4. Check/change configuration parameters in the ./values.yaml file according to your services installed
+5. Execute the command: `helm install atp-itf-lite-backend`
+6. After installation is completed, check deployment health

@@ -50,7 +50,7 @@ public class CachedFilesCleaner {
     /**
      * Delete not needed files.
      *
-     * @directories list path where
+     * @param directories list of Path where to search files to be deleted.
      */
     public void deleteOldFiles(List<Path> directories) {
         List<String> listOfDeletedFiles = new ArrayList<>();

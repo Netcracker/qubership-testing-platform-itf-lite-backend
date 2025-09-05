@@ -32,11 +32,11 @@
       }
     },
     "cookies": [
-            {
-              "key": "Cookie_1",
-              "value": "Cookie_1=value; Path=/;"
-            }
-          ],
+      {
+        "key": "Cookie_1",
+        "value": "Cookie_1=value; Path=/;"
+      }
+    ],
     "postmanResponse": {
       "body": "test",
       "code": 200,

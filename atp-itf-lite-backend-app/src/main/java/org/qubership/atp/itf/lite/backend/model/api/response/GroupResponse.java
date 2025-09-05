@@ -35,6 +35,7 @@ import org.qubership.atp.itf.lite.backend.enums.auth.RequestAuthorizationType;
 import org.qubership.atp.itf.lite.backend.model.api.request.Permissions;
 import org.qubership.atp.itf.lite.backend.model.entities.Folder;
 import org.qubership.atp.itf.lite.backend.model.entities.Request;
+import org.qubership.atp.itf.lite.backend.model.entities.http.HttpRequest;
 import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -95,6 +96,10 @@ public class GroupResponse implements Comparable<GroupResponse> {
         }
 
         this.transportType = request.getTransportType();
+        if (TransportType.REST.equals(request.getTransportType())
+                || TransportType.SOAP.equals(request.getTransportType())) {
+            this.httpMethod = ((HttpRequest) request).getHttpMethod();
+        }
     }
 
     /**

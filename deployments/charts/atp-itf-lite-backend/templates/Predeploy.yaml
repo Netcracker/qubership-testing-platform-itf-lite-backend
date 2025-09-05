@@ -24,22 +24,30 @@ spec:
         helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       restartPolicy: Never
+      {{- if .Values.SECURITY_CONTEXT_ENABLED }}
+      securityContext:
+        {{- include "securityContext.pod" . | nindent 8 }}
+      {{- end }}
       volumes:
       - name: shared-data
         emptyDir: {}
       containers:
       - name: pre-deploy-job
         image: "{{ .Values.HELPER_IMAGE }}"
+        {{- if .Values.SECURITY_CONTEXT_ENABLED }}
+        securityContext:
+          {{- include "securityContext.container" . | nindent 12 }}
+        {{- end }}
         volumeMounts:
         - name: shared-data
           mountPath: /shared
         workingDir: /shared
         command:
-        - sh
-        - -c
-        - |
-          echo "=> Starting pre-deploy scripts ..."
-          ./{{ $flow }}/predeploy.sh
+          - sh
+          - -c
+          - |
+            echo "=> Starting pre-deploy scripts ..."
+            ./{{ $flow }}/predeploy.sh
         envFrom:
           - secretRef:
               name: {{ .Values.SERVICE_NAME }}-predeploy-secrets
@@ -56,20 +64,38 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        resources:
+          requests:
+            memory: '{{ .Values.PRE_POST_MEMORY_REQUEST }}'
+            cpu: '{{ .Values.PRE_POST_CPU_REQUEST }}'
+          limits:
+            memory: '{{ .Values.PRE_POST_MEMORY_LIMIT }}'
+            cpu: '{{ .Values.PRE_POST_CPU_LIMIT }}'
       initContainers:
       - name: init-container
         image: "{{ .Values.DOCKER_TAG }}"
+        {{- if .Values.SECURITY_CONTEXT_ENABLED }}
+        securityContext:
+          {{- include "securityContext.container" . | nindent 12 }}
+        {{- end }}
         volumeMounts:
         - name: shared-data
           mountPath: /shared
         command:
-        - sh
-        - -c
-        - |
-          echo "=> Copying scripts to shared folder ..."
-          cp -rv /atp/* /shared/
-          mkdir -pv /shared/lib
-          find . -type f -regex '.*/lib/\(atp-crypt\|slf4j-api\|bcprov\|commons-lang\)-.*\.jar$' -exec cp -v "{}" /shared/lib/ \;
+          - sh
+          - -c
+          - |
+            echo "=> Copying scripts to shared folder ..."
+            cp -rv /atp/* /shared/
+            mkdir -pv /shared/lib
+            find . -type f -regex '.*/lib/\(atp-crypt\|slf4j-api\|bcprov\|commons-lang\)-.*\.jar$' -exec cp -v "{}" /shared/lib/ \;
+        resources:
+          requests:
+            memory: '{{ .Values.PRE_POST_MEMORY_REQUEST }}'
+            cpu: '{{ .Values.PRE_POST_CPU_REQUEST }}'
+          limits:
+            memory: '{{ .Values.PRE_POST_MEMORY_LIMIT }}'
+            cpu: '{{ .Values.PRE_POST_CPU_LIMIT }}'
       serviceAccount: atp
       serviceAccountName: atp
 {{- end }}

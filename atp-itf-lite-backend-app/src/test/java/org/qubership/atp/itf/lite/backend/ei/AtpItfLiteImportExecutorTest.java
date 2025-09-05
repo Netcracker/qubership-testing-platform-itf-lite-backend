@@ -100,7 +100,6 @@ public class AtpItfLiteImportExecutorTest {
     private UUID projectId;
     private List<Folder> folders;
     List<Request> requests;
-
     private static OAuth2AuthorizationSaveRequest oAuth2AuthorizationSaveRequest;
 
     private static final String DEFAULT_RESOURCES_PATH = "src/test/resources";
@@ -108,11 +107,11 @@ public class AtpItfLiteImportExecutorTest {
     @BeforeEach
     public void setUp() {
         folderService = mock(FolderService.class);
+        ModelMapper modelMapper1 = mock(ModelMapper.class);
         FolderImporterService folderImporterService =
-                new FolderImporterService(objectLoaderFromDiskService, folderService);
+                new FolderImporterService(objectLoaderFromDiskService, folderService, modelMapper1);
         ModelMapper modelMapper = new MapperConfiguration().modelMapper();
-        RequestImporterService requestImporterService =
-                new RequestImporterService(objectLoaderFromDiskService, requestService, modelMapper, gridFsService);
+        RequestImporterService requestImporterService = new RequestImporterService(objectLoaderFromDiskService, requestService, modelMapper, gridFsService);
         importExecutor = new AtpItfLiteImportExecutor(folderImporterService,
                 requestImporterService, objectLoaderFromDiskService);
         AtpExportStrategy atpExportStrategy = new AtpExportStrategy(
@@ -155,7 +154,7 @@ public class AtpItfLiteImportExecutorTest {
         HttpRequest httpRequestWithInheritAuth = generateHttpRequest("httpRequest3", projectId);
         httpRequestWithInheritAuth.setAuthorization(
                 modelMapper.map(generateInheritFromParentRequestAuth(UUID.randomUUID()),
-                InheritFromParentRequestAuthorization.class));
+                        InheritFromParentRequestAuthorization.class));
         requests = new ArrayList<>();
         requests.addAll(Arrays.asList(httpRequest, httpRequestWithFormData, httpRequestWithBearerAuth,
                 httpRequestWithBasicAuth, httpRequestWithInheritAuth));
@@ -210,7 +209,6 @@ public class AtpItfLiteImportExecutorTest {
         folders.add(generateFolder(expectedFolderName2, projectId));
         exportData.getExportScope().getEntities().put(ServiceScopeEntities.ENTITY_ITF_LITE_FOLDERS.getValue(),
                 folders.stream().map(entity -> entity.getId().toString()).collect(Collectors.toSet()));
-
         String expectedRequestName1 = "httpRequest";
         String expectedRequestName2 = "httpRequest Copy";
         HttpRequest httpRequest = generateHttpRequest(expectedRequestName1, projectId);

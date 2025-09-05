@@ -70,8 +70,8 @@ public class ProjectEventKafkaListenerTest {
     private File createFolderAndCopyFile(UUID projectId) throws IOException{
         File folder = new File(String.format(CertificateService.CERTIFICATE_FOLDER, projectId));
         folder.mkdirs();
-        File sourceFile = new File("./src/test/resources/identity.p12");
-        File destinationFile = new File(folder.getAbsolutePath() + File.separator + "identity.p12");
+        File sourceFile = new File("./src/test/resources/identity.jks");
+        File destinationFile = new File(folder.getAbsolutePath() + File.separator + "identity.jks");
         org.apache.commons.io.FileUtils.copyFile(sourceFile, destinationFile);
         return destinationFile;
     }

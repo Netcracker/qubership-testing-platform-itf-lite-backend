@@ -81,7 +81,16 @@ public class AtpExportStrategy implements ExportStrategy {
 
         folders.forEach((folderId, folder) -> {
             if (parentFolders.contains(folderId)) {
-                objectSaverToDiskService.exportAtpEntity(folderId, folder, workDir);
+                final UUID originalPermissionFolderId = folder.getPermissionFolderId();
+                final String originalPermissions = folder.getPermission();
+                folder.setPermissionFolderId(null);
+                folder.setPermission(null);
+                try {
+                    objectSaverToDiskService.exportAtpEntity(folderId, folder, workDir);
+                } finally {
+                    folder.setPermissionFolderId(originalPermissionFolderId);
+                    folder.setPermission(originalPermissions);
+                }
             }
         });
     }

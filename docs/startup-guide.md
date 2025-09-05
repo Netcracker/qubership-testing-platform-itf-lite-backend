@@ -1,12 +1,10 @@
 # How to start backend locally
 
-1. Clone repository `git clone <itf lite repo url>`
+## 1. Clone repository `git clone <itf lite repo url>`
 
+## 2. Build the project `mvn -P github clean install`
 
-2. Build the project `mvn clean install`
-
-
-3. Create new configuration
+## 3. Create new configuration
 
     1) Go to Run menu and click Edit Configuration
     2) Add new Application configuration
@@ -57,7 +55,6 @@
 -DATP_CRYPTO_PRIVATE_KEY=
 ```
 
-5. Click `Apply` and `OK`
+## 4. Click `Apply` and `OK`
 
-
-6. Run the project
+## 5. Run the project

@@ -11,7 +11,7 @@ This provides QA engineer a possibility to perform functional testing directly i
 - pre/post scripts
 - etc
 
-### Core Entities
+## Core Entities
 
 | Term                                                                                                                                                 | Decription                                                                                               |
 |------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|

@@ -79,7 +79,7 @@ public class CertificateServiceTest {
         //given
         ResponseEntity certificateInfoEntity = new ResponseEntity(EntitiesGenerator.generateRandomCertificate(), HttpStatus.OK);
         ResourceLoader resourceLoader = new DefaultResourceLoader();
-        Resource resource = resourceLoader.getResource("identity.p12");
+        Resource resource = resourceLoader.getResource("identity.jks");
         ResponseEntity fileInfoEntity = new ResponseEntity(resource, HttpStatus.OK);
 
         //when
@@ -90,7 +90,7 @@ public class CertificateServiceTest {
         //then
         assertTrue(actualVerificationFile.exists());
         assertEquals(folder.getAbsolutePath(), actualVerificationFile.getParentFile().getAbsolutePath());
-        assertEquals("identity.p12", actualVerificationFile.getName());
+        assertEquals("identity.jks", actualVerificationFile.getName());
     }
 
     @Test
@@ -128,11 +128,11 @@ public class CertificateServiceTest {
     public void getCertificateVerificationFileTest_fileNameHasVulnerabilityInName_returnCertificateFileNameException() {
         //given
         CertificateDto certificateDto = EntitiesGenerator.generateRandomCertificate();
-        String fileName = "/../../../../../identity.p12";
+        String fileName = "/../../../../../identity.jks";
         certificateDto.getTrustStoreFileInfo().setName(fileName);
         ResponseEntity certificateInfoEntity = new ResponseEntity(certificateDto, HttpStatus.OK);
         ResourceLoader resourceLoader = new DefaultResourceLoader();
-        Resource resource = resourceLoader.getResource("identity.p12");
+        Resource resource = resourceLoader.getResource("identity.jks");
         ResponseEntity fileInfoEntity = new ResponseEntity(resource, HttpStatus.OK);
         //when
         Mockito.when(catalogueProjectFeignClient.getCertificate(any())).thenReturn(certificateInfoEntity);
@@ -143,6 +143,6 @@ public class CertificateServiceTest {
         //then
         assertTrue(actualVerificationFile.exists());
         assertEquals(folder.getAbsolutePath(), actualVerificationFile.getParentFile().getAbsolutePath());
-        assertEquals("identity.p12", actualVerificationFile.getName());
+        assertEquals("identity.jks", actualVerificationFile.getName());
     }
 }

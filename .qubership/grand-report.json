@@ -1,0 +1,9 @@
+{
+  "exclusions" : [ {
+    "t-hash" : "9057a4aa4fa72e266d9f8fac7dfedbae5efb7fe8492cf01bf16f0e1bb73c598b",
+    "f-hash" : "0597d1b4b594850d2f83c090060868a35d82400ef1352f23686706fb6d69bd89"
+  }, {
+    "t-hash" : "00000000",
+    "f-hash" : "c335c908e5987113fb4f4a8ff0d7e723d86da438575db8e349e66ad140e47618"
+  } ]
+}

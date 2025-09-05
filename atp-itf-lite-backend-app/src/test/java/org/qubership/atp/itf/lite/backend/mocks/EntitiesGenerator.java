@@ -619,7 +619,7 @@ public class EntitiesGenerator {
         cert.setProtocol("protocol");
         cert.setTrustStorePassphrase("phrase");
         FileInfoDto info = new FileInfoDto();
-        info.setName("identity.p12");
+        info.setName("identity.jks");
         info.setId("1");
         cert.setTrustStoreFileInfo(info);
         return cert;

@@ -57,7 +57,7 @@ public class HttpClientServiceTest {
         when(encryptionService.get().decryptIfEncrypted(any())).thenReturn("password");
         when(certificateService.get().getCertificate(any())).thenReturn(cert);
         when(certificateService.get().getCertificateVerificationFile(any()))
-                .thenReturn(new File("./src/test/resources/identity.p12"));
+                .thenReturn(new File("./src/test/resources/identity.jks"));
         CloseableHttpClient result  = httpClientService.get().getHttpClient(projectId);
 
         //then
@@ -77,7 +77,7 @@ public class HttpClientServiceTest {
         when(encryptionService.get().decryptIfEncrypted(any())).thenReturn("password");
         when(certificateService.get().getCertificate(any())).thenReturn(cert);
         when(certificateService.get().getClientCertificateFile(any()))
-                .thenReturn(new File("./src/test/resources/identity.p12"));
+                .thenReturn(new File("./src/test/resources/identity.jks"));
         CloseableHttpClient result  = httpClientService.get().getHttpClient(projectId);
 
         //then
@@ -97,7 +97,7 @@ public class HttpClientServiceTest {
         when(encryptionService.get().decryptIfEncrypted(any())).thenReturn("password");
         when(certificateService.get().getCertificate(any())).thenReturn(cert);
         when(certificateService.get().getClientCertificateFile(any()))
-                .thenReturn(new File("./src/test/resources/identity.p12"));
+                .thenReturn(new File("./src/test/resources/identity.jks"));
 
         RequestRuntimeOptions runtimeOptions = new RequestRuntimeOptions();
         runtimeOptions.setDisableFollowingRedirect(true);
@@ -121,7 +121,7 @@ public class HttpClientServiceTest {
         when(encryptionService.get().decryptIfEncrypted(any())).thenReturn("password");
         when(certificateService.get().getCertificate(any())).thenReturn(cert);
         when(certificateService.get().getClientCertificateFile(any()))
-                .thenReturn(new File("./src/test/resources/identity.p12"));
+                .thenReturn(new File("./src/test/resources/identity.jks"));
 
         RequestRuntimeOptions runtimeOptions = new RequestRuntimeOptions();
         runtimeOptions.setDisableSslCertificateVerification(true);

@@ -16,13 +16,9 @@
 
 package org.qubership.atp.itf.lite.backend.service;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -40,7 +36,6 @@ import org.qubership.atp.itf.lite.backend.model.context.SaveRequestResolvingCont
 import org.qubership.atp.itf.lite.backend.model.entities.auth.RequestAuthorization;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestHeader;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestParam;
-import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
 import org.qubership.atp.itf.lite.backend.utils.AuthorizationUtils;
 import org.qubership.atp.macros.core.processor.Evaluator;
 import org.springframework.http.HttpHeaders;
@@ -58,94 +53,109 @@ public class RequestAuthorizationService {
     private final RequestAuthorizationRegistry registry;
 
     /**
-     * Process authorization for the provided request.
+     * Processes and applies authorization to the current request and its history copy. Applies unsafe token to the
+     * current request, safe token to the history request, and adds authorization parameters if available.
      *
-     * @param httpRequest http request
+     * @param projectId          the project ID
+     * @param httpRequest        the current request
+     * @param httpHistoryRequest the historical copy of the request
+     * @param environmentId      the environment ID
+     * @param evaluator          the evaluator for dynamic values
+     * @param resolvingContext   the context for resolving variables
+     * @return the unsafe authorization token, or null if not available
+     * @throws AtpDecryptException     if decryption fails
+     * @throws JsonProcessingException if JSON processing fails
      */
-    public String processRequestAuthorization(UUID projectId,
-                                              HttpRequestEntitySaveRequest httpRequest,
-                                              HttpRequestEntitySaveRequest httpHistoryRequest,
-                                              UUID environmentId, Evaluator evaluator,
-                                              SaveRequestResolvingContext resolvingContext) throws AtpDecryptException,
-            JsonProcessingException {
+    public String processRequestAuthorization(UUID projectId, HttpRequestEntitySaveRequest httpRequest,
+                                              HttpRequestEntitySaveRequest httpHistoryRequest, UUID environmentId,
+                                              Evaluator evaluator, SaveRequestResolvingContext resolvingContext)
+            throws AtpDecryptException, JsonProcessingException {
         log.debug("Processing authorization for the request: '{}'", httpRequest);
         AuthorizationSaveRequest unsafeAuthorization = httpRequest.getAuthorization();
-        if (nonNull(unsafeAuthorization)) {
-            String url = httpRequest.getUrl();
-            HttpMethod method = httpRequest.getHttpMethod();
-            AuthorizationStrategyRequest authorizationStrategyRequest = AuthorizationUtils.createAuthStrategyRequest(
-                    unsafeAuthorization, evaluator, resolvingContext, projectId, environmentId, url, method);
-            RequestAuthorizationType type = unsafeAuthorization.getType();
-            log.debug("Found request authorization with type: {}", type);
-            RequestAuthorizationStrategy authorizationStrategy = registry.getRequestAuthorizationStrategy(type);
-            AuthorizationStrategyResponse strategyResponse = authorizationStrategy
-                    .getAuthorizationToken(authorizationStrategyRequest);
-            if (nonNull(strategyResponse)) {
-
-                final String unsafeAuthorizationToken = strategyResponse.getUnsafeAuthorizationToken();
-                if (nonNull(unsafeAuthorizationToken)) {
-                    requestHeadersProcessing(httpRequest, unsafeAuthorizationToken);
-                }
-
-                final String safeAuthorizationToken = strategyResponse.getSafeAuthorizationToken();
-                if (nonNull(safeAuthorizationToken)) {
-                    requestHeadersProcessing(httpHistoryRequest, safeAuthorizationToken);
-                }
-
-                final Map<String, String> authorizationParams = strategyResponse.getAuthorizationParams();
-                if (nonNull(authorizationParams)) {
-                    requestParamsProcessing(httpRequest, authorizationParams);
-                }
-
-                return unsafeAuthorizationToken;
-            }
-        } else {
+        if (unsafeAuthorization == null) {
             log.debug("Request hasn't configured authorization");
+            return null;
         }
-        return null;
-    }
-
-    private void requestParamsProcessing(HttpRequestEntitySaveRequest request, Map<String, String> authParams) {
-        List<HttpParamSaveRequest> requestParams = request.getRequestParams();
-        authParams.forEach((key, value) -> {
-            requestParams.add(new HttpParamSaveRequest(key, value, "", false));
-        });
-    }
-
-    private void requestHeadersProcessing(HttpRequestEntitySaveRequest request, String authorizationHeaderValue) {
-        if (nonNull(request)) {
-            List<HttpHeaderSaveRequest> requestHeaders = request.getRequestHeaders();
-            Map<String, List<HttpHeaderSaveRequest>> headersMap = requestHeaders.stream()
-                    .collect(Collectors.groupingBy(HttpHeaderSaveRequest::getKey, Collectors.toList()));
-            requestHeadersProcessing(headersMap, authorizationHeaderValue, requestHeaders);
+        AuthorizationStrategyRequest strategyRequest = AuthorizationUtils.createAuthStrategyRequest(
+                unsafeAuthorization, evaluator, resolvingContext, projectId, environmentId, httpRequest.getUrl(),
+                httpRequest.getHttpMethod());
+        RequestAuthorizationStrategy strategy = registry.getRequestAuthorizationStrategy(unsafeAuthorization.getType());
+        log.debug("Found request authorization with type: {}", strategy.getAuthorizationType());
+        AuthorizationStrategyResponse strategyResponse = strategy.getAuthorizationToken(strategyRequest);
+        if (strategyResponse == null) {
+            return null;
         }
-    }
-
-    private void requestHeadersProcessing(Map<String, List<HttpHeaderSaveRequest>> headersMap,
-                                          String authorizationHeaderValue, List<HttpHeaderSaveRequest> requestHeaders) {
-        if (!headersMap.containsKey(HttpHeaders.AUTHORIZATION)) {
-            requestHeaders.add(new HttpHeaderSaveRequest(
-                    HttpHeaders.AUTHORIZATION, authorizationHeaderValue, "", false, true));
+        String requestAuthorizationToken = strategyResponse.getUnsafeAuthorizationToken();
+        if (requestAuthorizationToken != null && !requestAuthorizationToken.isEmpty()) {
+            updateAuthorizationHeader(httpRequest, requestAuthorizationToken);
+            log.debug("Applied unsafe authorization token to request headers");
         }
+        String safeAuthorizationToken = strategyResponse.getSafeAuthorizationToken();
+        if (safeAuthorizationToken != null && !safeAuthorizationToken.isEmpty()) {
+            updateAuthorizationHeader(httpHistoryRequest, safeAuthorizationToken);
+            log.debug("Applied safe authorization token to history headers");
+        }
+        Map<String, String> authorizationParams = strategyResponse.getAuthorizationParams();
+
+        if (authorizationParams != null && !authorizationParams.isEmpty()) {
+            addAuthorizationParamsToRequest(httpRequest, authorizationParams);
+            log.debug("Added {} authorization params to request", authorizationParams.size());
+        }
+
+        return requestAuthorizationToken;
     }
 
     /**
-     * Encrypt authorization parameters.
+     * Adds the given authorization parameters to the request. Existing parameters are not removed or overwritten.
      *
-     * @param authorization request authorization
+     * @param request    the HTTP request to update
+     * @param authParams the authorization parameters to add
+     */
+    private void addAuthorizationParamsToRequest(HttpRequestEntitySaveRequest request, Map<String, String> authParams) {
+        if (request == null || authParams == null || authParams.isEmpty()) {
+            return;
+        }
+        List<HttpParamSaveRequest> requestParams = request.getRequestParams();
+        authParams.forEach((key, value) ->
+                requestParams.add(new HttpParamSaveRequest(key, value, "", false)));
+    }
+
+    /**
+     * Updates the request with the given authorization header. Removes any existing Authorization header before
+     * adding the new one.
+     *
+     * @param request                  the HTTP request to update
+     * @param authorizationHeaderValue the new Authorization header value
+     */
+    private void updateAuthorizationHeader(HttpRequestEntitySaveRequest request, String authorizationHeaderValue) {
+        if (request == null || authorizationHeaderValue == null || authorizationHeaderValue.isEmpty()) {
+            return;
+        }
+        List<HttpHeaderSaveRequest> requestHeaders = request.getRequestHeaders();
+        requestHeaders.removeIf(header -> HttpHeaders.AUTHORIZATION.equalsIgnoreCase(header.getKey()));
+        requestHeaders.add(new HttpHeaderSaveRequest(HttpHeaders.AUTHORIZATION, authorizationHeaderValue.trim(),
+                "", false, true));
+    }
+
+    /**
+     * Encrypts authorization parameters using the appropriate strategy.
+     *
+     * @param authorization the request authorization
      */
     public void encryptAuthorizationParameters(AuthorizationSaveRequest authorization) {
         RequestAuthorizationType type = authorization.getType();
         log.debug("Found request authorization with type: {}", type);
         RequestAuthorizationStrategy authorizationStrategy = registry.getRequestAuthorizationStrategy(type);
-        log.debug("Trying to encrypt authorization parameters");
+        log.debug("Encrypting authorization parameters");
         authorizationStrategy.encryptParameters(authorization);
     }
 
     /**
-     * Parse authorization parameters from postman collection's request.
-     * @param auth json object with attribute "type" != null/empty
-     * @return request authorization
+     * Parses authorization parameters from a Postman-style map.
+     *
+     * @param auth the map containing authorization data
+     * @param type the authorization type
+     * @return the parsed request authorization
      */
     public RequestAuthorization parseAuthorizationFromMap(Map<String, String> auth, RequestAuthorizationType type) {
         RequestAuthorizationStrategy authorizationStrategy = registry.getRequestAuthorizationStrategy(type);
@@ -153,34 +163,41 @@ public class RequestAuthorizationService {
     }
 
     /**
-     * Generates a header to be displayed on the UI.
-     * @param authorization request authorization
-     * @return {@link RequestHeader} generated request header
+     * Generates an authorization header for display.
+     *
+     * @param authorization the request authorization
+     * @return the generated request header, or null if type is missing
      */
     @Nullable
     public RequestHeader generateAuthorizationHeader(RequestAuthorization authorization) {
-        RequestAuthorizationType type = authorization.getType();
-        if (isNull(type)) {
-            log.warn("RequestAuthorizationType not sets. Generating authorization header skipped");
-            return null;
-        }
-        RequestAuthorizationStrategy authorizationStrategy = registry.getRequestAuthorizationStrategy(type);
-        return authorizationStrategy.generateAuthorizationHeader(authorization);
+        RequestAuthorizationStrategy strategy = resolveStrategy(authorization, "authorization header");
+        return strategy != null ? strategy.generateAuthorizationHeader(authorization) : null;
     }
 
     /**
-     * Generates a params to be displayed on the UI.
-     * @param authorization request authorization
-     * @return {@link RequestHeader} generated request params
+     * Generates authorization parameters for display.
+     *
+     * @param authorization the request authorization
+     * @return the generated request parameters, or null if type is missing
      */
     @Nullable
     public List<RequestParam> generateAuthorizationParams(RequestAuthorization authorization) {
-        RequestAuthorizationType type = authorization.getType();
-        if (isNull(type)) {
-            log.warn("RequestAuthorizationType not sets. Generating authorization params skipped");
+        RequestAuthorizationStrategy strategy = resolveStrategy(authorization, "authorization params");
+        return strategy != null ? strategy.generateAuthorizationParams(authorization) : null;
+    }
+
+    /**
+     * Resolves the strategy for the given authorization. Logs a warning and returns null if the type is missing.
+     *
+     * @param authorization the request authorization
+     * @param context the context used for logging
+     * @return the resolved strategy, or null if type is missing
+     */
+    private RequestAuthorizationStrategy resolveStrategy(RequestAuthorization authorization, String context) {
+        if (authorization == null || authorization.getType() == null) {
+            log.warn("Authorization or type is null. Skipping {} generation", context);
             return null;
         }
-        RequestAuthorizationStrategy authorizationStrategy = registry.getRequestAuthorizationStrategy(type);
-        return authorizationStrategy.generateAuthorizationParams(authorization);
+        return registry.getRequestAuthorizationStrategy(authorization.getType());
     }
 }
