@@ -23,9 +23,14 @@ EI_GRIDFS_PASSWORD="$(env_default "${EI_GRIDFS_PASSWORD}" "atp-ei-gridfs" "${_ns
 
 init_pg "${PG_DB_ADDR}" "${ATP_ITF_LITE_DB}" "${ATP_ITF_LITE_DB_USER}" "${ATP_ITF_LITE_DB_PASSWORD}" "${PG_DB_PORT}" "${pg_user}" "${pg_pass}"
 
-init_mongo "${GRIDFS_DB_ADDR}" "${ATP_ITF_LITE_GRIDFS_DB}" "${ATP_ITF_LITE_GRIDFS_DB_USER}" "${ATP_ITF_LITE_GRIDFS_DB_PASSWORD}" "${GRIDFS_DB_PORT}" "${gridfs_user}" "${gridfs_pass}"
-
-init_mongo "${EI_GRIDFS_DB_ADDR:-$GRIDFS_DB_ADDR}" "${EI_GRIDFS_DB}" "${EI_GRIDFS_USER}" "${EI_GRIDFS_PASSWORD}" "${EI_GRIDFS_DB_PORT:-$GRIDFS_DB_PORT}" "${ei_gridfs_user:-$gridfs_user}" "${ei_gridfs_pass:-$gridfs_pass}"
+if [ "${ITF_LITE_GRIDFS_ENABLED:-true}" = "true" ]; then
+  echo "***** Preparing MongoDB connection *****"
+  init_mongo "${GRIDFS_DB_ADDR}" "${ATP_ITF_LITE_GRIDFS_DB}" "${ATP_ITF_LITE_GRIDFS_DB_USER}" "${ATP_ITF_LITE_GRIDFS_DB_PASSWORD}" "${GRIDFS_DB_PORT}" "${gridfs_user}" "${gridfs_pass}"
+fi
+if [ "${EI_GRIDFS_ENABLED:-true}" = "true" ]; then
+  echo "***** Preparing Gridfs connection *****"
+  init_mongo "${EI_GRIDFS_DB_ADDR:-$GRIDFS_DB_ADDR}" "${EI_GRIDFS_DB}" "${EI_GRIDFS_USER}" "${EI_GRIDFS_PASSWORD}" "${EI_GRIDFS_DB_PORT:-$GRIDFS_DB_PORT}" "${ei_gridfs_user:-$gridfs_user}" "${ei_gridfs_pass:-$gridfs_pass}"
+fi
 
 echo "***** Setting up encryption *****"
 encrypt "${ENCRYPT}" "${SERVICE_NAME}"
