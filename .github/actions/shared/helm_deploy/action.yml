@@ -159,10 +159,10 @@ runs:
         
         if [ -n "${{ inputs.docker_tag }}" ]; then
           echo "Using docker_tag: ${{ inputs.docker_tag }}"
-          helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f $template_name -n ${{inputs.namespace}} --set-string DOCKER_TAG=${{ inputs.docker_tag }} --debug --wait --timeout 10m
+          helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f $template_name -n ${{inputs.namespace}} --set-string DOCKER_TAG=${{ inputs.docker_tag }} --debug --wait --timeout 7m
         else
          echo "No docker_tag provided. Using value from values-dev.yaml"
-         helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f $template_name -n ${{inputs.namespace}} --debug --wait --timeout 10m
+         helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f $template_name -n ${{inputs.namespace}} --debug --wait --timeout 7m
         fi 
 
     - name: Debug
@@ -172,25 +172,26 @@ runs:
         echo "Get pods $pod"
         kubectl get pods -n ${{inputs.namespace}}
         
-        echo "Get logs for predeploy-install"
-        kubectl logs $(kubectl get pods -n ${{inputs.namespace}} \
-          --selector=job-name=${{inputs.service_name}}-predeploy-install \
-          -o jsonpath='{.items[0].metadata.name}') -n ${{inputs.namespace}}
-        echo "End logs"
-        
         echo "Describe pod"
         kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}
         echo "End describe"
         
-        echo "Get pods"
-        kubectl get pods -n ${{ inputs.namespace }}
+        for pod in $(kubectl get pods -n ${{inputs.namespace}} --no-headers -o custom-columns=":metadata.name"); do 
+          echo "📦 Logs from pod: $pod"
         
-        pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
+          if ! kubectl logs "$pod" -n ${{inputs.namespace}}; then
+            echo "⚠️ Could not fetch current logs for $pod"
+          fi
         
-        for c in $(kubectl get pod "$pod" -n ${{inputs.namespace}} -o jsonpath="{.spec.containers[*].name}"); do
-          echo "=== Check liveness ==="
-          kubectl exec -n ${{inputs.namespace}} "$pod" -- curl -i http://localhost:8080/rest/deployment/liveness
-          kubectl exec -n ${{inputs.namespace}} "$pod" -- curl -i http://localhost:8080/rest/deployment/readiness
+          restart_count=$(kubectl get pod "$pod" -n ${{inputs.namespace}} -o jsonpath="{.status.containerStatuses[0].restartCount}")
+        
+          if [[ "$restart_count" -gt 0 ]]; then
+            echo "🔁 Previous logs (before restart) for pod: $pod"
+            if ! kubectl logs "$pod" -n ${{inputs.namespace}} --previous; then
+              echo "⚠️ Could not fetch previous logs for $pod"
+            fi
+          fi
+        
         done
         
         echo " Get pods $pod"
