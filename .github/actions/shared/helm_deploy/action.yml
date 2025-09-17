@@ -143,7 +143,7 @@ runs:
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
           --for=condition=Ready \
-          --timeout=120s || {
+          --timeout=210s || {
           echo "❌ Pod $pod did not become ready in time"
           ERROR_FLAG=true
           exit 1
