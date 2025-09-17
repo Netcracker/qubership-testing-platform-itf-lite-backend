@@ -17,6 +17,5 @@ pg_user: "postgres"
 HAZELCAST_ENABLE: false
 EI_CLEAN_JOB_ENABLED: "false"
 JAVERS_ENABLED: "false"
-KAFKA_SERVERS: ""
 ITF_LITE_GRIDFS_ENABLED: "false"
 EI_GRIDFS_ENABLED: "false"
