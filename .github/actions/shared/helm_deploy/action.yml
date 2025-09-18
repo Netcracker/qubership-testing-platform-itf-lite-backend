@@ -135,7 +135,9 @@ runs:
         helm repo add bitnami https://charts.bitnami.com/bitnami
         
         helm install my-postgres bitnami/postgresql -n ${{inputs.namespace}} \
-          --set image.tag=14-debian-11 \
+          --set image.registry=docker.io \
+          --set image.repository=bitnamilegacy/postgresql \
+          --set image.tag=14.2.0
           --set auth.username=postgres \
           --set auth.password=postgrestest \
           --set auth.database=postgres
