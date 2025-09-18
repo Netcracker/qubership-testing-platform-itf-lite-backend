@@ -150,6 +150,24 @@ runs:
           ERROR_FLAG=true
           exit 1
         }
+        
+    - name: Install MongoDB
+      shell: bash
+      run: |
+        helm install my-mongo bitnami/mongodb \
+          --set image.tag=4.2 \
+          --set auth.enabled=false \
+          --set architecture=standalone \
+          --set service.type=ClusterIP
+        
+        pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
+        kubectl wait pod "$pod" -n ${{inputs.namespace}} \
+          --for=condition=Ready \
+          --timeout=600s || {
+          echo "❌ Pod $pod did not become ready in time"
+          ERROR_FLAG=true
+          exit 1
+        }
 
     - name: Install/update service with helm
       shell: bash
