@@ -155,6 +155,7 @@ runs:
       shell: bash
       run: |
         helm install my-mongo bitnami/mongodb -n ${{inputs.namespace}} \
+          --version 10.26.4 \
           --set image.registry=docker.io \
           --set image.repository=bitnamilegacy/mongodb \
           --set image.tag=4.2.14 \
