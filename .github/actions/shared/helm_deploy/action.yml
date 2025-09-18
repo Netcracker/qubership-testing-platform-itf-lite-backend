@@ -154,11 +154,14 @@ runs:
     - name: Install MongoDB
       shell: bash
       run: |
-        helm install my-mongo bitnami/mongodb -n ${{inputs.namespace}} \
-          --version 10.26.4 \
+        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm repo update
+        helm install my-mongo bitnami/mongodb \
+          --namespace ${{inputs.namespace}} \
+          --create-namespace \
           --set image.registry=docker.io \
-          --set image.repository=bitnamilegacy/mongodb \
-          --set image.tag=4.2.14 \
+          --set image.repository=bitnami/mongodb \
+          --set image.tag=4.4.18-debian-11-r0 \
           --set architecture=standalone \
           --set auth.enabled=false
         
