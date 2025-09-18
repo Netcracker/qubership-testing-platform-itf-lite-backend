@@ -150,10 +150,12 @@ runs:
           ERROR_FLAG=true
           exit 1
         }
-        
+
     - name: Install MongoDB
       shell: bash
       run: |
+        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm repo update
         helm install my-mongo bitnami/mongodb \
           --set image.tag=4.2 \
           --set auth.enabled=false \
