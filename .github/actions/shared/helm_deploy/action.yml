@@ -154,13 +154,12 @@ runs:
     - name: Install MongoDB
       shell: bash
       run: |
-        helm install my-mongo bitnami/mongodb -n ${{inputs.namespace}} \
+        helm install my-mongo bitnami/mongodb \
           --set image.registry=docker.io \
           --set image.repository=bitnamilegacy/mongodb \
-          --set image.tag=4.4.2 \
-          --set auth.enabled=false \
+          --set image.tag=4.2 \
           --set architecture=standalone \
-          --set service.type=ClusterIP
+          --set auth.enabled=false
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
