@@ -154,7 +154,7 @@ runs:
     - name: Install MongoDB
       shell: bash
       run: |
-        helm install my-mongo bitnami/mongodb \
+        helm install my-mongo bitnami/mongodb -n ${{inputs.namespace}} \
           --set image.registry=docker.io \
           --set image.repository=bitnamilegacy/mongodb \
           --set image.tag=4.2 \
