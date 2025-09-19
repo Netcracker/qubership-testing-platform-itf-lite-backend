@@ -154,13 +154,19 @@ runs:
     - name: Install MongoDB
       shell: bash
       run: |
-        helm repo add mongodb https://mongodb.github.io/helm-charts
+        helm repo add percona https://percona.github.io/percona-helm-charts/
         helm repo update
-        helm install my-mongo mongodb/community-database \
+        
+        helm install my-mongo percona/psmdb-db \
           --namespace ${{inputs.namespace}} \
           --create-namespace \
-          --set persistence.enabled=false \
-          --set auth.enabled=false
+          --set psmdbReplSet.enabled=false \
+          --set psmdbReplicas=1 \
+          --set image.tag=5.0.13-12 \
+          --set psmdbEnableBackup=false \
+          --set volumePermissions.enabled=false \
+          --set psmdbMongodSecurity.enabled=false \
+          --set persistence.enabled=false
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
