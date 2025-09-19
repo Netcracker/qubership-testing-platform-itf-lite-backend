@@ -157,6 +157,9 @@ runs:
         helm install my-mongo bitnami/mongodb \
           --namespace ${{inputs.namespace}} \
           --create-namespace \
+          --set image.registry=docker.io \
+          --set image.repository=bitnami/mongodb \
+          --set image.tag=7.0.9-debian-11-r0 \
           --set architecture=standalone \
           --set auth.enabled=false \
           --set persistence.enabled=false
