@@ -154,16 +154,12 @@ runs:
     - name: Install MongoDB
       shell: bash
       run: |
-        helm repo add bitnami https://charts.bitnami.com/bitnami
-        helm repo update
         helm install my-mongo bitnami/mongodb \
           --namespace ${{inputs.namespace}} \
           --create-namespace \
-          --set image.registry=docker.io \
-          --set image.repository=bitnami/mongodb \
-          --set image.tag=4.4.15-debian-10-r8 \
           --set architecture=standalone \
-          --set auth.enabled=false
+          --set auth.enabled=false \
+          --set persistence.enabled=false
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
