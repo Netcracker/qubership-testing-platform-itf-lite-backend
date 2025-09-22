@@ -218,7 +218,8 @@ runs:
         kubectl get secrets -n mongo
         kubectl get pods -n mongo
         echo "Get secret"
-        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_ROOT_PASSWORD}" | base64 -d
+        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_USER_ADMIN_PASSWORD}" | base64 -d
+        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_USER_ADMIN_USER}" | base64 -d
         kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o yaml
         echo "End describe mongo pod"
         
