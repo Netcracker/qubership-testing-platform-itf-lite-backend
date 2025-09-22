@@ -212,6 +212,8 @@ runs:
         
         echo "Describe pod"
         kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}
+        echo "Get secret service"
+        kubectl get secrets -n ${{inputs.namespace}}
         echo "End describe"
         
         echo "Describe mongo pod"
@@ -224,6 +226,9 @@ runs:
         kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_USER_ADMIN_PASSWORD}" | base64 -d
         kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_USER_ADMIN_USER}" | base64 -d
         kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o yaml
+        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o json | \
+          jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
+    
         echo "End describe mongo pod"
         
         for pod in $(kubectl get pods -n ${{inputs.namespace}} --no-headers -o custom-columns=":metadata.name"); do 
