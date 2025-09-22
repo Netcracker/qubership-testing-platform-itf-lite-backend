@@ -154,21 +154,19 @@ runs:
     - name: Install MongoDB
       shell: bash
       run: |
-        helm repo add percona https://percona.github.io/percona-helm-charts/
+        helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
-        helm install percona-operator percona/psmdb-operator --namespace ${{inputs.namespace}} --create-namespace
         
-        helm install my-mongo percona/psmdb-db \
+        helm install my-mongo bitnami/mongodb \
           --namespace ${{inputs.namespace}} \
           --create-namespace \
-          --set psmdbReplSet.enabled=false \
-          --set psmdbReplicas=1 \
-          --set image.tag=5.0.13-12 \
-          --set psmdbEnableBackup=false \
-          --set volumePermissions.enabled=false \
-          --set psmdbMongodSecurity.enabled=false \
-          --set persistence.enabled=false \
-          --set image.tag=5.0.13-12
+          --set image.registry=ghcr.io \
+          --set image.repository=bitnami/mongodb \
+          --set image.tag=7.0.5-debian-11-r15 \
+          --set auth.rootPassword=secretpassword \
+          --set auth.username=my-user \
+          --set auth.password=my-password \
+          --set auth.database=my-database
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
