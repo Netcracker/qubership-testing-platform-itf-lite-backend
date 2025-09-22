@@ -231,6 +231,9 @@ runs:
         kubectl get ns
         helm list --all-namespaces | grep mongo
         kubectl get svc -n mongo
+        echo "Check endpoints"
+        kubectl get endpoints -n mongo my-mongo-psmdb-db-mongos
+        kubectl get pods -n mongo -l app.kubernetes.io/component=mongos
         kubectl get secrets -n mongo
         kubectl get pods -n mongo
         echo "Get secret"
