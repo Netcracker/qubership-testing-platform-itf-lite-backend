@@ -166,14 +166,19 @@ runs:
           exit 1
         }
         
+        
         helm install my-mongo percona/psmdb-db \
           --namespace mongo \
+          --set psmdb.security.enabled=true \
           --set psmdb.db.enabled=true \
           --set psmdb.db.name=my-database \
-          --set psmdb.security.enabled=true \
-          --set secrets.users.clusterAdmin.user=atp-itf-lite-gridfs \
-          --set secrets.users.clusterAdmin.password=atp-itf-lite-gridfs
-
+          --set customResource.secrets.users[0].name=customadmin \
+          --set customResource.secrets.users[0].user=custom \
+          --set customResource.secrets.users[0].password=custompass \
+          --set customResource.secrets.users[0].roles[0].db=admin \
+          --set customResource.secrets.users[0].roles[0].role=clusterAdmin
+  
+  
         sleep 5
         
         pod=$(kubectl get pods -n mongo -o name | grep -vE 'percona' | head -n 1 | cut -d/ -f2)
@@ -210,6 +215,8 @@ runs:
       run: |
         echo "Get pods $pod"
         kubectl get pods -n ${{inputs.namespace}}
+        
+        sleep 120
         
         echo "Describe pod"
         kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}
