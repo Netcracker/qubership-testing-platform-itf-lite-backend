@@ -158,6 +158,14 @@ runs:
         helm repo update
         
         helm install percona-operator percona/psmdb-operator --namespace mongo --create-namespace
+        pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
+        kubectl wait pod "$pod" -n ${{inputs.namespace}} \
+          --for=condition=Ready \
+          --timeout=120s || {
+          echo "❌ Pod $pod did not become ready in time"
+          ERROR_FLAG=true
+          exit 1
+        }
         
         helm install my-mongo percona/psmdb-db \
           --namespace mongo \
