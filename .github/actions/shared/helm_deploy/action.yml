@@ -171,9 +171,8 @@ runs:
           --set psmdb.db.enabled=true \
           --set psmdb.db.name=my-database \
           --set psmdb.security.enabled=true \
-          --set psmdb.secrets.users.clusterAdmin.user=atp-itf-lite-gridfs \
-          --set psmdb.secrets.users.clusterAdmin.password=atp-itf-lite-gridfs
-  
+          --set secrets.users.clusterAdmin.user=atp-itf-lite-gridfs \
+          --set secrets.users.clusterAdmin.password=atp-itf-lite-gridfs
 
         sleep 5
         
@@ -214,6 +213,9 @@ runs:
         kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}
         echo "Get secret service"
         kubectl get secrets -n ${{inputs.namespace}}
+        kubectl get secret -n mongo atp-itf-lite-backend-secrets  -o yaml
+        kubectl get secret -n mongo atp-itf-lite-backend-secrets  -o json | \
+          jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'        
         echo "End describe"
         
         echo "Describe mongo pod"
