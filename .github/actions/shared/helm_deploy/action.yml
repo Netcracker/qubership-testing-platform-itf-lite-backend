@@ -170,7 +170,7 @@ runs:
           --namespace mongo \
           --set psmdb.db.enabled=true \
           --set psmdb.db.name=my-database \
-          --set psmdb.security.enabled=true
+          --set psmdb.security.enabled=false
         
         sleep 5
         
