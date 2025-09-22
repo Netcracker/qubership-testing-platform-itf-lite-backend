@@ -162,7 +162,8 @@ runs:
         helm install my-mongo percona/psmdb-db \
           --namespace mongo \
           --set psmdb.db.enabled=true \
-          --set psmdb.db.name=my-database
+          --set psmdb.db.name=my-database \
+          --set psmdb.security.enabled=false
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
@@ -201,6 +202,8 @@ runs:
         echo "End describe"
         
         echo "Describe mongo pod"
+        kubectl get ns
+        helm list --all-namespaces | grep mongo
         kubectl get svc -n mongo
         kubectl get secrets -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_ROOT_PASSWORD}" | base64 -d
         kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o yaml
