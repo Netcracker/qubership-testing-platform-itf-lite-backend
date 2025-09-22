@@ -201,6 +201,8 @@ runs:
          echo "No docker_tag provided. Using value from values-dev.yaml"
          helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f $template_name -n ${{inputs.namespace}} --debug --wait --timeout 7m
         fi 
+        
+        sleep 120
 
     - name: Debug
       shell: bash
