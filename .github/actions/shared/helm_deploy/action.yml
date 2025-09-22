@@ -172,6 +172,8 @@ runs:
           --set psmdb.db.name=my-database \
           --set psmdb.security.enabled=true
         
+        sleep 5
+        
         pod=$(kubectl get pods -n mongo -o name | grep -vE 'percona' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n mongo \
           --for=condition=Ready \
@@ -179,6 +181,8 @@ runs:
           echo "❌ Pod $pod did not become ready in time"
           exit 1
         }
+        
+        sleep 60
 
     - name: Install/update service with helm
       shell: bash
