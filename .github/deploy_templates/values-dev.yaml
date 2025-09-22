@@ -19,4 +19,5 @@ EI_CLEAN_JOB_ENABLED: "false"
 JAVERS_ENABLED: "false"
 EI_GRIDFS_ENABLED: "false"
 SERVICE_ENTITIES_MIGRATION_ENABLED: "false"
-GRIDFS_DB_ADDR: "my-mongo"
+GRIDFS_DB_ADDR: "my-mongo.mongo.svc.cluster.local"
+
