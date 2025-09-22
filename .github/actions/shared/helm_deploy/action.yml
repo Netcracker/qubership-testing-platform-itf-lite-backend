@@ -163,7 +163,6 @@ runs:
           --for=condition=Ready \
           --timeout=120s || {
           echo "❌ Pod $pod did not become ready in time"
-          ERROR_FLAG=true
           exit 1
         }
         
@@ -171,14 +170,13 @@ runs:
           --namespace mongo \
           --set psmdb.db.enabled=true \
           --set psmdb.db.name=my-database \
-          --set psmdb.security.enabled=false
+          --set psmdb.security.enabled=true
         
-        pod=$(kubectl get pods -n mongo -o name | grep -vE 'postgres|percona' | head -n 1 | cut -d/ -f2)
+        pod=$(kubectl get pods -n mongo -o name | grep -vE 'percona' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n mongo \
           --for=condition=Ready \
           --timeout=600s || {
           echo "❌ Pod $pod did not become ready in time"
-          ERROR_FLAG=true
           exit 1
         }
 
@@ -215,6 +213,7 @@ runs:
         kubectl get svc -n mongo
         kubectl get secrets -n mongo
         kubectl get pods -n mongo
+        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_ROOT_PASSWORD}" | base64 -d
         echo "End describe mongo pod"
         
         for pod in $(kubectl get pods -n ${{inputs.namespace}} --no-headers -o custom-columns=":metadata.name"); do 
