@@ -206,6 +206,11 @@ runs:
         kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}
         echo "End describe"
         
+        echo "Describe mongo pod"
+        pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
+        kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|backend|percona' | head -n 1 | cut -d/ -f2) -n ${{inputs.namespace}}
+        echo "End describe mongo pod"
+        
         for pod in $(kubectl get pods -n ${{inputs.namespace}} --no-headers -o custom-columns=":metadata.name"); do 
           echo "📦 Logs from pod: $pod"
         
