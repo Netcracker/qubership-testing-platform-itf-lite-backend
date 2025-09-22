@@ -154,19 +154,15 @@ runs:
     - name: Install MongoDB
       shell: bash
       run: |
-        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm repo add percona https://percona.github.io/percona-helm-charts/
         helm repo update
         
-        helm install my-mongo bitnami/mongodb \
-          --namespace ${{inputs.namespace}} \
-          --create-namespace \
-          --set image.registry=ghcr.io \
-          --set image.repository=bitnami/mongodb \
-          --set image.tag=7.0.5-debian-11-r15 \
-          --set auth.rootPassword=secretpassword \
-          --set auth.username=my-user \
-          --set auth.password=my-password \
-          --set auth.database=my-database
+        helm install percona-operator percona/psmdb-operator --namespace mongo --create-namespace
+        
+        helm install my-mongo percona/psmdb-db \
+          --namespace mongo \
+          --set psmdb.db.enabled=true \
+          --set psmdb.db.name=my-database
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
@@ -205,8 +201,7 @@ runs:
         echo "End describe"
         
         echo "Describe mongo pod"
-        pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
-        kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|backend|percona' | head -n 1 | cut -d/ -f2) -n ${{inputs.namespace}}
+        kubectl describe pod -n mongo -l app.kubernetes.io/instance=my-mongo
         echo "End describe mongo pod"
         
         for pod in $(kubectl get pods -n ${{inputs.namespace}} --no-headers -o custom-columns=":metadata.name"); do 
