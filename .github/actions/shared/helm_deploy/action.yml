@@ -205,9 +205,7 @@ runs:
         kubectl get ns
         helm list --all-namespaces | grep mongo
         kubectl get svc -n mongo
-        kubectl get secrets -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_ROOT_PASSWORD}" | base64 -d
-        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o yaml
-        kubectl logs my-mongo-psmdb-db-mongos-0 -n mongo
+        kubectl get secrets -n mongo
         kubectl get pods -n mongo
         echo "End describe mongo pod"
         
