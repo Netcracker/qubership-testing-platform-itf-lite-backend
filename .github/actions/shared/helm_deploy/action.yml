@@ -213,8 +213,8 @@ runs:
         kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}
         echo "Get secret service"
         kubectl get secrets -n ${{inputs.namespace}}
-        kubectl get secret -n mongo atp-itf-lite-backend-secrets  -o yaml
-        kubectl get secret -n mongo atp-itf-lite-backend-secrets  -o json | \
+        kubectl get secret -n ${{inputs.namespace}} atp-itf-lite-backend-secrets  -o yaml
+        kubectl get secret -n ${{inputs.namespace}} atp-itf-lite-backend-secrets  -o json | \
           jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'        
         echo "End describe"
         
