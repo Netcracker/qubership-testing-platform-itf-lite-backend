@@ -187,7 +187,19 @@ runs:
         }
         
         sleep 60
+
+    - name: Check if values_dev.yaml exists and is not empty
+      shell: bash
+      run: |
+        if [ -s $template_name ]; then
+          echo "values_dev.yaml exists and is not empty"
+        else
+          echo "values_dev.yaml is missing or empty"
+        fi
         
+        template_name=$(basename "${{inputs.path_to_template}}")
+        echo $template_name
+    
         gridfs_pass=$(kubectl -n mongo get secrets my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_USER_ADMIN_PASSWORD}" | base64 --decode)
         echo "creds"
         echo "gridfs_pass=$gridfs_pass" >> $GITHUB_ENV
@@ -198,13 +210,13 @@ runs:
       env:
         gridfs_pass: ${{ env.gridfs_pass }}
       run: |
-        echo "gridfs_pass: \"${gridfs_pass}\"" >> values_dev.yaml
+        echo "gridfs_pass: \"${gridfs_pass}\"" >> $template_name
 
     - name: Show generated values.yaml
       shell: bash
       run: |
         echo "values_dev.yaml content"
-        cat values_dev.yaml
+        cat $template_name
 
 
     - name: Install/update service with helm
