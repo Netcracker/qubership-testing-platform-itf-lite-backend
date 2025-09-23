@@ -187,6 +187,11 @@ runs:
         }
         
         sleep 60
+        
+        gridfs_pass=$(kubectl -n mongo get secrets my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_USER_ADMIN_PASSWORD}" | base64 --decode)
+        echo "creds"
+        echo "gridfs_pass=$gridfs_pass" >> $GITHUB_ENV
+        echo "MongoDB Admin Password is: $gridfs_pass"
 
     - name: Install/update service with helm
       shell: bash

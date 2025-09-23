@@ -20,4 +20,5 @@ JAVERS_ENABLED: "false"
 EI_GRIDFS_ENABLED: "false"
 SERVICE_ENTITIES_MIGRATION_ENABLED: "false"
 GRIDFS_DB_ADDR: "my-mongo-psmdb-db-mongos.mongo.svc.cluster.local"
+gridfs_user: "userAdmin"
 
