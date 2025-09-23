@@ -405,6 +405,8 @@ create_mongo_db() {
   _port="${6:?Empty port}"
   _as="${7:?Empty admin user}"
   _pw="${8:?Empty admin password}"
+  echo "=> Creating database '${_as}' ..."
+  echo "=> Creating database '${_pw}' ..."
   echo "=> Creating database '${_db}' ..."
   ${_cmd} sh -c "PATH=${MONGO_BINARY_PATH}:\$PATH mongo mongodb://${_as}:${_pw}@${_host}:${_port}/?authSource=admin --eval \"d = db.getSiblingDB('${_db}'); if(d.getUser('${_user}') == null) d.createUser({user: '${_user}', pwd: '${_pass}', roles: [{ role: 'readWrite', db: '${_db}'}]}); else print('User ${_user} exists');\""
 }
