@@ -193,6 +193,21 @@ runs:
         echo "gridfs_pass=$gridfs_pass" >> $GITHUB_ENV
         echo "MongoDB Admin Password is: $gridfs_pass"
 
+    - name: Generate values.yaml
+      shell: bash
+      env:
+        gridfs_pass: ${{ env.gridfs_pass }}
+      run: |
+        cat <<EOF > values_dev.yaml
+        ...
+
+    - name: Show generated values.yaml
+      shell: bash
+      run: |
+        echo "---- values_dev.yaml content ----"
+        cat values_dev.yaml
+
+
     - name: Install/update service with helm
       shell: bash
       run: |
