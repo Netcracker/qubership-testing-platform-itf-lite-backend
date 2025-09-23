@@ -216,7 +216,7 @@ runs:
       shell: bash
       run: |
         echo "values_dev.yaml content"
-        cat $template_name
+        cat ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml
 
 
     - name: Install/update service with helm
