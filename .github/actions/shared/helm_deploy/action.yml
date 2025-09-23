@@ -199,7 +199,10 @@ runs:
         gridfs_pass: ${{ env.gridfs_pass }}
       run: |
         cat <<EOF > values_dev.yaml
-        ...
+gridfs_pass: "${gridfs_pass}"
+EOF
+
+
 
     - name: Show generated values.yaml
       shell: bash
