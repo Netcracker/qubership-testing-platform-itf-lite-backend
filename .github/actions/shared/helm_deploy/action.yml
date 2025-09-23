@@ -204,7 +204,7 @@ runs:
     - name: Show generated values.yaml
       shell: bash
       run: |
-        echo "---- values_dev.yaml content ----"
+        echo "values_dev.yaml content"
         cat values_dev.yaml
 
 
@@ -248,10 +248,6 @@ runs:
         kubectl get ns
         helm list --all-namespaces | grep mongo
         kubectl get svc -n mongo
-        echo "Check endpoints"
-        kubectl get endpoints -n mongo my-mongo-psmdb-db-mongos
-        kubectl get pods -n mongo -l app.kubernetes.io/component=mongos
-        kubectl get pods -n mongo -o wide | grep -E '10.244.3.7|10.244.4.8|10.244.5.7'
         kubectl get secrets -n mongo
         kubectl get pods -n mongo
         echo "Get secret"
