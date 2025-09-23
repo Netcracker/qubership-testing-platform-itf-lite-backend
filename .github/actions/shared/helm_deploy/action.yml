@@ -191,7 +191,7 @@ runs:
     - name: Check if values_dev.yaml exists and is not empty
       shell: bash
       run: |
-        if [ -s $template_name ]; then
+        if [ -s ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml ]; then
           echo "values_dev.yaml exists and is not empty"
         else
           echo "values_dev.yaml is missing or empty"
@@ -210,7 +210,7 @@ runs:
       env:
         gridfs_pass: ${{ env.gridfs_pass }}
       run: |
-        echo "gridfs_pass: \"${gridfs_pass}\"" >> $template_name
+        echo "gridfs_pass: \"${gridfs_pass}\"" >> ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml
 
     - name: Show generated values.yaml
       shell: bash
