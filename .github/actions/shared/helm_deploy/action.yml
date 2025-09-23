@@ -198,11 +198,7 @@ runs:
       env:
         gridfs_pass: ${{ env.gridfs_pass }}
       run: |
-        cat <<EOF > values_dev.yaml
-      gridfs_pass: "${gridfs_pass}"
-      EOF
-
-
+        echo "gridfs_pass: \"${gridfs_pass}\"" > values_dev.yaml
 
     - name: Show generated values.yaml
       shell: bash
