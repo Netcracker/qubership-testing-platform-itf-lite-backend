@@ -205,6 +205,12 @@ runs:
         echo "gridfs_pass=$gridfs_pass" >> $GITHUB_ENV
         echo "MongoDB Admin Password is: $gridfs_pass"
 
+    - name: Check if values-dev.yaml exists
+      shell: bash
+      run: | 
+        ls -la ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml
+        ls -la ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/
+
     - name: Generate values.yaml
       shell: bash
       env:
