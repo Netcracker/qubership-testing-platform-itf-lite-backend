@@ -170,14 +170,11 @@ runs:
         helm install my-mongo percona/psmdb-db \
           --namespace mongo \
           --set psmdb.security.enabled=true \
-          --set psmdb.db.enabled=true \
-          --set psmdb.db.name=my-database \
-          --set customResource.secrets.users[0].name=customadmin \
-          --set customResource.secrets.users[0].user=custom \
-          --set customResource.secrets.users[0].password=custompass \
+          --set customResource.secrets.users[0].name=rootuser \
+          --set customResource.secrets.users[0].user=root \
+          --set customResource.secrets.users[0].password=root \
           --set customResource.secrets.users[0].roles[0].db=admin \
           --set customResource.secrets.users[0].roles[0].role=clusterAdmin
-  
   
         sleep 5
         
