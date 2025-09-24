@@ -171,6 +171,21 @@ runs:
            exit 1
         }
 
+    - name: Install Kafka via bitnami
+      shell: bash
+      run: |        
+        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm repo update
+  
+        helm install my-kafka bitnami/kafka -n ${{inputs.namespace}} --create-namespace
+
+        pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
+        kubectl wait pod "$pod" -n ${{inputs.namespace}} \
+           --for=condition=Ready \
+           --timeout=120s || {
+           echo "❌ Pod $pod did not become ready in time"
+           exit 1
+        }
 
     - name: Install/update service with helm
       shell: bash
