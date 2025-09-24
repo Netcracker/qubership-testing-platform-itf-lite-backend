@@ -173,86 +173,6 @@ runs:
         }
 
 
-    - name: Install MongoDB
-      shell: bash
-      run: |
-        helm repo add percona https://percona.github.io/percona-helm-charts/
-        helm repo update
-        
-        helm install percona-operator percona/psmdb-operator --namespace mongo --create-namespace
-        pod=$(kubectl get pods -n mongo -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
-        kubectl wait pod "$pod" -n mongo \
-          --for=condition=Ready \
-          --timeout=120s || {
-          echo "❌ Pod $pod did not become ready in time"
-          exit 1
-        }
-        
-        
-        helm install my-mongo percona/psmdb-db \
-          --namespace mongo \
-          --set psmdb.security.enabled=true \
-          --set customResource.secrets.users[0].name=rootuser \
-          --set customResource.secrets.users[0].user=root \
-          --set customResource.secrets.users[0].password=root \
-          --set customResource.secrets.users[0].roles[0].db=admin \
-          --set customResource.secrets.users[0].roles[0].role=clusterAdmin
-  
-        sleep 5
-        
-        pod=$(kubectl get pods -n mongo -o name | grep -vE 'percona' | head -n 1 | cut -d/ -f2)
-        kubectl wait pod "$pod" -n mongo \
-          --for=condition=Ready \
-          --timeout=600s || {
-          echo "❌ Pod $pod did not become ready in time"
-          exit 1
-        }
-        
-        sleep 60
-
-    - name: Check if values_dev.yaml exists and is not empty
-      shell: bash
-      run: |
-        if [ -s ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml ]; then
-          echo "values_dev.yaml exists and is not empty"
-        else
-          echo "values_dev.yaml is missing or empty"
-        fi
-        
-        template_name=$(basename "${{inputs.path_to_template}}")
-        echo $template_name
-    
-        gridfs_pass=$(kubectl -n mongo get secrets my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_USER_ADMIN_PASSWORD}" | base64 --decode)
-        echo "creds"
-        echo "gridfs_pass=$gridfs_pass" >> $GITHUB_ENV
-        echo "MongoDB Admin Password is: $gridfs_pass"
-
-    - name: Check if values-dev.yaml exists
-      shell: bash
-      run: | 
-        ls -la ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml
-        ls -la ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/
-
-    - name: Show generated values.yaml
-      shell: bash
-      run: |
-        echo "values_dev.yaml content"
-        cat ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml
-
-    - name: Generate values.yaml
-      shell: bash
-      env:
-        gridfs_pass: ${{ env.gridfs_pass }}
-      run: |
-        echo "gridfs_pass: \"${gridfs_pass}\"" >> ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml
-
-    - name: Show generated values.yaml
-      shell: bash
-      run: |
-        echo "values_dev.yaml content"
-        cat ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml
-
-
     - name: Install/update service with helm
       shell: bash
       run: |
@@ -266,10 +186,10 @@ runs:
         
         if [ -n "${{ inputs.docker_tag }}" ]; then
           echo "Using docker_tag: ${{ inputs.docker_tag }}"
-          helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f values.yaml -f values-dev.yaml -n ${{inputs.namespace}} --set-string DOCKER_TAG=${{ inputs.docker_tag }} --debug --wait --timeout 2m
+          helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f $template_name -n ${{inputs.namespace}} --set-string DOCKER_TAG=${{ inputs.docker_tag }} --debug --wait --timeout 2m
         else
          echo "No docker_tag provided. Using value from values-dev.yaml"
-         helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f values.yaml -f values-dev.yaml -n ${{inputs.namespace}} --debug --wait --timeout 2m
+         helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f $template_name -n ${{inputs.namespace}} --debug --wait --timeout 2m
         fi 
         
         sleep 120
@@ -284,28 +204,9 @@ runs:
         sleep 120
         
         echo "Describe pod"
-        kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}
-        echo "Get secret service"
-        kubectl get secrets -n ${{inputs.namespace}}
-        kubectl get secret -n ${{inputs.namespace}} atp-itf-lite-backend-secrets  -o yaml
-        kubectl get secret -n ${{inputs.namespace}} atp-itf-lite-backend-secrets  -o json | \
-          jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'        
+        kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}        
         echo "End describe"
-        
-        echo "Describe mongo pod"
-        kubectl get ns
-        helm list --all-namespaces | grep mongo
-        kubectl get svc -n mongo
-        kubectl get secrets -n mongo
-        kubectl get pods -n mongo
-        echo "Get secret"
-        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_USER_ADMIN_PASSWORD}" | base64 -d
-        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o jsonpath="{.data.MONGODB_USER_ADMIN_USER}" | base64 -d
-        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o yaml
-        kubectl get secret -n mongo my-mongo-psmdb-db-secrets -o json | \
-          jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
     
-        echo "End describe mongo pod"
         
         for pod in $(kubectl get pods -n ${{inputs.namespace}} --no-headers -o custom-columns=":metadata.name"); do 
           echo "📦 Logs from pod: $pod"
