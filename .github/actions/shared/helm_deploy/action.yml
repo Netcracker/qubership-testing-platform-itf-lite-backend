@@ -160,7 +160,7 @@ runs:
           --set image.registry=docker.io \
           --set image.repository=bitnami/mongodb \
           --set image.tag=8.0.13 \
-          --set auth.rootUser=root \ 
+          --set auth.rootUser=root \
           --set auth.rootPassword=root
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
