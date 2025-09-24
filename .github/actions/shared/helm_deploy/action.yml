@@ -154,16 +154,23 @@ runs:
     - name: Install MongoDB via bitnami
       shell: bash
       run: |
-       helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm repo add bitnami https://charts.bitnami.com/bitnami
        
-       helm install my-mongodb bitnami/mongodb -n ${{inputs.namespace}} \
-         --set image.registry=docker.io \
-         --set image.repository=bitnami/mongodb \
-         --set image.tag=8.0.13 \
-         --set auth.rootUser=test \
-         --set auth.rootPassword=testpassword \
-         --set auth.database=testdb
-
+        helm install my-mongodb bitnami/mongodb -n ${{inputs.namespace}} \
+          --set image.registry=docker.io \
+          --set image.repository=bitnami/mongodb \
+          --set image.tag=8.0.13 \
+          --set auth.username=testuser \
+          --set auth.password=testpass \
+          --set auth.database=testdb
+        
+        pod=$(kubectl get pods -n mongo -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
+        kubectl wait pod "$pod" -n mongo \
+           --for=condition=Ready \
+           --timeout=120s || {
+           echo "❌ Pod $pod did not become ready in time"
+           exit 1
+        }
 
 
     - name: Install MongoDB
