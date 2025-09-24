@@ -211,6 +211,12 @@ runs:
         ls -la ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml
         ls -la ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/
 
+    - name: Show generated values.yaml
+      shell: bash
+      run: |
+        echo "values_dev.yaml content"
+        cat ./qubership-testing-platform-itf-lite-backend/.github/deploy_templates/values-dev.yaml
+
     - name: Generate values.yaml
       shell: bash
       env:
