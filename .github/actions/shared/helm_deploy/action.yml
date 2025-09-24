@@ -177,13 +177,8 @@ runs:
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
   
-        helm install my-kafka bitnami/kafka -n ${{inputs.namespace}} \
-          --set replicaCount=1 \
-          --set externalAccess.enabled=true \
-          --set externalAccess.service.type=ClusterIP \
-          --set externalAccess.autoDiscovery.enabled=true
-  
-  
+        helm install my-kafka bitnami/kafka -n ${{inputs.namespace}} --create-namespace
+
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
            --for=condition=Ready \
