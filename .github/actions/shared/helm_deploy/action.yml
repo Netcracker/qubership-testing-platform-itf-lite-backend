@@ -205,8 +205,14 @@ runs:
          echo "No docker_tag provided. Using value from values-dev.yaml"
          helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f $template_name -n ${{inputs.namespace}} --debug --wait --timeout 2m
         fi 
-        
-        sleep 120
+
+        pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb|kafka|predeploy' | head -n 1 | cut -d/ -f2)
+        kubectl wait pod "$pod" -n ${{inputs.namespace}} \
+           --for=condition=Ready \
+           --timeout=600s || {
+           echo "❌ Pod $pod did not become ready in time"
+           exit 1
+        }
 
     - name: Debug
       shell: bash
