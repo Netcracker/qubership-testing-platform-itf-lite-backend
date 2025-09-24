@@ -160,12 +160,12 @@ runs:
           --set image.registry=docker.io \
           --set image.repository=bitnami/mongodb \
           --set image.tag=8.0.13 \
-          --set auth.username=testuser \
-          --set auth.password=testpass \
-          --set auth.database=testdb
+          --set auth.username=root \
+          --set auth.password=root \
+          --set auth.database=root
         
-        pod=$(kubectl get pods -n mongo -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
-        kubectl wait pod "$pod" -n mongo \
+        pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
+        kubectl wait pod "$pod" -n ${{inputs.namespace}} \
            --for=condition=Ready \
            --timeout=120s || {
            echo "❌ Pod $pod did not become ready in time"
