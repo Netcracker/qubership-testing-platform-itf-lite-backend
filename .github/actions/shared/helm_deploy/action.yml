@@ -244,10 +244,10 @@ runs:
         
         if [ -n "${{ inputs.docker_tag }}" ]; then
           echo "Using docker_tag: ${{ inputs.docker_tag }}"
-          helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f values.yaml -f values_dev.yaml -n ${{inputs.namespace}} --set-string DOCKER_TAG=${{ inputs.docker_tag }} --debug --wait --timeout 2m
+          helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f values.yaml -f values-dev.yaml -n ${{inputs.namespace}} --set-string DOCKER_TAG=${{ inputs.docker_tag }} --debug --wait --timeout 2m
         else
          echo "No docker_tag provided. Using value from values-dev.yaml"
-         helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f values.yaml -f values_dev.yaml -n ${{inputs.namespace}} --debug --wait --timeout 2m
+         helm ${{inputs.deploy_mode}} ${{inputs.service_name}} . -f values.yaml -f values-dev.yaml -n ${{inputs.namespace}} --debug --wait --timeout 2m
         fi 
         
         sleep 120
