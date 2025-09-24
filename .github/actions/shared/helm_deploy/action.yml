@@ -253,6 +253,22 @@ runs:
         
         echo " Get pods $pod"
         kubectl get pods -n ${{inputs.namespace}}
+        
+        echo "kafka"
+        kubectl run kafka-client \
+          --image=bitnami/kafka:3.6.1 \
+          --restart=Never \
+          --namespace=${{inputs.namespace}} \
+          --command -- sleep 300
+        
+        kubectl wait --for=condition=Ready pod/kafka-client -n ${{inputs.namespace}} --timeout=60s
+        
+        kubectl exec -n ${{inputs.namespace}} kafka-client -- \
+          kafka-topics.sh --bootstrap-server my-kafka-broker-0.my-kafka-broker-headless.lite.svc.cluster.local:9092 \
+          --describe --topic test
+        
+        kubectl delete pod kafka-client -n ${{inputs.namespace}}
+      
 
     - name: Get docker images
       shell: bash
