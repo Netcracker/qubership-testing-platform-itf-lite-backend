@@ -181,7 +181,7 @@ runs:
           --set controller.replicaCount=1 \
           --set broker.replicaCount=3 \
           --set controller.listener.client.protocol=PLAINTEXT \
-          --set broker.listener.client.protocol=PLAINTEXT \     
+          --set broker.listener.client.protocol=PLAINTEXT
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
