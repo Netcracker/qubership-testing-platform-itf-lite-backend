@@ -151,6 +151,21 @@ runs:
           exit 1
         }
 
+    - name: Install MongoDB via bitnami
+      shell: bash
+      run: |
+       helm repo add bitnami https://charts.bitnami.com/bitnami
+       
+       helm install my-mongodb bitnami/mongodb -n ${{inputs.namespace}} \
+         --set image.registry=docker.io \
+         --set image.repository=bitnami/mongodb \
+         --set image.tag=8.0.13 \
+         --set auth.rootUser=test \
+         --set auth.rootPassword=testpassword \
+         --set auth.database=testdb
+
+
+
     - name: Install MongoDB
       shell: bash
       run: |
