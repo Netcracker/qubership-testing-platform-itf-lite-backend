@@ -160,9 +160,8 @@ runs:
           --set image.registry=docker.io \
           --set image.repository=bitnami/mongodb \
           --set image.tag=8.0.13 \
-          --set auth.username=root \
-          --set auth.password=root \
-          --set auth.database=root
+          --set auth.rootUser=root \ 
+          --set auth.rootPassword=root
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
@@ -201,12 +200,13 @@ runs:
         echo "Get pods $pod"
         kubectl get pods -n ${{inputs.namespace}}
         
-        sleep 120
-        
         echo "Describe pod"
         kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}        
         echo "End describe"
-    
+        
+        echo "Check secret"
+        kubectl get secret --namespace ${{inputs.namespace}} my-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode        
+        
         
         for pod in $(kubectl get pods -n ${{inputs.namespace}} --no-headers -o custom-columns=":metadata.name"); do 
           echo "📦 Logs from pod: $pod"
