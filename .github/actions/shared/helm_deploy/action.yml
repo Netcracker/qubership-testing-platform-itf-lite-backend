@@ -177,18 +177,13 @@ runs:
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
         
-        helm install my-kafka bitnami/kafka -n ${{inputs.namespace}} \
-          --create-namespace \
-          --set controller.replicaCount=1 \
-          --set broker.replicaCount=3 \
-          --set controller.listener.client.protocol=PLAINTEXT \
-          --set broker.listener.client.protocol=PLAINTEXT \
-          --set broker.configurationOverrides.advertised\\.listeners="PLAINTEXT://\$(POD_NAME).my-kafka-broker-headless.\$(NAMESPACE).svc.cluster.local:9092" \
-          --set broker.extraEnvVars[0].name=POD_NAME \
-          --set broker.extraEnvVars[0].valueFrom.fieldRef.fieldPath=metadata.name \
-          --set broker.extraEnvVars[1].name=NAMESPACE \
-          --set broker.extraEnvVars[1].valueFrom.fieldRef.fieldPath=metadata.namespace
-        
+        helm install kafka-test bitnami/kafka \
+          --set replicaCount=1 \
+          --set zookeeper.replicaCount=1 \
+          --set persistence.enabled=false \
+          --set externalAccess.enabled=false
+  
+  
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
            --for=condition=Ready \
@@ -259,23 +254,6 @@ runs:
         
         echo " Get pods $pod"
         kubectl get pods -n ${{inputs.namespace}}
-        
-        echo "kafka broker information"
-        kubectl run kafka-client \
-          --image=bitnami/kafka:3.6.1 \
-          --restart=Never \
-          --namespace=${{inputs.namespace}} \
-          --command -- sleep 300
-        
-        kubectl wait --for=condition=Ready pod/kafka-client -n ${{inputs.namespace}} --timeout=60s
-        
-        kubectl exec -n ${{inputs.namespace}} kafka-client -- \
-          kafka-topics.sh --bootstrap-server my-kafka-broker-0.my-kafka-broker-headless.lite.svc.cluster.local:9092 \
-          --describe --topic test
-        
-        echo "kafka broker information advertised"
-        kubectl exec -n ${{ inputs.namespace }} kafka-client -- \
-          sh -c "cat /opt/bitnami/kafka/config/server.properties | grep advertised.listeners"
         
         
         kubectl delete pod kafka-client -n ${{inputs.namespace}}
