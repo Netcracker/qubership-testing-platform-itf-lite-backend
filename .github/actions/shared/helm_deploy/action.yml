@@ -174,12 +174,11 @@ runs:
     - name: Install Kafka via bitnami
       shell: bash
       run: |
-        helm chart pull oci://registry-1.docker.io/bitnamicharts/com.bitnami.kafka:latest
-        helm chart export oci://registry-1.docker.io/bitnamicharts/com.bitnami.kafka:latest --destination ./charts
-        helm install kafka ./charts/com.bitnami.kafka \
+        helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka \
+          --version 26.1.2 \  
           --set zookeeper.enabled=true \
           --set replicaCount=1 \
-          --set service.type=ClusterI
+          --set service.type=ClusterIP
   
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
