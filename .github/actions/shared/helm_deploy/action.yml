@@ -179,7 +179,13 @@ runs:
         
         helm install kafka bitnami/kafka \
           --version 26.8.1 \
+          --set image.registry=docker.io \
+          --set image.repository=bitnamilegacy/kafka \
+          --set image.tag=3.6.1-debian-11-r0 \
           --set zookeeper.enabled=true \
+          --set zookeeper.image.registry=docker.io \
+          --set zookeeper.image.repository=bitnamilegacy/zookeeper \
+          --set zookeeper.image.tag=3.9.1-debian-11-r0 \
           --set kraft.enabled=false \
           --set replicaCount=1 \
           --set service.type=ClusterIP \
