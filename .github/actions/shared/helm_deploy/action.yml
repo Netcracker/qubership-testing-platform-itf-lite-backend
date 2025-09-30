@@ -178,7 +178,7 @@ runs:
         helm repo update
         
         helm install kafka bitnami/kafka \
-          --version 4.0.0-debian-12-r10 \
+          --version 32.4.3 \
           --set image.registry=docker.io \
           --set image.repository=bitnamilegacy/kafka \
           --set kraft.enabled=false \
