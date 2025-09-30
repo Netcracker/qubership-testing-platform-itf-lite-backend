@@ -187,11 +187,9 @@ runs:
           --set zookeeper.enabled=true \
           --set zookeeper.image.registry=docker.io \
           --set zookeeper.image.repository=bitnamilegacy/zookeeper \
-          --set auth.clientProtocol=plaintext \
-          --set auth.interBrokerProtocol=plaintext \
+          --set auth.enabled=false \
           --set persistence.enabled=false \
           --set externalAccess.enabled=false
-          
   
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
