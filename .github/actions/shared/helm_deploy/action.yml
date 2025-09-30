@@ -188,6 +188,8 @@ runs:
           --set zookeeper.image.registry=docker.io \
           --set zookeeper.image.repository=bitnamilegacy/zookeeper \
           --set auth.enabled=false \
+          --set auth.clientProtocol=plaintext \
+          --set auth.interBrokerProtocol=plaintext \
           --set persistence.enabled=false \
           --set externalAccess.enabled=false
   
