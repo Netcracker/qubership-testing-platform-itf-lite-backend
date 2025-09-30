@@ -177,6 +177,7 @@ runs:
         helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka \
           --version 26.8.1 \
           --set zookeeper.enabled=true \
+          --set kraft.enabled=false \
           --set replicaCount=1 \
           --set service.type=ClusterIP
   
