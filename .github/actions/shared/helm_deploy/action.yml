@@ -179,8 +179,6 @@ runs:
         
         helm install kafka bitnami/kafka \
           --version 32.4.3 \
-          --set image.registry=docker.io \
-          --set image.repository=bitnamilegacy/kafka \
           --set kraft.enabled=false \
           --set broker.replicaCount=1 \
           --set zookeeper.enabled=true \
