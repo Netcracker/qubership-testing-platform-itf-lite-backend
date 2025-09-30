@@ -193,7 +193,6 @@ runs:
           --set persistence.enabled=false \
           --set auth.clientProtocol=plaintext \
           --set auth.interBrokerProtocol=plaintext \
-          --set sasl.enabledMechanisms={} \
           --debug
   
 
