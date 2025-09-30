@@ -175,7 +175,7 @@ runs:
       shell: bash
       run: |
         helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka \
-          --version 26.1.2 \  
+          --version 26.1.2 \
           --set zookeeper.enabled=true \
           --set replicaCount=1 \
           --set service.type=ClusterIP
@@ -250,7 +250,9 @@ runs:
         
         echo " Get pods $pod"
         kubectl get pods -n ${{inputs.namespace}}
-              
+        
+        echo "Get helm version"
+        helm version
 
     - name: Get docker images
       shell: bash
