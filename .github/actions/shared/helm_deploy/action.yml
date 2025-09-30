@@ -178,7 +178,7 @@ runs:
         helm repo update
         
         helm install kafka bitnami/kafka \
-          --version 26.8.1 \
+          --version 25.6.3 \
           --set image.registry=docker.io \
           --set image.repository=bitnamilegacy/kafka \
           --set kraft.enabled=false \
