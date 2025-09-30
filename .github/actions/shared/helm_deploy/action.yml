@@ -173,15 +173,13 @@ runs:
 
     - name: Install Kafka via bitnami
       shell: bash
-      run: |        
-        helm repo add bitnami https://charts.bitnami.com/bitnami
-        helm repo update
-        
-        helm install kafka-test bitnami/kafka \
+      run: |
+        helm chart pull oci://registry-1.docker.io/bitnamicharts/com.bitnami.kafka:latest
+        helm chart export oci://registry-1.docker.io/bitnamicharts/com.bitnami.kafka:latest --destination ./charts
+        helm install kafka ./charts/com.bitnami.kafka \
+          --set zookeeper.enabled=true \
           --set replicaCount=1 \
-          --set zookeeper.replicaCount=1 \
-          --set persistence.enabled=false \
-          --set externalAccess.enabled=false
+          --set service.type=ClusterI
   
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
