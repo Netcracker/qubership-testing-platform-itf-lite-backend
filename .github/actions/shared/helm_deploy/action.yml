@@ -174,43 +174,36 @@ runs:
     - name: Install Kafka via bitnami
       shell: bash
       run: |
-        set -e
-
-        CHART_NAME=bitnami/kafka
-        NAMESPACE=test-kafka-ns
-        HELM_VERSIONS=("25.6.3" "26.0.0" "26.3.2" "26.8.1")
-
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
-
-        for version in "${HELM_VERSIONS[@]}"; do
-          echo "========================================="
-          echo "Testing chart version: $version"
-          echo "========================================="
-
-          RELEASE_NAME="kafka-test-${version//./-}"
-
-          helm uninstall "$RELEASE_NAME" -n "$NAMESPACE" || true
-          kubectl delete ns "$NAMESPACE" --ignore-not-found
-
-          helm install "$RELEASE_NAME" "$CHART_NAME" \
-            --version "$version" \
-            --namespace "$NAMESPACE" \
-            --create-namespace \
-            --set kraft.enabled=false \
-            --set controller.replicaCount=0 \
-            --set broker.replicaCount=1 \
-            --set zookeeper.enabled=true \
-            --set auth.enabled=false \
-            --set auth.clientProtocol=plaintext \
-            --set auth.interBrokerProtocol=plaintext \
-            --set persistence.enabled=false \
-            --set externalAccess.enabled=false \
-            --wait --timeout 5m || echo "⚠️ Chart version $version failed"
-
-          echo "✅ Done with version: $version"
-          echo ""
-        done
+        
+        helm install kafka bitnami/kafka \
+          --version 25.0.0 \
+          --namespace ${{inputs.namespace}} \
+          --create-namespace \
+          --set image.registry=docker.io \
+          --set image.repository=bitnamilegacy/kafka \
+          --set kraft.enabled=false \
+          --set broker.replicaCount=3 \
+          --set controller.replicaCount=0 \
+          --set zookeeper.enabled=true \
+          --set zookeeper.image.registry=docker.io \
+          --set zookeeper.image.repository=bitnamilegacy/zookeeper \
+          --set auth.enabled=false \
+          --set auth.sasl.mechanisms="" \
+          --set auth.clientProtocol=plaintext \
+          --set auth.interBrokerProtocol=plaintext \
+          --set persistence.enabled=false \
+          --set externalAccess.enabled=false
+        
+        
+        pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
+        kubectl wait pod "$pod" -n ${{inputs.namespace}} \
+           --for=condition=Ready \
+           --timeout=120s || {
+           echo "❌ Pod $pod did not become ready in time"
+           exit 1
+        }
 
     - name: Install/update service with helm
       shell: bash
