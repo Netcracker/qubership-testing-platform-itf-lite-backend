@@ -190,7 +190,6 @@ runs:
           --set zookeeper.image.registry=docker.io \
           --set zookeeper.image.repository=bitnamilegacy/zookeeper \
           --set auth.enabled=false \
-          --set auth.sasl.mechanisms="plain" \
           --set auth.clientProtocol=plaintext \
           --set auth.interBrokerProtocol=plaintext \
           --set persistence.enabled=false \
@@ -273,6 +272,9 @@ runs:
         
         echo "Get svc"
         kubectl get svc -n ${{inputs.namespace}}
+        
+        echo "Get logs for broker-0"
+        kubectl logs kafka-broker-0 -n ${{inputs.namespace}}
 
     - name: Get docker images
       shell: bash
