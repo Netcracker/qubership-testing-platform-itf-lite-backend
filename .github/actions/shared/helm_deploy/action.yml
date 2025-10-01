@@ -176,6 +176,10 @@ runs:
       run: |
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
+        ls -la
+        pwd
+        cd ${{inputs.repository_name}}/.github/deploy_templates/
+        ls -la
         
         helm install kafka bitnami/kafka \
           --version 25.0.0 \
