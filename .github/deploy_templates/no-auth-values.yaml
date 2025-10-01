@@ -1,0 +1,39 @@
+image:
+  registry: docker.io
+  repository: bitnamilegacy/kafka
+
+kraft:
+  enabled: false
+
+broker:
+  replicaCount: 3
+
+controller:
+  replicaCount: 0
+
+zookeeper:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/zookeeper
+  auth:
+    enabled: false
+
+auth:
+  enabled: false
+  clientProtocol: plaintext
+  interBrokerProtocol: plaintext
+  sasl:
+    enabledMechanisms: []
+    interBrokerMechanism: ""
+    jaas:
+      clientUsers: []
+      clientPasswords: []
+      interBrokerUser: ""
+      interBrokerPassword: ""
+
+persistence:
+  enabled: false
+
+externalAccess:
+  enabled: false
