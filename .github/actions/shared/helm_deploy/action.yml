@@ -190,12 +190,10 @@ runs:
           --set zookeeper.image.registry=docker.io \
           --set zookeeper.image.repository=bitnamilegacy/zookeeper \
           --set auth.enabled=false \
-          --set auth.sasl.mechanisms="" \
           --set auth.clientProtocol=plaintext \
           --set auth.interBrokerProtocol=plaintext \
           --set persistence.enabled=false \
-          --set externalAccess.enabled=false \
-          --set extraConfig="security.inter.broker.protocol=PLAINTEXT\nsasl.enabled.mechanisms="
+          --set externalAccess.enabled=false
         
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
