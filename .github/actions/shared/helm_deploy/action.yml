@@ -179,6 +179,10 @@ runs:
         
         helm install kafka bitnami/kafka \
           --version 26.8.1 \
+          --namespace ${{inputs.namespace}} \
+          --create-namespace \
+          --set image.registry=docker.io \
+          --set image.repository=bitnamilegacy/kafka \
           --set kraft.enabled=false \
           --set broker.replicaCount=1 \
           --set controller.replicaCount=0 \
@@ -186,10 +190,12 @@ runs:
           --set zookeeper.image.registry=docker.io \
           --set zookeeper.image.repository=bitnamilegacy/zookeeper \
           --set auth.enabled=false \
+          --set auth.sasl.mechanisms="plain" \
           --set auth.clientProtocol=plaintext \
           --set auth.interBrokerProtocol=plaintext \
           --set persistence.enabled=false \
           --set externalAccess.enabled=false
+  
   
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
         kubectl wait pod "$pod" -n ${{inputs.namespace}} \
