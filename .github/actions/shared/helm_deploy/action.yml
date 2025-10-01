@@ -194,7 +194,8 @@ runs:
           --set auth.clientProtocol=plaintext \
           --set auth.interBrokerProtocol=plaintext \
           --set persistence.enabled=false \
-          --set externalAccess.enabled=false
+          --set externalAccess.enabled=false \
+          --set extraConfig="security.inter.broker.protocol=PLAINTEXT\nsasl.enabled.mechanisms="
         
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
