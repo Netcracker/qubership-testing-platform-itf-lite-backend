@@ -278,6 +278,9 @@ runs:
         
         echo "Get 10.244.5.5"
         kubectl get pod -A -o wide | grep 10.244.5.5
+        
+        echo "Get KAFKA"
+        kubectl exec -n lite kafka-broker-0 -- env | grep KAFKA
 
     - name: Get docker images
       shell: bash
