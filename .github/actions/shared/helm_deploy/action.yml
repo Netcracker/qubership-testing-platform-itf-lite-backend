@@ -236,6 +236,34 @@ runs:
       shell: bash
       if: always()
       run: |
+        echo "Get pods $pod"
+        kubectl get pods -n ${{inputs.namespace}}
+        
+        echo "Describe pod"
+        kubectl describe pod $(kubectl get pods -n ${{inputs.namespace}} --no-headers | awk 'NR==1 {print $1}') -n ${{inputs.namespace}}        
+        echo "End describe"
+        
+        echo "Check secret"
+        kubectl get secret --namespace ${{inputs.namespace}} my-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode        
+        
+        
+        for pod in $(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb|kafka' | head -n 1 | cut -d/ -f2); do 
+          echo "📦 Logs from pod: $pod"
+        
+          if ! kubectl logs "$pod" -n ${{inputs.namespace}}; then
+            echo "⚠️ Could not fetch current logs for $pod"
+          fi
+        
+          restart_count=$(kubectl get pod "$pod" -n ${{inputs.namespace}} -o jsonpath="{.status.containerStatuses[0].restartCount}")
+        
+          if [[ "$restart_count" -gt 0 ]]; then
+            echo "🔁 Previous logs (before restart) for pod: $pod"
+            if ! kubectl logs "$pod" -n ${{inputs.namespace}} --previous; then
+              echo "⚠️ Could not fetch previous logs for $pod"
+            fi
+          fi
+        
+        done
         
         echo " Get pods $pod"
         kubectl get pods -n ${{inputs.namespace}}
