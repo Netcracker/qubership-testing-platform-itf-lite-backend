@@ -188,7 +188,7 @@ runs:
           echo "Testing chart version: $version"
           echo "========================================="
 
-          RELEASE_NAME="kafka-test-$version"
+          RELEASE_NAME="kafka-test-${version//./-}"
 
           helm uninstall "$RELEASE_NAME" -n "$NAMESPACE" || true
           kubectl delete ns "$NAMESPACE" --ignore-not-found
