@@ -186,11 +186,6 @@ runs:
           --namespace lite \
           -f no-auth-values.yaml > rendered.yaml
         
-        echo "Get values from yaml"
-        grep -A10 SASL rendered.yaml
-        grep user1 rendered.yaml
-        grep SASL rendered.yaml
-        
         helm install kafka bitnami/kafka \
           --version 25.0.0 \
           --namespace ${{inputs.namespace}} \
