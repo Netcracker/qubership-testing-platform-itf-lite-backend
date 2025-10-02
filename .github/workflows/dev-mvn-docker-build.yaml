@@ -69,7 +69,7 @@ jobs:
           tags: ${{steps.metadata.outputs.result}}
           download-artifact: true
           custom-image-name: qubership-testing-platform-itf-lite-backend
-          download-artifact-path: build-context/qubership-testing-platform-itf-lite-backend/qubership-testing-platform-itf-lite-backend
+          download-artifact-path: build-context
           component: '[{"name": "qubership-testing-platform-itf-lite-backend", "file": "./Dockerfile", "context": "."}]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
