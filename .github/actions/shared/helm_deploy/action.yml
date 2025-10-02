@@ -181,11 +181,17 @@ runs:
         cd ${{inputs.repository_name}}/.github/deploy_templates/
         ls -la
         
+        helm template kafka bitnami/kafka \
+          --version 25.0.0 \
+          --namespace lite \
+          -f no-auth-values.yaml > rendered.yaml
+  
+  
         helm install kafka bitnami/kafka \
           --version 25.0.0 \
           --namespace ${{inputs.namespace}} \
           --create-namespace \
-          -f no-auth-values.yaml > rendered.yaml
+          -f no-auth-values.yaml
         
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
@@ -280,6 +286,7 @@ runs:
         echo "Get values from yaml"
         grep -A10 SASL rendered.yaml
         grep user1 rendered.yaml
+        grep SASL rendered.yaml
 
     - name: Get docker images
       shell: bash
