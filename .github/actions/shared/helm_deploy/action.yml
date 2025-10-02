@@ -185,7 +185,7 @@ runs:
           --version 25.0.0 \
           --namespace ${{inputs.namespace}} \
           --create-namespace \
-          -f no-auth-values.yaml
+          -f no-auth-values.yaml > rendered.yaml
         
         
         pod=$(kubectl get pods -n ${{inputs.namespace}} -o name | grep -vE 'postgres|mongodb' | head -n 1 | cut -d/ -f2)
@@ -275,7 +275,11 @@ runs:
         kubectl exec -n lite kafka-broker-0 -- env | grep KAFKA
         
         echo "Get KAFKA_CLIENT"
-        kubectl exec -n ${{inputs.namespace}} kafka-0 -- env | grep KAFKA_CLIENT
+        kubectl exec -n ${{inputs.namespace}} kafka-broker-0 -- env | grep KAFKA_CLIENT
+        
+        echo "Get values from yaml"
+        grep -A10 SASL rendered.yaml
+        grep user1 rendered.yaml
 
     - name: Get docker images
       shell: bash
