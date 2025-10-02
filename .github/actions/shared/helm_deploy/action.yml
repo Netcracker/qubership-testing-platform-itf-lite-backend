@@ -183,7 +183,7 @@ runs:
         
         helm repo update
         helm template kafka bitnami/kafka \
-          --version 26.5.2 \
+          --version 25.0.0 \
           --namespace lite \
           -f no-auth-values.yaml > rendered.yaml
         
