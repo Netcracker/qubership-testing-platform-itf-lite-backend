@@ -35,7 +35,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.21/community/" >/etc/apk/repo
 
 COPY deployments/install deployments/install
 COPY deployments/atp-common-scripts deployments/atp-common-scripts
-COPY build-context/qubership-testing-platform-itf-lite-backend/qubership-testing-platform-itf-lite-backend/atp-itf-lite-backend-distribution/target/ /tmp/
+COPY build-context/atp-itf-lite-backend-distribution/target/ /tmp/
 
 RUN mkdir -p dist/atp deployments/update && \
     cp -r deployments/install/* deployments/update/ && \
