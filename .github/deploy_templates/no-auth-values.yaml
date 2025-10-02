@@ -1,6 +1,6 @@
 image:
   registry: docker.io
-  repository: bitnami/kafka
+  repository: bitnamilegacy/kafka
 
 kraft:
   enabled: false
@@ -15,7 +15,7 @@ zookeeper:
   enabled: true
   image:
     registry: docker.io
-    repository: bitnami/zookeeper
+    repository: bitnamilegacy/zookeeper
   auth:
     enabled: false
 
