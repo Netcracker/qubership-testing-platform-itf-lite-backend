@@ -248,16 +248,6 @@ runs:
           if ! kubectl logs "$pod" -n ${{inputs.namespace}}; then
             echo "⚠️ Could not fetch current logs for $pod"
           fi
-        
-          restart_count=$(kubectl get pod "$pod" -n ${{inputs.namespace}} -o jsonpath="{.status.containerStatuses[0].restartCount}")
-        
-          if [[ "$restart_count" -gt 0 ]]; then
-            echo "🔁 Previous logs (before restart) for pod: $pod"
-            if ! kubectl logs "$pod" -n ${{inputs.namespace}} --previous; then
-              echo "⚠️ Could not fetch previous logs for $pod"
-            fi
-          fi
-        
         done
         
         echo " Get pods $pod"
