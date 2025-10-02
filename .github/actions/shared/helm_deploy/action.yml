@@ -258,18 +258,6 @@ runs:
         
         echo "Get svc"
         kubectl get svc -n ${{inputs.namespace}}
-        
-        echo "Get logs for broker-0"
-        kubectl logs kafka-broker-0 -n ${{inputs.namespace}}
-        
-        echo "Get 10.244.5.5"
-        kubectl get pod -A -o wide | grep 10.244.5.5
-        
-        echo "Get KAFKA"
-        kubectl exec -n lite kafka-broker-0 -- env | grep KAFKA
-        
-        echo "Get KAFKA_CLIENT"
-        kubectl exec -n ${{inputs.namespace}} kafka-broker-0 -- env | grep KAFKA_CLIENT
 
     - name: Get docker images
       shell: bash
