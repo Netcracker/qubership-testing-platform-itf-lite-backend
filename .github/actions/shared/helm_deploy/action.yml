@@ -185,7 +185,11 @@ runs:
           --version 25.0.0 \
           --namespace lite \
           -f no-auth-values.yaml > rendered.yaml
-  
+        
+        echo "Get values from yaml"
+        grep -A10 SASL rendered.yaml
+        grep user1 rendered.yaml
+        grep SASL rendered.yaml
   
         helm install kafka bitnami/kafka \
           --version 25.0.0 \
@@ -282,11 +286,6 @@ runs:
         
         echo "Get KAFKA_CLIENT"
         kubectl exec -n ${{inputs.namespace}} kafka-broker-0 -- env | grep KAFKA_CLIENT
-        
-        echo "Get values from yaml"
-        grep -A10 SASL rendered.yaml
-        grep user1 rendered.yaml
-        grep SASL rendered.yaml
 
     - name: Get docker images
       shell: bash
