@@ -181,8 +181,9 @@ runs:
         cd ${{inputs.repository_name}}/.github/deploy_templates/
         ls -la
         
+        helm repo update
         helm template kafka bitnami/kafka \
-          --version 25.0.0 \
+          --version 26.5.2 \
           --namespace lite \
           -f no-auth-values.yaml > rendered.yaml
         

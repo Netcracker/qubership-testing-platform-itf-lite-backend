@@ -1,6 +1,6 @@
 image:
   registry: docker.io
-  repository: bitnamilegacy/kafka
+  repository: bitnami/kafka
 
 kraft:
   enabled: false
@@ -15,7 +15,7 @@ zookeeper:
   enabled: true
   image:
     registry: docker.io
-    repository: bitnamilegacy/zookeeper
+    repository: bitnami/zookeeper
   auth:
     enabled: false
 
@@ -23,22 +23,6 @@ auth:
   enabled: false
   clientProtocol: plaintext
   interBrokerProtocol: plaintext
-  sasl:
-    enabledMechanisms: []
-    interBrokerMechanism: ""
-    jaas: {}
-
-extraEnvVars:
-  - name: KAFKA_CFG_SASL_ENABLED_MECHANISMS
-    value: ""
-  - name: KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL
-    value: ""
-  - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
-    value: "CLIENT:PLAINTEXT,INTERNAL:PLAINTEXT"
-  - name: KAFKA_CFG_LISTENERS
-    value: "CLIENT://:9092,INTERNAL://:9093"
-  - name: KAFKA_CFG_ADVERTISED_LISTENERS
-    value: "CLIENT://kafka:9092,INTERNAL://kafka:9093"
 
 persistence:
   enabled: false
