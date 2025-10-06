@@ -5,7 +5,7 @@
   },
   "item": [
     {
-      "name": "POST /api/projects",
+      "name": "POST /atp-itf-lite/api/v1/folders",
       "request": {
         "method": "POST",
         "header": [
@@ -21,19 +21,15 @@
             { "key": "password", "value": "user", "type": "string" }
           ]
         },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"created\": \"{{created}}\",\n  \"createdBy\": \"{{createdBy}}\",\n  \"description\": \"{{description}}\",\n \"environments\": {{environments}},\n \"id\": \"{{id}}\",\n  \"modified\": \"{{modified}}\",\n  \"modifiedBy\": \"{{modifiedBy}}\",\n  \"name\": \"{{name}}\",\n  \"shortName\": \"{{shortName}}\"\n}"
-        },
         "url": {
-          "raw": "{{base_url}}/api/projects",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/folders",
           "host": ["{{base_url}}"],
-          "path": ["api", "projects"]
+          "path": ["atp-itf-lite", "api", "v1", "folders"]
         }
       }
     },
     {
-      "name": "GET /api/projects",
+      "name": "GET /atp-itf-lite/api/v1/folders",
       "request": {
         "method": "GET",
         "header": [],
@@ -45,9 +41,9 @@
           ]
         },
         "url": {
-          "raw": "{{base_url}}/api/projects",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/folders",
           "host": ["{{base_url}}"],
-          "path": ["api", "projects"]
+          "path": ["atp-itf-lite", "api", "v1", "folders"]
         }
       },
       "event": [
