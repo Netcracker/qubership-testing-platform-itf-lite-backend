@@ -6,11 +6,11 @@ runs:
     - name: Port-forward service
       shell: bash
       run: |
-        kubectl get svc atp-itf-lite -n lite
-        kubectl describe svc atp-itf-lite -n lite
+        kubectl get svc atp-itf-lite-backend -n lite
+        kubectl describe svc atp-itf-lite-backend -n lite
         echo "🚀 Starting kubectl port-forward in background..."
 
-        kubectl port-forward svc/atp-itf-lite 8080:8080 -n lite > port-forward.log 2>&1 &
+        kubectl port-forward svc/atp-itf-lite-backend 8080:8080 -n lite > port-forward.log 2>&1 &
         echo $! > port_forward_pid.txt
 
         for i in {1..10}; do
