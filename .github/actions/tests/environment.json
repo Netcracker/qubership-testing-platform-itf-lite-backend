@@ -22,17 +22,12 @@
       "enabled": true
     },
     {
-      "key": "environments",
-      "value": "[]",
-      "enabled": true
-    },
-    {
-      "key": "id",
+      "key": "parentId",
       "value": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "enabled": true
     },
     {
-      "key": "idtool",
+      "key": "projectId",
       "value": "587f6eca-6276-4993-bfeb-67cbbbba6f07",
       "enabled": true
     },
@@ -64,11 +59,6 @@
     {
       "key": "graylogName",
       "value": "string",
-      "enabled": true
-    },
-    {
-      "key": "projectId",
-      "value": "",
       "enabled": true
     },
     {
