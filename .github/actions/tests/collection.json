@@ -113,10 +113,13 @@
             "script": {
               "type": "text/javascript",
               "exec": [
-                "console.log(\"Response body:\", responseBody);",
-                "console.log(\"Status code:\", pm.response.code);",
-                "console.log(\"Response headers:\", JSON.stringify(pm.response.headers.toJSON(), null, 2));",
-                "console.log(\"Response body:\", responseBody);"
+                "console.log(\"Response body (text):\", pm.response.text());",
+                "try {",
+                "  console.log(\"Response body (json):\", JSON.stringify(pm.response.json(), null, 2));",
+                "} catch (e) {",
+                "  console.log(\"Response is not a valid JSON\");",
+                "}",
+                "console.log(\"Status code:\", pm.response.code);"
               ]
             }
           }
