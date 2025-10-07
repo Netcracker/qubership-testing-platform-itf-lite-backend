@@ -123,7 +123,7 @@
       ]
     },
     {
-      "name": "GET /atp-itf-lite/api/v1/user-settings",
+      "name": "GET /atp-itf-lite/api/v1/sse/requests/connect",
       "request": {
         "method": "GET",
         "header": [
@@ -148,16 +148,11 @@
           ]
         },
         "url": {
-          "raw": "{{base_url}}/atp-itf-lite/api/v1/user-settings?projectId={{projectId}}",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/sse/requests/connect?projectId={{projectId}}",
           "host": [
             "{{base_url}}"
           ],
-          "path": [
-            "atp-itf-lite",
-            "api",
-            "v1",
-            "user-settings"
-          ],
+          "path": ["atp-itf-lite", "api", "v1", "sse", "requests", "connect"],
           "query": [
             {
               "key": "projectId",
