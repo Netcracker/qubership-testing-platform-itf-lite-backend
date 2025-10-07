@@ -106,25 +106,25 @@
               "value": "{{projectId}}"
             }
           ]
-        },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "type": "text/javascript",
-              "exec": [
-                "console.log(\"Response body (text):\", pm.response.text());",
-                "try {",
-                "  console.log(\"Response body (json):\", JSON.stringify(pm.response.json(), null, 2));",
-                "} catch (e) {",
-                "  console.log(\"Response is not a valid JSON\");",
-                "}",
-                "console.log(\"Status code:\", pm.response.code);"
-              ]
-            }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "console.log(\"Response body (text):\", pm.response.text());",
+              "try {",
+              "  console.log(\"Response body (json):\", JSON.stringify(pm.response.json(), null, 2));",
+              "} catch (e) {",
+              "  console.log(\"Response is not a valid JSON\");",
+              "}",
+              "console.log(\"Status code:\", pm.response.code);"
+            ]
           }
-        ]
-      }
+        }
+      ]
     },
     {
       "name": "GET /atp-itf-lite/api/v1/user-settings",
@@ -139,36 +139,51 @@
         "auth": {
           "type": "basic",
           "basic": [
-            { "key": "username", "value": "user", "type": "string" },
-            { "key": "password", "value": "user", "type": "string" }
+            {
+              "key": "username",
+              "value": "user",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "user",
+              "type": "string"
+            }
           ]
         },
         "url": {
           "raw": "{{base_url}}/atp-itf-lite/api/v1/user-settings?projectId={{projectId}}",
-          "host": ["{{base_url}}"],
-          "path": ["atp-itf-lite", "api", "v1", "user-settings"],
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "atp-itf-lite",
+            "api",
+            "v1",
+            "user-settings"
+          ],
           "query": [
             {
               "key": "projectId",
               "value": "{{projectId}}"
             }
           ]
-        },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "type": "text/javascript",
-              "exec": [
-                "console.log(\"Response body:\", responseBody);",
-                "console.log(\"Status code:\", pm.response.code);",
-                "console.log(\"Response headers:\", JSON.stringify(pm.response.headers.toJSON(), null, 2));",
-                "console.log(\"Response body:\", responseBody);"
-              ]
-            }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "console.log(\"Response body:\", responseBody);",
+              "console.log(\"Status code:\", pm.response.code);",
+              "console.log(\"Response headers:\", JSON.stringify(pm.response.headers.toJSON(), null, 2));",
+              "console.log(\"Response body:\", responseBody);"
+            ]
           }
-        ]
+        }
+      ]
       }
-    }
   ]
 }
