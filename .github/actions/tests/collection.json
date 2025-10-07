@@ -78,7 +78,7 @@
     {
       "name": "DELETE /atp-itf-lite/api/v1/folders",
       "request": {
-        "method": "POST",
+        "method": "DELETE",
         "header": [
           {
             "key": "Content-Type",
