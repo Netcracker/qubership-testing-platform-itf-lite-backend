@@ -123,7 +123,7 @@
       ]
     },
     {
-      "name": "GET /atp-itf-lite/api/v1/sse/requests/connect",
+      "name": "GET /atp-itf-lite/api/v1/history/executors",
       "request": {
         "method": "GET",
         "header": [
@@ -148,11 +148,11 @@
           ]
         },
         "url": {
-          "raw": "{{base_url}}/atp-itf-lite/api/v1/sse/requests/connect?projectId={{projectId}}",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/history/executors?projectId={{projectId}}",
           "host": [
             "{{base_url}}"
           ],
-          "path": ["atp-itf-lite", "api", "v1", "sse", "requests", "connect"],
+          "path": ["atp-itf-lite", "api", "v1", "history", "executors"],
           "query": [
             {
               "key": "projectId",
