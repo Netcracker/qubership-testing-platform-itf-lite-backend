@@ -88,16 +88,31 @@
           "raw": "{\n  \"id\": \"{{id}}\",\n  \"name\": \"{{name}}\",\n  \"createdWhen\": \"{{createdWhen}}\",\n \"modifiedWhen\": \"{{modifiedWhen}}\",\n \"userId\": \"{{userId}}\",\n \"visibleColumns\": \"{{visibleColumns}}\"\n}"
         },
         "url": {
-          "raw": "{{base_url}}/dsl/va/{{vaId}}?projectId={{projectId}}",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/user-settings?projectId={{projectId}}",
           "host": ["{{base_url}}"],
-          "path": ["dsl", "va", "{{vaId}}"],
+          "path": ["atp-itf-lite", "api", "v1", "user-settings"],
           "query": [
             {
               "key": "projectId",
               "value": "{{projectId}}"
             }
           ]
-        }
+        },
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "console.log('=== Response Body ===');",
+                "console.log(pm.response.text());",
+                "const json = pm.response.json();",
+                "pm.environment.set('created_id', json[0].id);",
+                "console.log('Saved ID:', json[0].id);"
+              ]
+            }
+          }
+        ]
       }
     },
     {
@@ -127,7 +142,22 @@
               "value": "{{projectId}}"
             }
           ]
-        }
+        },
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "console.log('=== Response Body ===');",
+                "console.log(pm.response.text());",
+                "const json = pm.response.json();",
+                "pm.environment.set('created_id', json[0].id);",
+                "console.log('Saved ID:', json[0].id);"
+              ]
+            }
+          }
+        ]
       }
     }
   ]
