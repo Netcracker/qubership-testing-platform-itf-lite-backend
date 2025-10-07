@@ -22,7 +22,7 @@
       "enabled": true
     },
     {
-      "key": "parentId",
+      "key": "id",
       "value": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "enabled": true
     },
@@ -37,7 +37,7 @@
       "enabled": true
     },
     {
-      "key": "modifiedBy",
+      "key": "userId",
       "value": "07ff0787-1af5-4fc4-9832-7aaeaa962a5e",
       "enabled": true
     },
@@ -47,33 +47,18 @@
       "enabled": true
     },
     {
-      "key": "nametool",
-      "value": "Main Group test",
+      "key": "createdWhen",
+      "value": "2025-10-06T10:00:00Z",
       "enabled": true
     },
     {
-      "key": "shortName",
-      "value": "test",
+      "key": "modifiedWhen",
+      "value": "2025-10-06T12:00:00Z",
       "enabled": true
     },
     {
-      "key": "graylogName",
-      "value": "string",
-      "enabled": true
-    },
-    {
-      "key": "systems",
-      "value": "[]",
-      "enabled": true
-    },
-    {
-      "key": "ssmSolutionAlias",
-      "value": "string",
-      "enabled": true
-    },
-    {
-      "key": "ssmInstanceAlias",
-      "value": "string",
+      "key": "visibleColumns",
+      "value": "[\"column1\", \"column2\", \"column3\"]",
       "enabled": true
     }
   ],

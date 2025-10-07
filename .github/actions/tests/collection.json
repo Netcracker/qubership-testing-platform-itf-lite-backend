@@ -65,6 +65,70 @@
           }
         }
       ]
+    },
+    {
+      "name": "POST /atp-itf-lite/api/v1/user-settings",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "basic",
+          "basic": [
+            { "key": "username", "value": "user", "type": "string" },
+            { "key": "password", "value": "user", "type": "string" }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{id}}\",\n  \"name\": \"{{name}}\",\n  \"createdWhen\": \"{{createdWhen}}\",\n \"modifiedWhen\": \"{{modifiedWhen}}\",\n \"userId\": \"{{userId}}\",\n \"visibleColumns\": \"{{visibleColumns}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/dsl/va/{{vaId}}?projectId={{projectId}}",
+          "host": ["{{base_url}}"],
+          "path": ["dsl", "va", "{{vaId}}"],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /atp-itf-lite/api/v1/user-settings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "basic",
+          "basic": [
+            { "key": "username", "value": "user", "type": "string" },
+            { "key": "password", "value": "user", "type": "string" }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/user-settings?projectId={{projectId}}",
+          "host": ["{{base_url}}"],
+          "path": ["atp-itf-lite", "api", "v1", "user-settings"],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
+        }
+      }
     }
   ]
 }
