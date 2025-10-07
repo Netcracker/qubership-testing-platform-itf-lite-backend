@@ -113,8 +113,10 @@
             "script": {
               "type": "text/javascript",
               "exec": [
-                "console.log('=== Response Body ===');",
-                "console.log(pm.response.text());"
+                "console.log(\"Response body:\", responseBody);",
+                "console.log(\"Status code:\", pm.response.code);",
+                "console.log(\"Response headers:\", JSON.stringify(pm.response.headers.toJSON(), null, 2));",
+                "console.log(\"Response body:\", responseBody);"
               ]
             }
           }
