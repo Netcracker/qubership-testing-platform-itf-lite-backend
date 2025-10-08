@@ -92,6 +92,10 @@
             { "key": "password", "value": "user", "type": "string" }
           ]
         },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ids\": [\"{{ids}}\"],\n  \"projectId\": \"{{projectId}}\"\n}"
+        },
         "url": {
           "raw": "{{base_url}}/atp-itf-lite/api/v1/folders?projectId={{projectId}}",
           "host": ["{{base_url}}"],
