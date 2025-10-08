@@ -100,7 +100,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"id\": [\"{{id}}\"],\n  \"projectId\": \"{{projectId}}\"\n}"
+          "raw": "{\n  \"ids\": [\"{{id}}\"],\n  \"projectId\": \"{{projectId}}\"\n}"
         },
         "url": {
           "raw": "{{base_url}}/atp-itf-lite/api/v1/folders?projectId={{projectId}}",
