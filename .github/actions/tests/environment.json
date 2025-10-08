@@ -7,21 +7,6 @@
       "enabled": true
     },
     {
-      "key": "created",
-      "value": "0",
-      "enabled": true
-    },
-    {
-      "key": "createdBy",
-      "value": "25a02396-1048-48f9-bf93-102d2fb7895e",
-      "enabled": true
-    },
-    {
-      "key": "description",
-      "value": "string",
-      "enabled": true
-    },
-    {
       "key": "id",
       "value": "497f6eca-6276-4993-bfed-53cbbbba6f07",
       "enabled": true
@@ -37,11 +22,6 @@
       "enabled": true
     },
     {
-      "key": "modified",
-      "value": "0",
-      "enabled": true
-    },
-    {
       "key": "userId",
       "value": "07ff0787-1af5-4fc4-9832-7aaeaa962a5e",
       "enabled": true
@@ -49,16 +29,6 @@
     {
       "key": "name",
       "value": "test",
-      "enabled": true
-    },
-    {
-      "key": "createdWhen",
-      "value": "Tue, 07 Oct 2025 12:37:04 GMT",
-      "enabled": true
-    },
-    {
-      "key": "modifiedWhen",
-      "value": "Tue, 07 Oct 2025 12:27:04 GMT",
       "enabled": true
     },
     {

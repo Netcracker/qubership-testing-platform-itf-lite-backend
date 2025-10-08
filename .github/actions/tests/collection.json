@@ -36,8 +36,11 @@
             "script": {
               "type": "text/javascript",
               "exec": [
-                "console.log('=== Response Body ===');",
-                "console.log(pm.response.text());"
+                "console.log('Status:', pm.response.code);",
+                "console.log('Response body:', pm.response.text());",
+                "pm.test(\"Status is 200 or 201\", function () {",
+                "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                "});"
               ]
             }
           }
@@ -68,8 +71,11 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "console.log('=== Response Body ===');",
-              "console.log(pm.response.text());"
+              "console.log('Status:', pm.response.code);",
+              "console.log('Response body:', pm.response.text());",
+              "pm.test(\"Status is 200 or 201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
             ]
           }
         }
@@ -94,7 +100,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"ids\": [\"{{ids}}\"],\n  \"projectId\": \"{{projectId}}\"\n}"
+          "raw": "{\n  \"id\": [\"{{id}}\"],\n  \"projectId\": \"{{projectId}}\"\n}"
         },
         "url": {
           "raw": "{{base_url}}/atp-itf-lite/api/v1/folders?projectId={{projectId}}",
@@ -114,13 +120,11 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "console.log(\"Response body (text):\", pm.response.text());",
-              "try {",
-              "  console.log(\"Response body (json):\", JSON.stringify(pm.response.json(), null, 2));",
-              "} catch (e) {",
-              "  console.log(\"Response is not a valid JSON\");",
-              "}",
-              "console.log(\"Status code:\", pm.response.code);"
+              "console.log('Status:', pm.response.code);",
+              "console.log('Response body:', pm.response.text());",
+              "pm.test(\"Status is 200 or 201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
             ]
           }
         }
@@ -150,8 +154,11 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "console.log('=== Response Body ===');",
-              "console.log(pm.response.text());"
+              "console.log('Status:', pm.response.code);",
+              "console.log('Response body:', pm.response.text());",
+              "pm.test(\"Status is 200 or 201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
             ]
           }
         }
@@ -202,10 +209,11 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "console.log(\"Response body:\", responseBody);",
-              "console.log(\"Status code:\", pm.response.code);",
-              "console.log(\"Response headers:\", JSON.stringify(pm.response.headers.toJSON(), null, 2));",
-              "console.log(\"Response body:\", responseBody);"
+              "console.log('Status:', pm.response.code);",
+              "console.log('Response body:', pm.response.text());",
+              "pm.test(\"Status is 200 or 201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
             ]
           }
         }
