@@ -14,7 +14,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.21/community/" >/etc/apk/repo
     echo "https://dl-cdn.alpinelinux.org/alpine/v3.21/main/" >>/etc/apk/repositories && \
     apk add --update --no-cache --no-check-certificate \
           bash=5.2.37-r0 \
-          curl=8.12.1-r1 \
+          curl=8.14.1-r2 \
           font-dejavu=2.37-r5 \
           fontconfig=2.15.0-r1 \
           gcompat=1.1.0-r4 \

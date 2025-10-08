@@ -18,7 +18,7 @@ package org.qubership.atp.itf.lite.backend.feign.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +70,6 @@ public class JsScriptEngineService {
     private final ThreadLocal<List<String>> iterationDataEncrypted = new ThreadLocal<>();
     private final ThreadLocal<List<String>> variablesEncrypted = new ThreadLocal<>();
 
-    private final String failToCreatePostmanSandboxContextReasonCode = "ITFLSE-0001";
-
     /**
      * Execute post script script in js engine.
      *
@@ -118,6 +116,7 @@ public class JsScriptEngineService {
                     jsScriptEngineFeignClient.executePostmanScript(postmanExecuteScriptRequestDto).getBody();
 
             // Update context
+            assert jsScriptEngineResponse != null;
             PostmanDto postmanDto = jsScriptEngineResponse.getPostman();
             request.setCookies(CookieUtils.convertPostmanCookieDtoListToCookieList(
                     postmanDto.getCookies() != null ? postmanDto.getCookies() : new ArrayList<>()));
@@ -151,6 +150,7 @@ public class JsScriptEngineService {
                         feignClientEx.getErrorMessage()).getAsJsonObject();
                 if (feignClientExceptionAsJson.has("reason")) {
                     String scriptEngineReason = feignClientExceptionAsJson.get("reason").getAsString();
+                    String failToCreatePostmanSandboxContextReasonCode = "ITFLSE-0001";
                     if (failToCreatePostmanSandboxContextReasonCode.equals(scriptEngineReason)) {
                         exceptionType = HttpResponseExceptionTypeEnum.POSTMAN_SANDBOX_CONTEXT_EXCEPTION;
                     }
@@ -162,6 +162,8 @@ public class JsScriptEngineService {
                         if (messageObj.has("message") && messageObj.get("message").isJsonPrimitive()) {
                             errorMessage = messageObj.get("message").getAsString();
                         }
+                    } else if (messageElement.isJsonNull()) {
+                        errorMessage = "Null error message is provided";
                     } else {
                         errorMessage = messageElement.getAsString();
                     }
@@ -326,7 +328,7 @@ public class JsScriptEngineService {
             String step, String errorMessage, Exception ex, HttpResponseExceptionTypeEnum httpResponseExceptionType) {
         log.error(errorMessage, ex);
         return new PostmanExecuteScriptResponseDto()
-                .testResults(Arrays.asList(new PostmanExecuteScriptResponseTestResultsInnerDto()
+                .testResults(Collections.singletonList(new PostmanExecuteScriptResponseTestResultsInnerDto()
                         .name(step)
                         .index(BigDecimal.valueOf(0))
                         .passed(false)
