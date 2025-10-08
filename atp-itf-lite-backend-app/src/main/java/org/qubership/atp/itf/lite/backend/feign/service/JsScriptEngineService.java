@@ -166,6 +166,7 @@ public class JsScriptEngineService {
                         errorMessage = messageElement.getAsString();
                     }
                 }
+
                 if (feignClientExceptionAsJson.has("details")
                         && feignClientExceptionAsJson.get("details").isJsonObject()) {
                     String errorMessageFromJson = "";
