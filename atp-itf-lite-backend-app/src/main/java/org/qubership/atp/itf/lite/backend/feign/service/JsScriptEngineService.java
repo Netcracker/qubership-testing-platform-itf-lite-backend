@@ -49,6 +49,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import clover.org.apache.commons.lang3.StringUtils;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -155,7 +156,15 @@ public class JsScriptEngineService {
                     }
                 }
                 if (feignClientExceptionAsJson.has("message")) {
-                    errorMessage = feignClientExceptionAsJson.get("message").getAsString();
+                    JsonElement messageElement = feignClientExceptionAsJson.get("message");
+                    if (messageElement.isJsonObject()) {
+                        JsonObject messageObj = messageElement.getAsJsonObject();
+                        if (messageObj.has("message") && messageObj.get("message").isJsonPrimitive()) {
+                            errorMessage = messageObj.get("message").getAsString();
+                        }
+                    } else {
+                        errorMessage = messageElement.getAsString();
+                    }
                 }
                 if (feignClientExceptionAsJson.has("details")
                         && feignClientExceptionAsJson.get("details").isJsonObject()) {
