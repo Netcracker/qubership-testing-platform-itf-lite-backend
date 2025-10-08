@@ -127,6 +127,37 @@
       ]
     },
     {
+      "name": "GET /atp-itf-lite/api/v1/folders",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "basic",
+          "basic": [
+            { "key": "username", "value": "user", "type": "string" },
+            { "key": "password", "value": "user", "type": "string" }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/folders",
+          "host": ["{{base_url}}"],
+          "path": ["atp-itf-lite", "api", "v1", "folders"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "console.log('=== Response Body ===');",
+              "console.log(pm.response.text());"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "GET /atp-itf-lite/api/v1/history/executors",
       "request": {
         "method": "GET",
