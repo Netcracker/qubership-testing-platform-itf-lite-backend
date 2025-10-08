@@ -1,5 +1,5 @@
 {
-  "name": "Localhost environment",
+  "name": "Localhost itf-lite-backend",
   "values": [
     {
       "key": "base_url",
@@ -29,11 +29,6 @@
     {
       "key": "name",
       "value": "test",
-      "enabled": true
-    },
-    {
-      "key": "ids",
-      "value": "497f6eca-6276-4993-bfed-53cbbbba6f07",
       "enabled": true
     }
   ],
