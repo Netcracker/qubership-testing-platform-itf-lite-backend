@@ -163,7 +163,7 @@ public class JsScriptEngineService {
                             errorMessage = messageObj.get("message").getAsString();
                         }
                         if (messageObj.has("details") && messageObj.get("details").isJsonObject()) {
-                            String detailsMessage = extractMessageFromDetails(messageObj.getAsJsonObject("details"));
+                            String detailsMessage = extractMessageFromDetails(messageObj);
                             if (!StringUtils.isEmpty(detailsMessage)) {
                                 errorMessage = detailsMessage;
                             }
