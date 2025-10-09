@@ -162,6 +162,12 @@ public class JsScriptEngineService {
                         if (messageObj.has("message") && messageObj.get("message").isJsonPrimitive()) {
                             errorMessage = messageObj.get("message").getAsString();
                         }
+                        if (messageObj.has("details") && messageObj.get("details").isJsonObject()) {
+                            String detailsMessage = extractMessageFromDetails(messageObj.getAsJsonObject("details"));
+                            if (!StringUtils.isEmpty(detailsMessage)) {
+                                errorMessage = detailsMessage;
+                            }
+                        }
                     } else if (messageElement.isJsonNull()) {
                         errorMessage = "Null error message is provided";
                     } else {
@@ -171,18 +177,7 @@ public class JsScriptEngineService {
 
                 if (feignClientExceptionAsJson.has("details")
                         && feignClientExceptionAsJson.get("details").isJsonObject()) {
-                    String errorMessageFromJson = "";
-                    if (feignClientExceptionAsJson.get("details").getAsJsonObject().has("name")) {
-                        errorMessageFromJson = feignClientExceptionAsJson.get("details").getAsJsonObject()
-                                .get("name").getAsString();
-                    }
-                    if (feignClientExceptionAsJson.get("details").getAsJsonObject().has("message")) {
-                        errorMessageFromJson += StringUtils.isEmpty(errorMessageFromJson)
-                                ? feignClientExceptionAsJson.get("details").getAsJsonObject()
-                                    .get("message").getAsString()
-                                : (": " + feignClientExceptionAsJson.get("details").getAsJsonObject()
-                                    .get("message").getAsString());
-                    }
+                    String errorMessageFromJson = extractMessageFromDetails(feignClientExceptionAsJson);
                     if (!StringUtils.isEmpty(errorMessageFromJson)) {
                         errorMessage = errorMessageFromJson;
                     }
@@ -200,6 +195,22 @@ public class JsScriptEngineService {
             return generateExecuteScriptErrorResponse("[OTHER] EXECUTE JS SCRIPT", e.getMessage(), e,
                     HttpResponseExceptionTypeEnum.EXECUTION_EXCEPTION);
         }
+    }
+
+    private String extractMessageFromDetails(JsonObject jsonObject) {
+        String errorMessageFromJson = "";
+        if (jsonObject.get("details").getAsJsonObject().has("name")) {
+            errorMessageFromJson = jsonObject.get("details").getAsJsonObject()
+                    .get("name").getAsString();
+        }
+        if (jsonObject.get("details").getAsJsonObject().has("message")) {
+            errorMessageFromJson += StringUtils.isEmpty(errorMessageFromJson)
+                    ? jsonObject.get("details").getAsJsonObject()
+                    .get("message").getAsString()
+                    : (": " + jsonObject.get("details").getAsJsonObject()
+                    .get("message").getAsString());
+        }
+        return errorMessageFromJson;
     }
 
     private Map<String, Object> generateContext(ContextType type, Map<String, Object> originContext)
