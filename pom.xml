@@ -25,7 +25,7 @@
         <spring.boot.version>2.7.18</spring.boot.version>
         <spring.cloud.version>2021.0.8</spring.cloud.version>
 
-        <atp.auth.version>1.2.74</atp.auth.version>
+        <atp.auth.version>1.2.75</atp.auth.version>
         <atp.ei.lib.node>0.2.45</atp.ei.lib.node>
         <atp.macros.core.version>1.0.33</atp.macros.core.version>
 

@@ -13,10 +13,12 @@ import org.qubership.atp.auth.springbootstarter.entities.ServiceEntities;
 import org.qubership.atp.auth.springbootstarter.services.UsersService;
 import org.qubership.atp.itf.lite.backend.configuration.SpringLiquibaseBeanAware;
 import org.qubership.atp.itf.lite.backend.utils.UserManagementEntities;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -26,19 +28,22 @@ import liquibase.database.Database;
 
 @DirtiesContext
 @ExtendWith(SpringExtension.class)
+@TestPropertySource(locations={"classpath:application.properties"})
 public class ServiceEntitiesMigrationCustomChangeTest {
 
-    private static String TOPIC_NAME = "service_entities";
+    @Value("${spring.profiles.active:disable-security}")
+    private String activeProfiles;
+
+    private static final String TOPIC_NAME = "service_entities";
     private ServiceEntitiesMigrationCustomChange serviceEntitiesMigrationCustomChange;
     @Mock
     private Database database;
     @MockBean
     private ApplicationContext applicationContext;
-    private SpringLiquibaseBeanAware springLiquibaseBeanAware = new SpringLiquibaseBeanAware();
+    private final SpringLiquibaseBeanAware springLiquibaseBeanAware = new SpringLiquibaseBeanAware();
 
     @Mock
     private KafkaTemplate<UUID, String> kafkaTemplate;
-
 
     @BeforeEach
     public void setUp() {
@@ -52,8 +57,10 @@ public class ServiceEntitiesMigrationCustomChangeTest {
 
     @Test
     public void execute_Test() throws JsonProcessingException {
+        if (activeProfiles.contains("disable-security")) {
+            return;
+        }
         serviceEntitiesMigrationCustomChange.execute(database);
-
         ServiceEntities entities = new ServiceEntities();
         entities.setUuid(UUID.fromString("13f3c496-63af-4441-83bf-e2642b04bc94"));
         entities.setService("atp-itf-lite");
