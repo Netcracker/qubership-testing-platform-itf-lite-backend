@@ -85,7 +85,6 @@ containerSecurityContext: {}
 GRIDFS_DB_ADDR: "mongos.mongocluster.svc"
 # atp-itf-lite gridfs port
 GRIDFS_DB_PORT: "27017"
-ITF_LITE_GRIDFS_ENABLED: "true"
 EI_GRIDFS_ENABLED: "true"
 MAX_CONNECTION_IDLE_TIME: "0"
 MIN_CONNECTIONS_PER_HOST: "40"
