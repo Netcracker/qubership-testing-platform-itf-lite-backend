@@ -5,7 +5,7 @@
   },
   "item": [
     {
-      "name": "POST /api/projects",
+      "name": "POST /atp-itf-lite/api/v1/folders",
       "request": {
         "method": "POST",
         "header": [
@@ -23,17 +23,32 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"created\": \"{{created}}\",\n  \"createdBy\": \"{{createdBy}}\",\n  \"description\": \"{{description}}\",\n \"environments\": {{environments}},\n \"id\": \"{{id}}\",\n  \"modified\": \"{{modified}}\",\n  \"modifiedBy\": \"{{modifiedBy}}\",\n  \"name\": \"{{name}}\",\n  \"shortName\": \"{{shortName}}\"\n}"
+          "raw": "{\n  \"name\": \"{{name}}\",\n  \"projectId\": \"{{projectId}}\",\n  \"parentId\": \"{{parentId}}\"\n}"
         },
         "url": {
-          "raw": "{{base_url}}/api/projects",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/folders",
           "host": ["{{base_url}}"],
-          "path": ["api", "projects"]
+          "path": ["atp-itf-lite", "api", "v1", "folders"]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "console.log('Status:', pm.response.code);",
+              "console.log('Response body:', pm.response.text());",
+              "pm.test(\"Status is 200 or 201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
+            ]
+          }
+        }
+      ]
     },
     {
-      "name": "GET /api/projects",
+      "name": "GET /atp-itf-lite/api/v1/folders",
       "request": {
         "method": "GET",
         "header": [],
@@ -45,9 +60,15 @@
           ]
         },
         "url": {
-          "raw": "{{base_url}}/api/projects",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/folders?projectId={{projectId}}",
           "host": ["{{base_url}}"],
-          "path": ["api", "projects"]
+          "path": ["atp-itf-lite", "api", "v1", "folders"],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
         }
       },
       "event": [
@@ -56,20 +77,23 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "console.log('=== Response Body ===');",
-              "console.log(pm.response.text());",
+              "console.log('Status:', pm.response.code);",
+              "console.log('Response body:', pm.response.text());",
               "const json = pm.response.json();",
-              "pm.environment.set('created_id', json[0].id);",
-              "console.log('Saved ID:', json[0].id);"
+              "pm.environment.set('id', json[0].id);",
+              "console.log('Saved ID:', json[0].id);",
+              "pm.test(\"Status is 200 or 201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
             ]
           }
         }
       ]
     },
     {
-      "name": "POST /api/projects/{{created_id}}/environments",
+      "name": "DELETE /atp-itf-lite/api/v1/folders",
       "request": {
-        "method": "POST",
+        "method": "DELETE",
         "header": [
           {
             "key": "Content-Type",
@@ -85,12 +109,18 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"created\": \"{{created}}\",\n  \"createdBy\": \"{{createdBy}}\",\n  \"description\": \"{{description}}\",\n \"graylogName\": \"{{graylogName}}\",\n \"id\": \"{{id}}\",\n  \"modified\": \"{{modified}}\",\n  \"modifiedBy\": \"{{modifiedBy}}\",\n  \"name\": \"{{name}}\",\n  \"projectId\": \"{{created_id}}\",\n \"systems\": {{systems}},\n \"ssmSolutionAlias\": \"{{ssmSolutionAlias}}\", \n\"ssmInstanceAlias\": \"{{ssmInstanceAlias}}\"\n}"
+          "raw": "{\n  \"ids\": [\"{{id}}\"],\n  \"projectId\": \"{{projectId}}\"\n}"
         },
         "url": {
-          "raw": "{{base_url}}/api/projects/{{created_id}}/environments",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/folders?projectId={{projectId}}",
           "host": ["{{base_url}}"],
-          "path": ["api", "projects", "{{created_id}}", "environments"]
+          "path": ["atp-itf-lite", "api", "v1", "folders"],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
         }
       },
       "event": [
@@ -100,14 +130,17 @@
             "type": "text/javascript",
             "exec": [
               "console.log('Status:', pm.response.code);",
-              "console.log('Response body:', pm.response.text());"
+              "console.log('Response body:', pm.response.text());",
+              "pm.test(\"Status is 200 or 201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
             ]
           }
         }
       ]
     },
     {
-      "name": "GET /api/environments",
+      "name": "GET /atp-itf-lite/api/v1/folders",
       "request": {
         "method": "GET",
         "header": [],
@@ -119,9 +152,15 @@
           ]
         },
         "url": {
-          "raw": "{{base_url}}/api/environments",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/folders?projectId={{projectId}}",
           "host": ["{{base_url}}"],
-          "path": ["api", "environments"]
+          "path": ["atp-itf-lite", "api", "v1", "folders"],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
         }
       },
       "event": [
@@ -131,57 +170,25 @@
             "type": "text/javascript",
             "exec": [
               "console.log('Status:', pm.response.code);",
-              "console.log('Response body:', pm.response.text());"
+              "console.log('Response body:', pm.response.text());",
+              "pm.test(\"Status is 200 or 201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
             ]
           }
         }
       ]
     },
     {
-    "name": "POST /api/projects/{{created_id}}/tools",
-    "request": {
-        "method": "POST",
+      "name": "GET /atp-itf-lite/api/v1/history/executors",
+      "request": {
+        "method": "GET",
         "header": [
           {
             "key": "Content-Type",
             "value": "application/json"
           }
         ],
-        "auth": {
-          "type": "basic",
-          "basic": [
-            { "key": "username", "value": "user", "type": "string" },
-            { "key": "password", "value": "user", "type": "string" }
-          ]
-        },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"created\": \"{{created}}\",\n  \"createdBy\": \"{{createdBy}}\",\n  \"description\": \"{{description}}\",\n \"graylogName\": \"{{graylogName}}\",\n \"id\": \"{{id}}\",\n  \"modified\": \"{{modified}}\",\n  \"modifiedBy\": \"{{modifiedBy}}\",\n  \"name\": \"{{nametool}}\",\n  \"projectId\": \"{{created_id}}\",\n \"systems\": {{systems}},\n \"ssmSolutionAlias\": \"{{ssmSolutionAlias}}\", \n\"ssmInstanceAlias\": \"{{ssmInstanceAlias}}\"\n}"
-        },
-        "url": {
-          "raw": "{{base_url}}/api/projects/{{created_id}}/tools",
-          "host": ["{{base_url}}"],
-          "path": ["api", "projects", "{{created_id}}", "tools"]
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "console.log('Status:', pm.response.code);",
-              "console.log('Response body:', pm.response.text());"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "GET /api/projects/{{created_id}}/tools/short",
-      "request": {
-        "method": "GET",
-        "header": [],
         "auth": {
           "type": "basic",
           "basic": [
@@ -197,16 +204,18 @@
             }
           ]
         },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n \"id\": \"{{id}}\",\n \"name\": \"{{name}}\"\n}"
-        },
         "url": {
-          "raw": "{{base_url}}/api/projects/{{created_id}}/tools/short",
+          "raw": "{{base_url}}/atp-itf-lite/api/v1/history/executors?projectId={{projectId}}",
           "host": [
             "{{base_url}}"
           ],
-          "path": ["api", "projects", "{{created_id}}", "tools", "short"]
+          "path": ["atp-itf-lite", "api", "v1", "history", "executors"],
+          "query": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}"
+            }
+          ]
         }
       },
       "event": [
@@ -216,11 +225,14 @@
             "type": "text/javascript",
             "exec": [
               "console.log('Status:', pm.response.code);",
-              "console.log('Response body:', pm.response.text());"
+              "console.log('Response body:', pm.response.text());",
+              "pm.test(\"Status is 200 or 201\", function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
             ]
           }
         }
       ]
-    }
+      }
   ]
 }

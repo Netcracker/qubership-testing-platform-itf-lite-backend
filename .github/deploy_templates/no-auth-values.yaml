@@ -1,0 +1,44 @@
+image:
+  registry: docker.io
+  repository: bitnamilegacy/kafka
+
+kraft:
+  enabled: false
+
+broker:
+  replicaCount: 3
+
+controller:
+  replicaCount: 0
+
+zookeeper:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/zookeeper
+  auth:
+    enabled: false
+
+auth:
+  enabled: false
+  clientProtocol: plaintext
+  interBrokerProtocol: plaintext
+
+persistence:
+  enabled: false
+
+externalAccess:
+  enabled: false
+
+
+listeners:
+  interbroker:
+    containerPort: 9094
+    protocol: PLAINTEXT
+    name: INTERNAL
+    sslClientAuth: ""
+  client:
+    containerPort: 9092
+    protocol: PLAINTEXT
+    name: CLIENT
+    sslClientAuth: ""
