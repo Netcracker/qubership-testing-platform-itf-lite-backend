@@ -105,38 +105,31 @@ runs:
         kubectl get pv | grep ${{inputs.namespace}} > $file_name
 
 
-    - name: Wait ready status for atp-datasets pod
+    - name: Get logs from all containers in pods
       shell: bash
       # language=bash
       run: |
-        # ▶️ Get logs from test pod
-        file_name=artifacts/${{inputs.namespace}}_tests.txt
+        # ▶️ Get logs from all containers in pods
+        file_name=artifacts/${{inputs.namespace}}_log_from_containers.txt
         IFS=' ' read -ra pods <<< $(kubectl get pods --no-headers -o custom-columns=":metadata.name" -n ${{inputs.namespace}} | tr $'\n' ' ')
+        echo "Logs from all containers in pods: " > $file_name
         for pod in "${pods[@]}"; do
-          if [[ $pod == *"atp-datasets"* && $pod != *"atp-datasets-predeploy-install"* ]]; then
-            test_pod=$pod
-          fi
+            IFS=' ' read -ra containers <<< $(kubectl get pod "$pod" -n ${{inputs.namespace}} -o jsonpath="{.spec.containers[*].name}")
+            for container in "${containers[@]}"; do
+              echo $pod $container >> $file_name
+              kubectl logs "$pod" -n ${{inputs.namespace}} -c "$container" >> $file_name
+              echo '================================================================================' >> $file_name
+            done
         done
-        if ! [[ $test_pod ]]; then
-          echo There is no test pod
-          exit 0
+
+        restart_count=$(kubectl get pod "$pod" -n ${{inputs.namespace}} -o jsonpath="{.status.containerStatuses[0].restartCount}")
+        if [[ "$restart_count" -gt 0 ]]; then
+          echo "🔁 Previous logs (before restart) for pod: $pod"
+          kubectl get pod "$pod" -n ${{inputs.namespace}} -o yaml >> $file_name
+          if ! kubectl logs "$pod" -n ${{inputs.namespace}} --previous; then
+            echo "⚠️ Could not fetch previous logs for $pod"
+          fi
         fi
-        echo "test_pod=$test_pod"
-        for i in {1..${{inputs.max_attempts}}}; do
-          echo attempt $i
-          status=$(kubectl get pod $test_pod -n ${{inputs.namespace}} -o jsonpath="{.status.phase}")
-          echo "$status"
-          ready=$(kubectl get pod "$test_pod" -n ${{inputs.namespace}} -o jsonpath="{.status.containerStatuses[*].ready}")
-          echo "$ready"
-          if [[ "$status" == "Running" && "$ready" == "true" ]]; then
-            break
-          fi
-          sleep ${{inputs.timeout}}
-        done
-        if [[ "$status" == "Running" && "$ready" != "true" ]]; then
-            kubectl get pods -n ${{inputs.namespace}}
-            ERROR_FLAG=true
-          fi
         
 
     - name: Get pods
