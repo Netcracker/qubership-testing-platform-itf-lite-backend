@@ -68,7 +68,7 @@ public enum CacheKeys {
 
     public static class Constants {
         public static final String ENVIRONMENT_SYSTEMS = "ATP_ITF_LITE_ENVIRONMENT_SYSTEMS";
-        public static final String AUTH_PROJECTS_KEY = "projects";
+        public static final String AUTH_PROJECTS_KEY = "auth_projects";
         public static final String PROJECT_CERT = "ATP_ITF_LITE_PROJECT_CERT";
         public static final String AUTH_OBJECTS_KEY = "auth_objects";
     }

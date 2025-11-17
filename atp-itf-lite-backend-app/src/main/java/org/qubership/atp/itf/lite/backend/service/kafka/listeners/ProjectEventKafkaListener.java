@@ -63,7 +63,7 @@ public class ProjectEventKafkaListener {
             case CREATE:
             case UPDATE:
             case DELETE: {
-                log.info("Received events from catalogue: " + event);
+                log.info("Received event from catalogue: {}", event);
                 // clear files with certificates for project
                 File folder = new File(String.format(CERTIFICATE_FOLDER, event.getProjectId()));
                 try {
@@ -75,7 +75,7 @@ public class ProjectEventKafkaListener {
                 break;
             }
             default: {
-                log.error("Unknown type of events from catalogue: " + event.getType());
+                log.error("Unknown type of event from catalogue: {}", event.getType());
             }
         }
     }
