@@ -5,7 +5,7 @@
     <groupId>org.qubership.atp.itf.lite</groupId>
     <artifactId>atp-itf-lite-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.218-SNAPSHOT</version>
+    <version>1.2.220-SNAPSHOT</version>
 
     <modules>
         <module>atp-itf-lite-backend-app</module>

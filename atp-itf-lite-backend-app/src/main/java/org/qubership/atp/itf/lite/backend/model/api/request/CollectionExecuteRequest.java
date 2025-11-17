@@ -69,14 +69,16 @@ public class CollectionExecuteRequest {
 
     /**
      * Converts context variables to map.
+     *
      * @return map
      */
     public Map<String, Object> convertContextVariablesToMap() {
         if (!CollectionUtils.isEmpty(contextVariables)) {
             return contextVariables.stream().collect(Collectors.toMap(variable -> variable
-                    .getContextVariableType()
-                    .getContextScope()
-                    .getPrefix() + variable.getKey(), ContextVariable::getValue));
+                            .getContextVariableType()
+                            .getContextScope()
+                            .getPrefix() + variable.getKey(), ContextVariable::getValue,
+                    (originalKey, duplicateKey) -> originalKey));
         }
         return new HashMap<>();
     }
