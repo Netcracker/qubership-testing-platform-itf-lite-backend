@@ -1,5 +1,5 @@
 ---
-# The workflow to deploy snapshot artifact versions to Maven Central
+# The workflow to deploy snapshot artifact versions to Github packages
 # Fill free to adjust java version and additional mvn command-line parameters
 # The workflow will trigger on pushes into branches different from main and release
 # Please make sure that the version in the pom.xml file has the SNAPSHOT postfix
@@ -37,6 +37,9 @@ jobs:
   mvn-snapshot-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: "Checkout code"
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
       - name: Maven Docker build
         id: maven_build
         uses: netcracker/qubership-workflow-hub/actions/maven-snapshot-deploy@9538833017019ab6bbc2138d3034778dfe3a5d1f # v2.0.6
