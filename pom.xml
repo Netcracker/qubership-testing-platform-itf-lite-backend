@@ -47,6 +47,8 @@
         <lombok.version>1.18.30</lombok.version>
         <logback.version>1.2.13</logback.version>
         <jboss.xnio.version>3.8.14.Final</jboss.xnio.version>
+        <hazelcast.version>5.3.5</hazelcast.version>
+        <apache.poi.version>3.17</apache.poi.version>
     </properties>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -264,17 +266,27 @@
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
-                <version>3.17</version>
+                <version>${apache.poi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
-                <version>3.17</version>
+                <version>${apache.poi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml-schemas</artifactId>
-                <version>3.17</version>
+                <version>${apache.poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast</artifactId>
+                <version>${hazelcast.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast-spring</artifactId>
+                <version>${hazelcast.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.xerial.snappy</groupId>
