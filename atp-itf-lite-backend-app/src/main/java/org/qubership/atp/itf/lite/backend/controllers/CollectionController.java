@@ -41,7 +41,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import clover.com.google.common.net.HttpHeaders;
+//import clover.com.google.common.net.HttpHeaders;
+import org.springframework.http.HttpHeaders;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -50,6 +51,10 @@ import lombok.AllArgsConstructor;
 public class CollectionController {
 
     private final CollectionsService collectionsService;
+
+    public CollectionController(CollectionsService collectionsService) {
+        this.collectionsService = collectionsService;
+    }
 
     @AuditAction(auditAction = "Import collection {{#requestEntity.name}} to project {{#requestEntity.projectId}}")
     @PreAuthorize("#requestEntity.getTargetFolderId() != null ? @entityAccess.checkAccess("

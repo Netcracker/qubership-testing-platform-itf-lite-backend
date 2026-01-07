@@ -36,7 +36,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import clover.com.google.common.net.HttpHeaders;
+//import clover.com.google.common.net.HttpHeaders;
+import org.springframework.http.HttpHeaders;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +48,10 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
     private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @AuditAction(auditAction = "Save settings for the user with id '{{#setting.userId}}'")
     @PreAuthorize("@entityAccess.checkAccess(#projectId, 'CREATE') || @entityAccess.checkAccess(#projectId, 'UPDATE')")
