@@ -52,10 +52,6 @@ public class CollectionController {
 
     private final CollectionsService collectionsService;
 
-    public CollectionController(CollectionsService collectionsService) {
-        this.collectionsService = collectionsService;
-    }
-
     @AuditAction(auditAction = "Import collection {{#requestEntity.name}} to project {{#requestEntity.projectId}}")
     @PreAuthorize("#requestEntity.getTargetFolderId() != null ? @entityAccess.checkAccess("
             + "T(org.qubership.atp.itf.lite.backend.utils.UserManagementEntities).FOLDER.getName(),"

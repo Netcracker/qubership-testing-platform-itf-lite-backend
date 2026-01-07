@@ -49,10 +49,6 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @AuditAction(auditAction = "Save settings for the user with id '{{#setting.userId}}'")
     @PreAuthorize("@entityAccess.checkAccess(#projectId, 'CREATE') || @entityAccess.checkAccess(#projectId, 'UPDATE')")
     @PostMapping
