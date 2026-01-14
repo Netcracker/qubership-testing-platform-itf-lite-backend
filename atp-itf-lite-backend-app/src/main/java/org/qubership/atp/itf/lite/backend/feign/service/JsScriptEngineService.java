@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.qubership.atp.auth.springbootstarter.feign.exception.FeignClientException;
 import org.qubership.atp.crypt.exception.AtpDecryptException;
 import org.qubership.atp.crypt.exception.AtpEncryptException;
@@ -48,7 +49,6 @@ import org.qubership.atp.itf.lite.backend.utils.CookieUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import clover.org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

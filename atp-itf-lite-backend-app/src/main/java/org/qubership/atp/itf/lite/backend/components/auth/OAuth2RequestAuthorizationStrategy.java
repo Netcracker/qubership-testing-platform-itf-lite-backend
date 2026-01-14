@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.auth.springbootstarter.utils.ExceptionUtils;
 import org.qubership.atp.crypt.exception.AtpDecryptException;
