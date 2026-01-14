@@ -19,6 +19,7 @@ package org.qubership.atp.itf.lite.backend.converters;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.qubership.atp.itf.lite.backend.converters.curl.CurlOptions;
 import org.qubership.atp.itf.lite.backend.enums.ValueType;
 import org.qubership.atp.itf.lite.backend.model.api.request.HttpRequestEntitySaveRequest;
@@ -33,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import clover.org.apache.commons.lang.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

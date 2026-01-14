@@ -25,15 +25,16 @@
         <spring.boot.version>2.7.18</spring.boot.version>
         <spring.cloud.version>2021.0.8</spring.cloud.version>
 
-        <atp.auth.version>1.2.60</atp.auth.version>
+        <atp.auth.version>1.2.75</atp.auth.version>
+        <atp.ei.lib.node>0.2.46</atp.ei.lib.node>
+        <atp.macros.core.version>1.0.33</atp.macros.core.version>
         <atp.adapter.robot.version>4.5.71</atp.adapter.robot.version>
-        <atp.catalog.version>1.4.192</atp.catalog.version>
-        <atp.common.version>0.0.43</atp.common.version>
-        <atp.crypt.version>0.0.20</atp.crypt.version>
-        <atp.ei.lib.node>0.2.40</atp.ei.lib.node>
-        <atp.integration.version>0.2.38</atp.integration.version>
-        <atp.macros.core.version>1.0.27</atp.macros.core.version>
-        <atp.ram.version>2.2.205</atp.ram.version>
+        <atp.common.version>0.0.47</atp.common.version>
+        <atp.crypt.version>0.0.24</atp.crypt.version>
+        <atp.integration.version>0.2.42</atp.integration.version>
+
+        <atp.catalog.version>1.4.192</atp.catalog.version> <!-- To remember catalog specification version-->
+        <atp.ram.version>2.2.205</atp.ram.version> <!-- To remember ram specification version-->
 
         <logstash.gelf.version>1.14.1</logstash.gelf.version>
         <google.guava.version>27.0-jre</google.guava.version>
@@ -230,8 +231,25 @@
             <!--ATP dependencies-->
             <dependency>
                 <groupId>org.qubership.atp.auth</groupId>
-                <artifactId>atp-auth-spring-boot-starter</artifactId>
+                <artifactId>atp-auth-models</artifactId>
                 <version>${atp.auth.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.minidev</groupId>
+                        <artifactId>json-smart</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.qubership.atp.auth</groupId>
+                <artifactId>atp-auth-impl</artifactId>
+                <version>${atp.auth.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.minidev</groupId>
+                        <artifactId>json-smart</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.qubership.atp.adapter.robot</groupId>
@@ -245,6 +263,10 @@
                     <exclusion>
                         <groupId>opensymphony</groupId>
                         <artifactId>quartz</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.qubership.atp.auth</groupId>
+                        <artifactId>atp-auth-spring-boot-starter</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

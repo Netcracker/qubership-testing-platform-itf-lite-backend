@@ -16,10 +16,9 @@
 
 package org.qubership.atp.itf.lite.backend.service;
 
-import static clover.org.apache.commons.lang.StringUtils.containsIgnoreCase;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.springframework.util.CollectionUtils.isEmpty;
+//import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +36,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.auth.springbootstarter.entities.Operation;
@@ -83,7 +83,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -251,14 +250,15 @@ public class FolderService extends CrudService<Folder> implements EntityHistoryS
         if (!isSearchEmpty) {
             topLevelEntities =
                     topLevelEntities.stream()
-                            .filter(folder -> !isEmpty(folder.getChildren())
-                                    || containsIgnoreCase(folder.getName(), search))
+                            .filter(folder -> !CollectionUtils.isEmpty(folder.getChildren())
+                                    || StringUtils.containsIgnoreCase(folder.getName(), search))
                             .collect(Collectors.toList());
         }
 
         List<GroupResponse> topLevelRequests = StreamUtils.filterList(requests, req -> isNull(req.getFolderId()))
                 .stream()
-                .filter(topLevelRequest -> isNull(search) || containsIgnoreCase(topLevelRequest.getName(), search))
+                .filter(topLevelRequest -> isNull(search)
+                        || StringUtils.containsIgnoreCase(topLevelRequest.getName(), search))
                 .map(r -> {
                     GroupResponse gr = new GroupResponse(r, null);
                     gr.setHasWritePermissions(true);
@@ -315,7 +315,7 @@ public class FolderService extends CrudService<Folder> implements EntityHistoryS
 
     private void sortFolderRequestTree(GroupResponse tree) {
         List<GroupResponse> children = tree.getChildren();
-        if (!isEmpty(children)) {
+        if (!CollectionUtils.isEmpty(children)) {
             Collections.sort(children);
             children.forEach(this::sortFolderRequestTree);
         }
@@ -374,18 +374,18 @@ public class FolderService extends CrudService<Folder> implements EntityHistoryS
         List<Request> folderMatchedRequests =
                 StreamUtils.filterList(requests, request -> rootFolderId.equals(request.getFolderId()));
 
-        if (!isEmpty(folderMatchedRequests)) {
+        if (!CollectionUtils.isEmpty(folderMatchedRequests)) {
             final List<GroupResponse> childFolders = getChildFolders(response);
             boolean isAllChildrenFoldersFilteredOut = childFolders.isEmpty() || childFolders
                     .stream()
                     .allMatch(GroupResponse::isFilteredOut);
             boolean isNoneRequestNameMatchesSearch = folderMatchedRequests.stream()
-                    .noneMatch(request -> containsIgnoreCase(request.getName(), search));
+                    .noneMatch(request -> StringUtils.containsIgnoreCase(request.getName(), search));
 
             List<GroupResponse> requestResponses;
             if (nonNull(search) && (!isNoneRequestNameMatchesSearch || !isAllChildrenFoldersFilteredOut)) {
                 requestResponses = folderMatchedRequests.stream()
-                        .filter(request -> containsIgnoreCase(request.getName(), search))
+                        .filter(request -> StringUtils.containsIgnoreCase(request.getName(), search))
                         .map(request -> {
                             GroupResponse gr = new GroupResponse(request, parentAuth);
                             gr.setPermissions(perms);
@@ -402,7 +402,7 @@ public class FolderService extends CrudService<Folder> implements EntityHistoryS
                         }).collect(Collectors.toList());
             }
 
-            boolean isFolderNameMatchesSearch = containsIgnoreCase(rootFolder.getName(), search);
+            boolean isFolderNameMatchesSearch = StringUtils.containsIgnoreCase(rootFolder.getName(), search);
             if (nonNull(search)) {
                 response.setFilteredOut(isNoneRequestNameMatchesSearch && isAllChildrenFoldersFilteredOut
                         && !isFolderNameMatchesSearch);
@@ -414,7 +414,7 @@ public class FolderService extends CrudService<Folder> implements EntityHistoryS
             boolean isAllChildrenFoldersFilteredOut = childFolders.isEmpty() || childFolders
                     .stream()
                     .allMatch(GroupResponse::isFilteredOut);
-            boolean isFolderNameMatchesSearch = containsIgnoreCase(rootFolder.getName(), search);
+            boolean isFolderNameMatchesSearch = StringUtils.containsIgnoreCase(rootFolder.getName(), search);
             if (nonNull(search)) {
                 response.setFilteredOut(isAllChildrenFoldersFilteredOut && !isFolderNameMatchesSearch);
             }
@@ -866,7 +866,7 @@ public class FolderService extends CrudService<Folder> implements EntityHistoryS
 
         Set<UUID> summaryFolderIds = folderRepository.findHeirsIdsByIdIn(request.getIds());
         List<Request> foldersRequests = requestRepository.findAllByFolderIdIn(summaryFolderIds);
-        if (!isEmpty(foldersRequests)) {
+        if (!CollectionUtils.isEmpty(foldersRequests)) {
             contHeirs = foldersRequests.size();
         }
 

@@ -25,6 +25,7 @@ import org.qubership.atp.integration.configuration.configuration.AuditAction;
 import org.qubership.atp.itf.lite.backend.model.api.ApiPath;
 import org.qubership.atp.itf.lite.backend.model.entities.user.UserSettings;
 import org.qubership.atp.itf.lite.backend.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import clover.com.google.common.net.HttpHeaders;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

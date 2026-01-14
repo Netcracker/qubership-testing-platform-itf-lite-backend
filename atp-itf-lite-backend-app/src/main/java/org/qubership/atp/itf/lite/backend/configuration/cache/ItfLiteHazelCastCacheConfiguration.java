@@ -96,11 +96,11 @@ public class ItfLiteHazelCastCacheConfiguration {
                         hzInstanceClient.getConfig().addMapConfig(
                                 new MapConfig(name).setTimeToLiveSeconds(key.getTtlInSeconds()));
                     } catch (Exception failedCreate) {
-                        log.warn("Map {} already created. Not possible to change map config: {}", name, failedCreate);
+                        log.warn("Map {} already created. Not possible to change map config", name, failedCreate);
                     }
                 }
             } catch (Exception e) {
-                log.error("HazelCast server is not available!!! {}", e);
+                log.error("HazelCast server is not available!!!", e);
                 serverStarted = false;
             }
         }
@@ -109,7 +109,7 @@ public class ItfLiteHazelCastCacheConfiguration {
 
     private void startCacheServer() {
         if (hazelcastServerEnable) {
-            log.info("Get or start cache config on address " + hazelcastServerAddress + ":" + hazelcastServerPort);
+            log.info("Get or start cache config on address {}:{}", hazelcastServerAddress, hazelcastServerPort);
             Config config = new Config("ATP-ITF_LITE-HC-SERVER");
             NetworkConfig network = config.getNetworkConfig()
                     .setPort(hazelcastServerPort)
