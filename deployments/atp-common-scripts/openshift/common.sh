@@ -177,13 +177,13 @@ update_secret() {
 generate_keys_secret() {
   echo "=> Generating pair of keys in secrets mode ..."
   _keys="$(atp_crypt "${1:?Empty AES key}")"
-  echo "keys ${_keys}"
+  echo "keys '${_keys}'"
   _secret="${2:?Empty secret name}"
-  echo "secret ${_secret}"
+  echo "secret '${_secret}'"
   _ek="$(extract_key "encryptedKey" "${_keys:?}")"
-  echo "ek ${_ek}"
+  echo "ek '${_ek}'"
   _pk="$(extract_key "privateKey" "${_keys:?}")"
-  echo "pk ${_pk}"
+  echo "pk '${_pk}'"
   update_secret "${_secret}" "false" "ATP_CRYPTO_KEY=${_ek:?}" "ATP_CRYPTO_PRIVATE_KEY=${_pk:?}"
 }
 
