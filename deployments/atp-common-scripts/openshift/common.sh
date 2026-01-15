@@ -61,6 +61,9 @@ atp_crypt() {
   echo "_cmd '${_cmd}'"
   echo "1 '${1}'"
   echo "'${_cmd:-sh}' -c java -cp \"./lib/*\" org.qubership.atp.crypt.KeyPairGenerator '${1}'"
+  pwd
+  ls -la
+  ls -la ./lib
   ${_cmd:-sh} -c "java -cp \"./lib/*\" org.qubership.atp.crypt.KeyPairGenerator ${1}"
 }
 
