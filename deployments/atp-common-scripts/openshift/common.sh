@@ -58,6 +58,9 @@ atp_crypt() {
     _img="$(docker-compose config --images 2>/dev/null | head -n1)"
     _cmd="docker run --rm --entrypoint=/bin/sh ${_img}"
   fi
+  echo "_cmd '${_cmd}'"
+  echo "1 '${1}'"
+  echo "'${_cmd:-sh}' -c java -cp \"./lib/*\" org.qubership.atp.crypt.KeyPairGenerator '${1}'"
   ${_cmd:-sh} -c "java -cp \"./lib/*\" org.qubership.atp.crypt.KeyPairGenerator ${1}"
 }
 
