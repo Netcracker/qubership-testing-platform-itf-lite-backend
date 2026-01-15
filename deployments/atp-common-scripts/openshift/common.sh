@@ -58,7 +58,7 @@ atp_crypt() {
     _img="$(docker-compose config --images 2>/dev/null | head -n1)"
     _cmd="docker run --rm --entrypoint=/bin/sh ${_img}"
   fi
-  ${_cmd:-sh} -c "java -cp \"./lib/*\" org.qubership.atp.crypt.KeyPairGenerator ${1} 2>/dev/null"
+  ${_cmd:-sh} -c "java -cp \"./lib/*\" org.qubership.atp.crypt.KeyPairGenerator ${1}"
 }
 
 # Extract value by given key from atp_crypt output
@@ -177,9 +177,13 @@ update_secret() {
 generate_keys_secret() {
   echo "=> Generating pair of keys in secrets mode ..."
   _keys="$(atp_crypt "${1:?Empty AES key}")"
+  echo "keys ${_keys}"
   _secret="${2:?Empty secret name}"
+  echo "secret ${_secret}"
   _ek="$(extract_key "encryptedKey" "${_keys:?}")"
+  echo "ek ${_ek}"
   _pk="$(extract_key "privateKey" "${_keys:?}")"
+  echo "pk ${_pk}"
   update_secret "${_secret}" "false" "ATP_CRYPTO_KEY=${_ek:?}" "ATP_CRYPTO_PRIVATE_KEY=${_pk:?}"
 }
 
