@@ -1,7 +1,7 @@
 PAAS_PLATFORM: "KUBERNETES"
 ATP_NET: ""
 # Encyption option. One of - dev (default, encrypt inside app); - secrets (encrypt keys in Openshift secrets); - vault (encrypt keys in Openshift secrets)
-ENCRYPT: "secrets"
+ENCRYPT: "dev"
 ADAPTER_TYPE: "kafka"
 SERVICE_NAME: "atp-itf-lite-backend"
 SERVICE_POD_NAME: ""
