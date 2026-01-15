@@ -30,7 +30,7 @@
         <atp.macros.core.version>1.0.33</atp.macros.core.version>
         <atp.adapter.robot.version>4.5.71</atp.adapter.robot.version>
         <atp.common.version>0.0.47</atp.common.version>
-        <atp.crypt.version>0.0.24</atp.crypt.version>
+        <atp.crypt.version>0.0.20</atp.crypt.version>
         <atp.integration.version>0.2.42</atp.integration.version>
 
         <atp.catalog.version>1.4.192</atp.catalog.version> <!-- To remember catalog specification version-->
