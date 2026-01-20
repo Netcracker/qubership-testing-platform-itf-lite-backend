@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.camel.util.function.TriConsumer;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;

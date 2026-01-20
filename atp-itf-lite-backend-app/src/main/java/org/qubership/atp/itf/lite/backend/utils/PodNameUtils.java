@@ -18,7 +18,7 @@ package org.qubership.atp.itf.lite.backend.utils;
 
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +29,16 @@ public class PodNameUtils {
 
     private static final UUID RANDOM_ID = UUID.randomUUID();
 
+    private static final String ENV_VARIABLE_NAME = "SERVICE_POD_NAME";
+
+    private static final String SERVICE_POD_NAME = System.getenv(ENV_VARIABLE_NAME);
+
     /**
      * Returns SERVICE_POD_NAME from system environment or randomly generates name.
      *
      * @return pod name
      */
     public static String getServicePodName() {
-        return StringUtils.isEmpty((System.getenv("SERVICE_POD_NAME")))
-                ? "atp-itf-lite-" + RANDOM_ID : System.getenv("SERVICE_POD_NAME");
+        return StringUtils.isEmpty(SERVICE_POD_NAME) ? "atp-itf-lite-" + RANDOM_ID : SERVICE_POD_NAME;
     }
 }

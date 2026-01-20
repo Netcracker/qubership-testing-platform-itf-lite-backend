@@ -19,7 +19,6 @@ package org.qubership.atp.itf.lite.backend.feign.service;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.qubership.atp.itf.lite.backend.model.api.ApiPath.RAM_DOWNLOAD_FILE_PATH;
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
@@ -37,7 +36,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.qubership.atp.adapter.common.adapters.AtpKafkaRamAdapter;
 import org.qubership.atp.adapter.common.adapters.providers.RamAdapterProvider;
@@ -381,7 +380,7 @@ public class RamService {
             if (nonNull(httpRequest.getHttpMethod())) {
                 logRecordPartsRequest.setMethod(httpRequest.getHttpMethod().toString());
             }
-            if (!isEmpty(httpRequest.getRequestHeaders())) {
+            if (!CollectionUtils.isEmpty(httpRequest.getRequestHeaders())) {
                 logRecordPartsRequest.setHeadersList(httpRequest.getRequestHeaders()
                         .stream()
                         .map(headerPair -> new org.qubership.atp.ram.models.logrecords.parts.RequestHeader(

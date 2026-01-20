@@ -26,6 +26,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.qubership.atp.itf.lite.backend.enums.SortType;
 import org.qubership.atp.itf.lite.backend.enums.TransportType;
 import org.qubership.atp.itf.lite.backend.model.entities.history.HistoryFilteringParams;
@@ -35,7 +36,6 @@ import org.qubership.atp.itf.lite.backend.model.entities.history.RequestExecutio
 import org.qubership.atp.itf.lite.backend.model.entities.history.SortParams;
 import org.springframework.stereotype.Repository;
 
-import clover.org.apache.commons.collections.CollectionUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

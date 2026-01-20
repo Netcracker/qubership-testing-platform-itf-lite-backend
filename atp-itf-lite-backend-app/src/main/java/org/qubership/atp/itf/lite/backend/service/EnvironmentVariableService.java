@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.commons.compiler.util.Producer;
 import org.qubership.atp.crypt.exception.AtpDecryptException;
 import org.qubership.atp.itf.lite.backend.exceptions.requests.ItfLiteRequestEnvironmentNotSpecifiedException;
@@ -64,7 +64,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class EnvironmentVariableService {
 
-    // TODO: a lot of if-conditions related with encrypted/unencrypted environment variables. Can be refactored
+    private final static String RESOLVE_PARAMETERS_LOG_MESSAGE =
+            "Resolve environment parameters in OAuth2 authorization request, environment id: {}";
 
     // named group for searching variable names without "ENV."
     private final String envVariableWithoutSpecialChars = "envVariableWithoutSpecialChars";
@@ -90,7 +91,7 @@ public class EnvironmentVariableService {
      */
     public void resolveEnvironmentParameters(OAuth2AuthorizationSaveRequest request, UUID environmentId)
             throws AtpDecryptException {
-        log.debug("Resolve environment parameters in OAuth2 authorization request, environment id: {}", environmentId);
+        log.debug(RESOLVE_PARAMETERS_LOG_MESSAGE, environmentId);
 
         Map<Producer<String>, Consumer<String>> resolveMap = new HashMap<>();
         resolveMap.put(request::getUrl, request::setUrl);
@@ -115,7 +116,7 @@ public class EnvironmentVariableService {
      */
     public void resolveEnvironmentParameters(BearerAuthorizationSaveRequest request, UUID environmentId)
             throws AtpDecryptException {
-        log.debug("Resolve environment parameters in OAuth2 authorization request, environment id: {}", environmentId);
+        log.debug(RESOLVE_PARAMETERS_LOG_MESSAGE, environmentId);
         List<String> resolvableFields = Stream.of(request.getToken())
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -132,7 +133,7 @@ public class EnvironmentVariableService {
     public void resolveEnvironmentParameters(List<String> resolvableFields,
                                              Map<Producer<String>, Consumer<String>> resolveMap, UUID environmentId)
             throws AtpDecryptException {
-        log.debug("Resolve environment parameters in OAuth2 authorization request, environment id: {}", environmentId);
+        log.debug(RESOLVE_PARAMETERS_LOG_MESSAGE, environmentId);
         if (isEnvironmentVariablesPresent(resolvableFields)) {
             log.debug("Found environment parameters");
             if (isNull(environmentId)) {

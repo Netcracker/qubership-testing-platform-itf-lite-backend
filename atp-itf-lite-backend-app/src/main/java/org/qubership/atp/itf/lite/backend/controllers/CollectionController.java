@@ -31,6 +31,7 @@ import org.qubership.atp.itf.lite.backend.model.api.request.CollectionExecuteReq
 import org.qubership.atp.itf.lite.backend.model.api.request.ImportCollectionsRequest;
 import org.qubership.atp.itf.lite.backend.model.api.response.ImportCollectionsResponse;
 import org.qubership.atp.itf.lite.backend.service.CollectionsService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,8 +42,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-//import clover.com.google.common.net.HttpHeaders;
-import org.springframework.http.HttpHeaders;
 import lombok.AllArgsConstructor;
 
 @RestController
