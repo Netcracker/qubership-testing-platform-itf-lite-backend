@@ -175,6 +175,7 @@ import org.qubership.atp.itf.lite.backend.model.entities.http.HttpRequest;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestHeader;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestParam;
 import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
+import org.qubership.atp.itf.lite.backend.service.context.ExecutorContextEnricher;
 import org.qubership.atp.itf.lite.backend.service.history.iface.DeleteHistoryService;
 import org.qubership.atp.itf.lite.backend.service.history.iface.EntityHistoryService;
 import org.qubership.atp.itf.lite.backend.service.rest.HttpClientService;
@@ -234,6 +235,8 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     static final String XML_END_SYMBOL = ">";
     private static final int STRIPES = 100;
     private static final Striped<Lock> LOCK_STRIPED = Striped.lazyWeakLock(STRIPES);
+
+    private final ExecutorContextEnricher executorContextEnricher;
     private final RequestRepository requestRepository;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
@@ -1168,7 +1171,23 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             Request request, UUID environmentId) {
 
         Map<String, Object> context = requestExecuteRequest.getContext();
+        if (context == null) {
+            context = new HashMap<>();
+            requestExecuteRequest.setContext(context);
+        }
+        executorContextEnricher.enrich(context, null, request.getName());
         UUID testRunId = requestExecuteRequest.getTestRunId();
+        if (testRunId != null) {
+            context.putIfAbsent(Constants.TEST_RUN_ID_KEY, testRunId.toString());
+        }
+        if (requestExecuteRequest.getExecutionRequestId() != null) {
+            context.putIfAbsent(Constants.EXECUTION_REQUEST_KEY,
+                    requestExecuteRequest.getExecutionRequestId().toString());
+        }
+        if (requestExecuteRequest.getTestPlanId() != null) {
+            context.putIfAbsent(Constants.TEST_PLAN_ID_KEY,
+                    requestExecuteRequest.getTestPlanId().toString());
+        }
         if (nextRequestService.hasNextRequest(testRunId)) {
             if (isRequestMatchesNextRequest(testRunId, request.getId(), request.getName())) {
                 nextRequestService.deleteNextRequest(testRunId);
@@ -1434,6 +1453,9 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             resolvingContext.setEnvironmentVariables(environmentVariables);
             resolvingContext.getEnvironment().putAll(environmentVariables);
         }
+
+        // Add executor identity to LOCAL scope so macros can read it via contextMap.get(...)
+        executorContextEnricher.enrich(resolvingContext.getVariables(), token, request.getName());
 
         UUID projectId = request.getProjectId();
         if (request instanceof HttpRequestEntitySaveRequest) {
