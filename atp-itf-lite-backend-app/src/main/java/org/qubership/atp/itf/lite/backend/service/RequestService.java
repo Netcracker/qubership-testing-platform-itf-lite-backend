@@ -1188,8 +1188,6 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             context.putIfAbsent(Constants.TEST_PLAN_ID_KEY,
                     requestExecuteRequest.getTestPlanId().toString());
         }
-        //todo remove
-        log.info("Printing contextMap:");
         context.forEach((key, value) -> log.info(key + " " + value));
         if (nextRequestService.hasNextRequest(testRunId)) {
             if (isRequestMatchesNextRequest(testRunId, request.getId(), request.getName())) {
