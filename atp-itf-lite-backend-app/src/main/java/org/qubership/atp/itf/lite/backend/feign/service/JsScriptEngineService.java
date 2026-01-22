@@ -85,7 +85,7 @@ public class JsScriptEngineService {
             // nothing to do
             return null;
         }
-        log.info("Evaluate pre-script for request with id: {}", request.getId());
+        log.info("Evaluate post-script for request with id: {}", request.getId());
         return executePostmanScript(false, request, response, resolvingContext);
     }
 
@@ -251,7 +251,7 @@ public class JsScriptEngineService {
                         break;
                     default:
                 }
-                targetContext.put(c.getKey(), encryptionService.decrypt(c.getValue().toString()));
+                targetContext.put(c.getKey(), c.getValue().toString());
             } else {
                 targetContext.put(c.getKey(), c.getValue());
             }
