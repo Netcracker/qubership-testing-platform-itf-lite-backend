@@ -84,6 +84,7 @@ import org.qubership.atp.itf.lite.backend.model.entities.http.HttpRequest;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestHeader;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestParam;
 import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
+import org.qubership.atp.itf.lite.backend.service.context.ExecutorContextEnricher;
 import org.qubership.atp.itf.lite.backend.utils.AuthorizationUtils;
 import org.qubership.atp.itf.lite.backend.utils.Constants;
 import org.qubership.atp.itf.lite.backend.utils.StreamUtils;
@@ -115,6 +116,7 @@ public class CollectionsService {
     private final MetricService metricService;
     private final DynamicVariablesService dynamicVariablesService;
     private final CookieService cookieService;
+    private final ExecutorContextEnricher executorContextEnricher;
 
     private static final List<HttpMethod> availableHTTPMethods = Arrays.asList(HttpMethod.values());
     private static final String REQUEST_WITHOUT_FILE_MESSAGE_FORMAT = "Request was imported without a file %s";
@@ -699,6 +701,10 @@ public class CollectionsService {
 
         final EnrichedScenarioDto testScenario = generateIftLiteRunCollectionScenario(request);
 
+        Map<String, Object> contextVariables = new HashMap<>();
+        executorContextEnricher.enrich(contextVariables, authToken, request.getName());
+        contextVariables.putAll(request.convertContextVariablesToMap());
+
         ExecuteRequestDto executeRequestDto = new ExecuteRequestDto()
                 .name(request.getName())
                 .environmentIds(request.getEnvironmentIds())
@@ -720,7 +726,7 @@ public class CollectionsService {
                 .testScenarios(singletonList(testScenario))
                 .dataSetStorageId(request.getDataSetStorageId())
                 .datasetId(request.getDataSetId())
-                .contextVariables(request.convertContextVariablesToMap());
+                .contextVariables(contextVariables);
         List<UUID> listExecutedId = catalogueService.execute(authToken, executeRequestDto);
 
         if (request.isPropagateCookies() && !isEmpty(listExecutedId)) {

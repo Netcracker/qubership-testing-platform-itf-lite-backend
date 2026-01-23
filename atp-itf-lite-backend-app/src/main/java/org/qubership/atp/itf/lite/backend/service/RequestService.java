@@ -1171,24 +1171,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             Request request, UUID environmentId) {
 
         Map<String, Object> context = requestExecuteRequest.getContext();
-        if (context == null) {
-            context = new HashMap<>();
-            requestExecuteRequest.setContext(context);
-        }
-        executorContextEnricher.enrich(context, null, request.getName());
         UUID testRunId = requestExecuteRequest.getTestRunId();
-        if (testRunId != null) {
-            context.putIfAbsent(Constants.TEST_RUN_ID_KEY, testRunId.toString());
-        }
-        if (requestExecuteRequest.getExecutionRequestId() != null) {
-            context.putIfAbsent(Constants.EXECUTION_REQUEST_KEY,
-                    requestExecuteRequest.getExecutionRequestId().toString());
-        }
-        if (requestExecuteRequest.getTestPlanId() != null) {
-            context.putIfAbsent(Constants.TEST_PLAN_ID_KEY,
-                    requestExecuteRequest.getTestPlanId().toString());
-        }
-        context.forEach((key, value) -> log.info(key + " " + value));
         if (nextRequestService.hasNextRequest(testRunId)) {
             if (isRequestMatchesNextRequest(testRunId, request.getId(), request.getName())) {
                 nextRequestService.deleteNextRequest(testRunId);

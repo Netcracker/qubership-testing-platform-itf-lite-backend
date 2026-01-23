@@ -34,29 +34,16 @@ import lombok.RequiredArgsConstructor;
 public class ExecutorContextEnricher {
 
     private static final String UNKNOWN_USER = "Unknown User";
-    private static final String UNKNOWN_USERNAME = "Unknown";
 
     private final Provider<UserInfo> userInfoProvider;
     private final UserService userService;
 
     /**
-     * Enriches target context with executor identity.
-     * Does not overwrite keys if they are already present.
-     * Keys added:
-     * - {@link Constants#EXECUTOR_FIRST_LAST_NAME}: full name (fallback: username, then "Unknown User")
-     * - {@link Constants#USERNAME}: login/username (fallback: "Unknown")
-     */
-    public void enrich(Map<String, Object> targetContext, @Nullable String bearerToken) {
-        doEnrich(targetContext, bearerToken, null);
-    }
-
-    /**
      * Enriches target context with executor identity and executed request name.
      * Does not overwrite keys if they are already present.
      * Keys added:
-     * - {@link Constants#EXECUTOR_FIRST_LAST_NAME}: full name (fallback: username, then "Unknown User")
-     * - {@link Constants#USERNAME}: login/username (fallback: "Unknown")
-     * - {@link Constants#EXECUTION_REQUEST_NAME}: executed request name (if provided)
+     * - {@link Constants#EXECUTOR_NAME_ITF_LITE}: full name (fallback: username, then "Unknown User")
+     * - {@link Constants#EXECUTION_REQUEST_NAME_ITF_LITE}: executed request name (if provided)
      */
     public void enrich(Map<String, Object> targetContext,
                        @Nullable String bearerToken,
@@ -73,15 +60,13 @@ public class ExecutorContextEnricher {
         }
 
         String username = resolveUsername(userInfo);
-        String executorName = resolveExecutorName(userInfo, username);
 
         if (targetContext == null) {
             return;
         }
-        targetContext.putIfAbsent(Constants.USERNAME, username);
-        targetContext.putIfAbsent(Constants.EXECUTOR_FIRST_LAST_NAME, executorName);
+        targetContext.putIfAbsent(Constants.EXECUTOR_NAME_ITF_LITE, username);
         if (StringUtils.isNotBlank(executedRequestName)) {
-            targetContext.putIfAbsent(Constants.EXECUTION_REQUEST_NAME, executedRequestName);
+            targetContext.putIfAbsent(Constants.EXECUTION_REQUEST_NAME_ITF_LITE, executedRequestName);
         }
     }
 
@@ -96,44 +81,10 @@ public class ExecutorContextEnricher {
 
     private String resolveUsername(@Nullable UserInfo userInfo) {
         if (userInfo == null) {
-            return UNKNOWN_USERNAME;
-        }
-        String username = userInfo.getUsername();
-        return StringUtils.isNotBlank(username) ? username : UNKNOWN_USERNAME;
-    }
-
-    private String resolveExecutorName(@Nullable UserInfo userInfo, String resolvedUsername) {
-        if (userInfo == null) {
             return UNKNOWN_USER;
         }
-
-        String fullName = null;
-        try {
-            fullName = userInfo.getFullName();
-        } catch (Exception ignored) {
-            // some UserInfo implementations may not have/get fullName
-        }
-        if (StringUtils.isNotBlank(fullName)) {
-            return fullName;
-        }
-
-        String firstName = null;
-        String lastName = null;
-        try {
-            firstName = userInfo.getFirstName();
-            lastName = userInfo.getLastName();
-        } catch (Exception ignored) {
-            // ignore
-        }
-        String joined = (StringUtils.defaultString(firstName) + " " + StringUtils.defaultString(lastName)).trim();
-        if (StringUtils.isNotBlank(joined)) {
-            return joined;
-        }
-
-        if (StringUtils.isNotBlank(resolvedUsername) && !UNKNOWN_USERNAME.equals(resolvedUsername)) {
-            return resolvedUsername;
-        }
-        return UNKNOWN_USER;
+        String username = userInfo.getUsername();
+        return StringUtils.isNotBlank(username) ? username : UNKNOWN_USER;
     }
 }
 

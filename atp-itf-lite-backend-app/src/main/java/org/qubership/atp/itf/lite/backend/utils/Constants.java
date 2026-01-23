@@ -73,7 +73,6 @@ public interface Constants {
     String SCOPE = "scope";
     String PASSWORD = "password";
     String USERNAME = "username";
-    String EXECUTOR_FIRST_LAST_NAME = "EXECUTOR_NAME";
     String CLIENT_SECRET = "clientSecret";
     String CLIENT_ID = "clientId";
     String ACCESS_TOKEN_URL = "accessTokenUrl";
@@ -111,10 +110,8 @@ public interface Constants {
     String REQUEST_TYPE_LABEL_NAME = "type";
 
     String ENV_ID_KEY = "ENV_ID";
-    String TEST_RUN_ID_KEY = "TEST_RUN_ID_ITF_LITE";
-    String TEST_PLAN_ID_KEY = "TEST_PLAN_ID_KEY_ITF_LITE";
-    String EXECUTION_REQUEST_KEY = "EXECUTION_REQUEST_ITF_LITE";
-    String EXECUTION_REQUEST_NAME = "EXECUTION_REQUEST_NAME_ITF_LITE";
+    String EXECUTOR_NAME_ITF_LITE = "EXECUTOR_NAME_ITF_LITE ";
+    String EXECUTION_REQUEST_NAME_ITF_LITE = "EXECUTION_REQUEST_NAME_ITF_LITE";
 
     String COOKIE_HEADER_KEY = "Cookie";
     String COOKIE_RESP_HEADER_KEY = "Set-Cookie";

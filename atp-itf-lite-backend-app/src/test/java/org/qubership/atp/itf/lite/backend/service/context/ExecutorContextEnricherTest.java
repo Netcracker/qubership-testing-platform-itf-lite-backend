@@ -32,15 +32,13 @@ class ExecutorContextEnricherTest {
     void enrich_prefersProviderUserInfo_andDoesNotCallUserService() {
         UserInfo userInfo = org.mockito.Mockito.mock(UserInfo.class);
         when(userInfoProvider.get()).thenReturn(userInfo);
-        when(userInfo.getFullName()).thenReturn("John Doe");
-        when(userInfo.getUsername()).thenReturn("jdoe");
+        when(userInfo.getUsername()).thenReturn("John Doe");
 
         Map<String, Object> ctx = new HashMap<>();
         enricher.enrich(ctx, "Bearer any", "My Request");
 
-        assertEquals("John Doe", ctx.get(Constants.EXECUTOR_FIRST_LAST_NAME));
-        assertEquals("jdoe", ctx.get(Constants.USERNAME));
-        assertEquals("My Request", ctx.get(Constants.EXECUTION_REQUEST_NAME));
+        assertEquals("John Doe", ctx.get(Constants.EXECUTOR_NAME_ITF_LITE));
+        assertEquals("My Request", ctx.get(Constants.EXECUTION_REQUEST_NAME_ITF_LITE));
     }
 
     @Test
@@ -49,17 +47,13 @@ class ExecutorContextEnricherTest {
 
         UserInfo userInfo = org.mockito.Mockito.mock(UserInfo.class);
         when(userService.getUserInfoByToken("Bearer token")).thenReturn(userInfo);
-        when(userInfo.getFullName()).thenReturn("");
-        when(userInfo.getFirstName()).thenReturn("Jane");
-        when(userInfo.getLastName()).thenReturn("Roe");
-        when(userInfo.getUsername()).thenReturn("jroe");
+        when(userInfo.getUsername()).thenReturn("Jane Roe");
 
         Map<String, Object> ctx = new HashMap<>();
         enricher.enrich(ctx, "Bearer token", "Another Request");
 
-        assertEquals("Jane Roe", ctx.get(Constants.EXECUTOR_FIRST_LAST_NAME));
-        assertEquals("jroe", ctx.get(Constants.USERNAME));
-        assertEquals("Another Request", ctx.get(Constants.EXECUTION_REQUEST_NAME));
+        assertEquals("Jane Roe", ctx.get(Constants.EXECUTOR_NAME_ITF_LITE));
+        assertEquals("Another Request", ctx.get(Constants.EXECUTION_REQUEST_NAME_ITF_LITE));
     }
 
     @Test
@@ -69,28 +63,20 @@ class ExecutorContextEnricherTest {
         Map<String, Object> ctx = new HashMap<>();
         enricher.enrich(ctx, null, "Req");
 
-        assertEquals("Unknown User", ctx.get(Constants.EXECUTOR_FIRST_LAST_NAME));
-        assertEquals("Unknown", ctx.get(Constants.USERNAME));
-        assertEquals("Req", ctx.get(Constants.EXECUTION_REQUEST_NAME));
+        assertEquals("Unknown User", ctx.get(Constants.EXECUTOR_NAME_ITF_LITE));
+        assertEquals("Req", ctx.get(Constants.EXECUTION_REQUEST_NAME_ITF_LITE));
     }
 
     @Test
     void enrich_doesNotOverwriteExistingValues() {
-        UserInfo userInfo = org.mockito.Mockito.mock(UserInfo.class);
-        when(userInfoProvider.get()).thenReturn(userInfo);
-        when(userInfo.getFullName()).thenReturn("John Doe");
-        when(userInfo.getUsername()).thenReturn("jdoe");
-
         Map<String, Object> ctx = new HashMap<>();
-        ctx.put(Constants.EXECUTOR_FIRST_LAST_NAME, "Preset Executor");
-        ctx.put(Constants.USERNAME, "preset");
-        ctx.put(Constants.EXECUTION_REQUEST_NAME, "Preset Request");
+        ctx.put(Constants.EXECUTOR_NAME_ITF_LITE, "Preset Executor");
+        ctx.put(Constants.EXECUTION_REQUEST_NAME_ITF_LITE, "Preset Request");
 
         enricher.enrich(ctx, "Bearer token", "New Request");
 
-        assertEquals("Preset Executor", ctx.get(Constants.EXECUTOR_FIRST_LAST_NAME));
-        assertEquals("preset", ctx.get(Constants.USERNAME));
-        assertEquals("Preset Request", ctx.get(Constants.EXECUTION_REQUEST_NAME));
+        assertEquals("Preset Executor", ctx.get(Constants.EXECUTOR_NAME_ITF_LITE));
+        assertEquals("Preset Request", ctx.get(Constants.EXECUTION_REQUEST_NAME_ITF_LITE));
     }
 }
 
