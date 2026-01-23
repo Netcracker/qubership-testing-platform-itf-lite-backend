@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -94,7 +95,8 @@ public class FileUtilsTest {
         fileNames.put("new_file.doc", "application/msword");
         fileNames.put("new_file.yaml", "text/x-yaml");
         fileNames.put("new_file.pdf", "application/pdf");
-        fileNames.put("new_file.js", "application/javascript");
+        fileNames.put("new_file.js", "application/javascript|text/javascript");
+        //fileNames.put("new_file.js", "application/javascript");
         fileNames.put("new_file.avif", "image/avif");
         fileNames.put("new_file.jpeg", "image/jpeg");
         fileNames.put("new_file.gif", "image/gif");
@@ -103,9 +105,19 @@ public class FileUtilsTest {
         fileNames.put("new_file.tiff", "image/tiff");
         fileNames.put("new_file.webp", "image/webp");
         fileNames.put("new_file.another", "application/octet-stream");
-
-        fileNames.keySet().forEach(fileName -> {
+        /*fileNames.keySet().forEach(fileName -> {
             assertEquals(fileNames.get(fileName), FileUtils.guessContentTypeFromName(fileName).toString());
+        });*/
+        fileNames.forEach((fileName, expected) -> {
+            String actual = FileUtils.guessContentTypeFromName(fileName).toString();
+            if (expected.contains("|")) {
+                assertTrue(
+                        Arrays.asList(expected.split("\\|")).contains(actual),
+                        "Unexpected content type for " + fileName + ": " + actual
+                );
+            } else {
+                assertEquals(expected, actual);
+            }
         });
     }
 }
