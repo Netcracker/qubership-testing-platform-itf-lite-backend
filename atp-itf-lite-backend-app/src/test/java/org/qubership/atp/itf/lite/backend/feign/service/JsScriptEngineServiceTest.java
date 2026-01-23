@@ -57,26 +57,24 @@ public class JsScriptEngineServiceTest {
     JsScriptEngineService scriptService;
 
     @Test
-    public void evaluatePreScriptTest() throws IOException, AtpDecryptException, AtpEncryptException {
+    public void evaluatePreScriptTest() throws IOException, AtpEncryptException {
         setupMockBooksResponse("JsScriptEngine/preResponse.json");
         when(encryptionService.isEncrypted(eq("globals"))).thenReturn(true);
-        when(encryptionService.decrypt(eq("globals"))).thenReturn("globalsEncrypted");
+        // Removed parameter decryption in main code base
+        // because it leads to security issue - user able to see encrypted values.
+        //  when(encryptionService.decrypt(eq("globals"))).thenReturn("globalsEncrypted");
         when(encryptionService.encrypt(eq("globalsEncryptedUpdated"))).thenReturn("globalsUpdated");
 
         when(encryptionService.isEncrypted(eq("collection"))).thenReturn(true);
-        when(encryptionService.decrypt(eq("collection"))).thenReturn("collectionEncrypted");
         when(encryptionService.encrypt(eq("collectionEncryptedUpdated"))).thenReturn("collectionUpdated");
 
         when(encryptionService.isEncrypted(eq("environment"))).thenReturn(true);
-        when(encryptionService.decrypt(eq("environment"))).thenReturn("environmentEncrypted");
         when(encryptionService.encrypt(eq("environmentEncryptedUpdated"))).thenReturn("environmentUpdated");
 
         when(encryptionService.isEncrypted(eq("data"))).thenReturn(true);
-        when(encryptionService.decrypt(eq("data"))).thenReturn("dataEncrypted");
         when(encryptionService.encrypt(eq("dataEncryptedUpdated"))).thenReturn("dataUpdated");
 
         when(encryptionService.isEncrypted(eq("local"))).thenReturn(true);
-        when(encryptionService.decrypt(eq("local"))).thenReturn("localEncrypted");
         when(encryptionService.encrypt(eq("localEncryptedUpdated"))).thenReturn("localUpdated");
 
         HttpRequestEntitySaveRequest request = new HttpRequestEntitySaveRequest();
