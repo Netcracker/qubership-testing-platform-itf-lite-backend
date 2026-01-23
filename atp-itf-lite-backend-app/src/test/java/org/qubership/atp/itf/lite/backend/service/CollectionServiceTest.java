@@ -56,6 +56,7 @@ import org.qubership.atp.itf.lite.backend.model.entities.RequestBody;
 import org.qubership.atp.itf.lite.backend.model.entities.http.HttpRequest;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestHeader;
 import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
+import org.qubership.atp.itf.lite.backend.service.context.ExecutorContextEnricher;
 import org.qubership.atp.itf.lite.backend.utils.AuthorizationUtils;
 import org.qubership.atp.itf.lite.backend.utils.Constants;
 import org.springframework.mock.web.MockMultipartFile;
@@ -100,6 +101,7 @@ public class CollectionServiceTest {
         MetricService metricServiceMock = mock(MetricService.class);
         DynamicVariablesService dynamicVariablesServiceMock = mock(DynamicVariablesService.class);
         CookieService cookieServiceMock = mock(CookieService.class);
+        ExecutorContextEnricher executorContextEnricherMock = mock(ExecutorContextEnricher .class);
         folderService.set(folderServiceMock);
         requestService.set(requestServiceMock);
         requestAuthorizationService.set(requestAuthorizationServiceMock);
@@ -109,8 +111,9 @@ public class CollectionServiceTest {
         metricService.set(metricServiceMock);
         dynamicVariablesService.set(dynamicVariablesServiceMock);
         cookieService.set(cookieServiceMock);
-        collectionsService.set(new CollectionsService(folderServiceMock, requestServiceMock, requestAuthorizationServiceMock,
-                environmentServiceMock, ramServiceMock, catalogueServiceMock, metricServiceMock, dynamicVariablesServiceMock, cookieServiceMock));
+        collectionsService.set(new CollectionsService(folderServiceMock, requestServiceMock,
+                requestAuthorizationServiceMock, environmentServiceMock, ramServiceMock, catalogueServiceMock,
+                metricServiceMock, dynamicVariablesServiceMock, cookieServiceMock, executorContextEnricherMock));
     }
 
     @Test
