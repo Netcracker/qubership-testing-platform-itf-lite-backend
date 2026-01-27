@@ -203,6 +203,26 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.apache.xmlbeans</groupId>
+                <artifactId>xmlbeans</artifactId>
+                <version>3.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.70</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars</artifactId>
+                <version>4.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars-jackson2</artifactId>
+                <version>4.3.1</version>
+            </dependency>
+            <dependency>
                 <groupId>org.qubership.atp.common</groupId>
                 <artifactId>qubership-atp-common-probes</artifactId>
                 <version>${atp.common.version}</version>
@@ -409,6 +429,10 @@
                 <artifactId>qubership-atp-adapter-executor</artifactId>
                 <version>${atp.adapter.robot.version}</version>
                 <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
                     <exclusion>
                         <groupId>org.powermock</groupId>
                         <artifactId>powermock-api-mockito</artifactId>
