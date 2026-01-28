@@ -110,6 +110,8 @@ public interface Constants {
     String REQUEST_TYPE_LABEL_NAME = "type";
 
     String ENV_ID_KEY = "ENV_ID";
+    String EXECUTOR_NAME_ITF_LITE = "EXECUTOR_NAME_ITF_LITE";
+    String EXECUTION_REQUEST_NAME_ITF_LITE = "EXECUTION_REQUEST_NAME_ITF_LITE";
 
     String COOKIE_HEADER_KEY = "Cookie";
     String COOKIE_RESP_HEADER_KEY = "Set-Cookie";

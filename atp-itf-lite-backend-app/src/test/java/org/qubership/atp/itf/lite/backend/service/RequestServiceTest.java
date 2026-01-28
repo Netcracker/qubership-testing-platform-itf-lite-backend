@@ -160,6 +160,7 @@ import org.qubership.atp.itf.lite.backend.model.entities.http.HttpRequest;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestHeader;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestParam;
 import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
+import org.qubership.atp.itf.lite.backend.service.context.ExecutorContextEnricher;
 import org.qubership.atp.itf.lite.backend.service.history.iface.DeleteHistoryService;
 import org.qubership.atp.itf.lite.backend.service.rest.HttpClientService;
 import org.qubership.atp.itf.lite.backend.utils.AuthorizationUtils;
@@ -236,6 +237,7 @@ public class RequestServiceTest {
         NextRequestService nextRequestServiceMock = mock(NextRequestService.class);
         RequestResponseSizeProperties requestResponseSizePropertiesMock = mock(RequestResponseSizeProperties.class);
         DeleteHistoryService deleteHistoryServiceMock = mock(DeleteHistoryService.class);
+        ExecutorContextEnricher executorContextEnricherMock = mock(ExecutorContextEnricher.class);
 
         when(repositoryMock.save(any(Request.class))).thenAnswer(answer -> answer.getArguments()[0]);
         when(macrosServiceMock.createMacrosEvaluator(any())).thenReturn(RequestTestUtils.generateEvaluator());
@@ -273,7 +275,7 @@ public class RequestServiceTest {
         nextRequestService.set(nextRequestServiceMock);
         requestResponseSizeProperties.set(requestResponseSizePropertiesMock);
         deleteHistoryService.set(deleteHistoryServiceMock);
-        requestService.set(new RequestService(repositoryMock, modelMapper, objectMapper,
+        requestService.set(new RequestService(executorContextEnricherMock, repositoryMock, modelMapper, objectMapper,
                 curlConverter, new RequestToCurlFormatConverter(), itfFeignServiceMock,
                 itfPlainFeignClientMock, feignClientsPropertiesMock, gridFsServiceMock, executionHistoryServiceMock,
                 folderServiceMock, requestAuthorizationServiceMock, environmentVariableServiceMock,
