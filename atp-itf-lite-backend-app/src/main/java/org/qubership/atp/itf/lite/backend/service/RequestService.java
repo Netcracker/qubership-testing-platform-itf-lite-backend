@@ -1629,7 +1629,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                 }
                 templateResolverService.resolveTemplatesWithOrder(request, resolvingContext, evaluator);
                 requestForHistory = generateRequestForHistory(request);
-                templateResolverService.processEncryptedValues(request, false);
+                templateResolverService.processEncryptedValues(request, true);
                 templateResolverService.processEncryptedValues(requestForHistory, true);
                 consoleLogs = jsResult.getConsoleLogs();
                 RequestPreExecuteResponse requestPreExecuteResponse = preExecuteProcessing(projectId,
