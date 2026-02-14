@@ -14,7 +14,6 @@
         <module>atp-itf-lite-contract-test-pacts</module>
         <module>atp-itf-lite-backend-external-dependencies</module>
     </modules>
-
     <properties>
         <java.version>21</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>
