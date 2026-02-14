@@ -25,7 +25,7 @@
         <spring.boot.version>2.7.18</spring.boot.version>
         <spring.cloud.version>2021.0.8</spring.cloud.version>
 
-        <atp.auth.version>1.2.75</atp.auth.version>
+        <atp.auth.version>1.2.79</atp.auth.version>
         <atp.ei.lib.node>0.2.46</atp.ei.lib.node>
         <atp.macros.core.version>1.0.33</atp.macros.core.version>
         <atp.adapter.robot.version>4.5.71</atp.adapter.robot.version>
@@ -50,6 +50,7 @@
         <hazelcast.version>5.3.5</hazelcast.version>
         <apache.poi.version>3.17</apache.poi.version>
         <tomcat.embed.version>9.0.110</tomcat.embed.version>
+        <undertow.version>2.2.39.Final</undertow.version>
     </properties>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -313,7 +314,17 @@
             <dependency>
                 <groupId>io.undertow</groupId>
                 <artifactId>undertow-core</artifactId>
-                <version>2.2.38.Final</version>
+                <version>${undertow.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.undertow</groupId>
+                <artifactId>undertow-servlet</artifactId>
+                <version>${undertow.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.undertow</groupId>
+                <artifactId>undertow-websockets-jsr</artifactId>
+                <version>${undertow.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.thoughtworks.xstream</groupId>
