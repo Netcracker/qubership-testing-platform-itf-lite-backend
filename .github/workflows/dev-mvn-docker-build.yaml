@@ -31,7 +31,7 @@ permissions:
 
 env:
   TAG_NAME: ${{ github.event.release.tag_name || github.ref }}
-  additional-mvn-args: " -Xms1024m -Xmx4096m "
+  additional-mvn-args: ""
 
 jobs:
   mvn-snapshot-deploy:
