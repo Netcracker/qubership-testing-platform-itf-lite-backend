@@ -25,7 +25,7 @@
         <spring.boot.version>2.7.18</spring.boot.version>
         <spring.cloud.version>2021.0.8</spring.cloud.version>
 
-        <atp.auth.version>1.2.81-SNAPSHOT</atp.auth.version>
+        <atp.auth.version>1.2.80</atp.auth.version>
         <atp.ei.lib.node>0.2.46</atp.ei.lib.node>
         <atp.macros.core.version>1.0.33</atp.macros.core.version>
         <atp.adapter.robot.version>4.5.71</atp.adapter.robot.version>
@@ -73,7 +73,7 @@
     <scm>
         <connection>scm:git:https//github.com/Netcracker/qubership-testing-platform-itf-lite-backend.git</connection>
         <developerConnection>scm:git:https://github.com/Netcracker/qubership-testing-platform-itf-lite-backend.git</developerConnection>
-        <url>scm:git:https://github.com/Netcracker/qubership-testing-platform-itf-lite-backend/tree/main</url>
+        <url>scm:git:https://github.com/Netcracker/qubership-testing-platform-itf-lite-backend.git</url>
         <tag>HEAD</tag>
     </scm>
 
