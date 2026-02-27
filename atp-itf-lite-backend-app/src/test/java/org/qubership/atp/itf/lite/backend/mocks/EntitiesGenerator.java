@@ -1,3 +1,19 @@
+/*
+ * # Copyright 2024-2025 NetCracker Technology Corporation
+ * #
+ * # Licensed under the Apache License, Version 2.0 (the "License");
+ * # you may not use this file except in compliance with the License.
+ * # You may obtain a copy of the License at
+ * #
+ * #      http://www.apache.org/licenses/LICENSE-2.0
+ * #
+ * # Unless required by applicable law or agreed to in writing, software
+ * # distributed under the License is distributed on an "AS IS" BASIS,
+ * # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * # See the License for the specific language governing permissions and
+ * # limitations under the License.
+ */
+
 package org.qubership.atp.itf.lite.backend.mocks;
 
 import static java.util.Arrays.asList;
@@ -24,7 +40,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.assertj.core.util.DateUtil;
-import org.qubership.atp.itf.lite.backend.feign.dto.CertificateDto;
+import org.qubership.atp.adapter.common.context.AtpCompaund;
+import org.qubership.atp.itf.lite.backend.catalog.models.ActionEntity;
 import org.qubership.atp.itf.lite.backend.enums.DatasetFormat;
 import org.qubership.atp.itf.lite.backend.enums.ProjectEventType;
 import org.qubership.atp.itf.lite.backend.enums.RequestExportStatus;
@@ -33,6 +50,7 @@ import org.qubership.atp.itf.lite.backend.enums.ValueType;
 import org.qubership.atp.itf.lite.backend.enums.auth.OAuth2GrantType;
 import org.qubership.atp.itf.lite.backend.enums.auth.RequestAuthorizationType;
 import org.qubership.atp.itf.lite.backend.enums.http.RequestBodyType;
+import org.qubership.atp.itf.lite.backend.feign.dto.CertificateDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.FileInfoDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.GetAccessCodeParametersDto;
 import org.qubership.atp.itf.lite.backend.model.api.kafka.ItfExportResponseEvent;
@@ -88,8 +106,6 @@ import org.qubership.atp.itf.lite.backend.utils.AuthorizationUtils;
 import org.qubership.atp.itf.lite.backend.utils.Constants;
 import org.qubership.atp.itf.lite.backend.utils.RequestUtils;
 
-import org.qubership.atp.adapter.common.context.AtpCompaund;
-import org.qubership.atp.itf.lite.backend.catalog.models.ActionEntity;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
@@ -197,20 +213,9 @@ public class EntitiesGenerator {
     }
 
     public static HttpRequestEntitySaveRequest generateRandomHttpRequestEntitySaveRequest() {
-        HttpRequestEntitySaveRequest request = new HttpRequestEntitySaveRequest();
+        HttpRequestEntitySaveRequest request = createAndFillRandomHttpRequestEntitySaveRequest();
 
-        request.setId(UUID.randomUUID());
-        request.setName("Request");
-        request.setProjectId(UUID.randomUUID());
-        request.setTransportType(TransportType.REST);
-        request.setFolderId(UUID.randomUUID());
-        request.setRequestHeaders(new ArrayList<>(asList(
-                new HttpHeaderSaveRequest("Content-Type", "application/json", "json type"))));
-        request.setRequestParams(new ArrayList<>(asList(
-                new HttpParamSaveRequest("name", "name", "name"))));
-        request.setHttpMethod(HttpMethod.POST);
         request.setBody(new RequestBody("{\"id\": \"123\"}", RequestBodyType.JSON));
-        request.setUrl("http://test.test");
 
         Cookie cookie1 = new Cookie();
         cookie1.setKey("Cookie_1");
@@ -228,9 +233,9 @@ public class EntitiesGenerator {
         request.setProjectId(UUID.randomUUID());
         request.setTransportType(TransportType.REST);
         request.setFolderId(UUID.randomUUID());
-        request.setRequestHeaders(new ArrayList<>(asList(
+        request.setRequestHeaders(new ArrayList<>(Collections.singletonList(
                 new HttpHeaderSaveRequest("Content-Type", "multipart/formdata", null, false, true))));
-        request.setRequestParams(new ArrayList<>(asList(
+        request.setRequestParams(new ArrayList<>(Collections.singletonList(
                 new HttpParamSaveRequest("name", "name", "name"))));
         request.setHttpMethod(HttpMethod.POST);
         request.setBody(new RequestBody(generateFormDataBody(), RequestBodyType.FORM_DATA));
@@ -239,6 +244,15 @@ public class EntitiesGenerator {
     }
 
     public static HttpRequestEntitySaveRequest generateRandomHttpRequestEntitySaveRequestWithFileData() {
+        HttpRequestEntitySaveRequest request = createAndFillRandomHttpRequestEntitySaveRequest();
+
+        request.setBody(new RequestBody((String) null, RequestBodyType.Binary));
+        request.setFile(new FileData("string".getBytes(), "name"));
+
+        return request;
+    }
+
+    private static HttpRequestEntitySaveRequest createAndFillRandomHttpRequestEntitySaveRequest() {
         HttpRequestEntitySaveRequest request = new HttpRequestEntitySaveRequest();
 
         request.setId(UUID.randomUUID());
@@ -246,15 +260,12 @@ public class EntitiesGenerator {
         request.setProjectId(UUID.randomUUID());
         request.setTransportType(TransportType.REST);
         request.setFolderId(UUID.randomUUID());
-        request.setRequestHeaders(new ArrayList<>(asList(
+        request.setRequestHeaders(new ArrayList<>(Collections.singletonList(
                 new HttpHeaderSaveRequest("Content-Type", "application/json", "json type"))));
-        request.setRequestParams(new ArrayList<>(asList(
+        request.setRequestParams(new ArrayList<>(Collections.singletonList(
                 new HttpParamSaveRequest("name", "name", "name"))));
         request.setHttpMethod(HttpMethod.POST);
-        request.setBody(new RequestBody((String) null, RequestBodyType.Binary));
-        request.setFile(new FileData("string".getBytes(), "name"));
         request.setUrl("http://test.test");
-
         return request;
     }
 

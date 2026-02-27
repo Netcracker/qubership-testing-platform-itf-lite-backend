@@ -69,8 +69,8 @@ public class HttpClientServiceTest {
         //given
         final UUID projectId = UUID.randomUUID();
         CertificateDto cert = EntitiesGenerator.generateRandomCertificate();
-        cert.setEnableClientCertificate(true);
         cert.setEnableCertificateVerification(false);
+        cert.setEnableClientCertificate(true);
 
         //when
         when(httpClientProperties.get().getMaxTotalConnections()).thenReturn(2);
@@ -89,8 +89,8 @@ public class HttpClientServiceTest {
         //given
         final UUID projectId = UUID.randomUUID();
         CertificateDto cert = EntitiesGenerator.generateRandomCertificate();
-        cert.setEnableClientCertificate(true);
         cert.setEnableCertificateVerification(false);
+        cert.setEnableClientCertificate(true);
 
         //when
         when(httpClientProperties.get().getMaxTotalConnections()).thenReturn(2);
@@ -105,7 +105,6 @@ public class HttpClientServiceTest {
 
         //then
         assertNotNull(result);
-        //assertFalse(((InternalHttpClient)result).getConfig().isRedirectsEnabled());
     }
 
     @Test
@@ -113,8 +112,8 @@ public class HttpClientServiceTest {
         //given
         final UUID projectId = UUID.randomUUID();
         CertificateDto cert = EntitiesGenerator.generateRandomCertificate();
-        cert.setEnableClientCertificate(true);
         cert.setEnableCertificateVerification(true);
+        cert.setEnableClientCertificate(true);
 
         //when
         when(httpClientProperties.get().getMaxTotalConnections()).thenReturn(2);
@@ -136,8 +135,8 @@ public class HttpClientServiceTest {
         //given
         final UUID projectId = UUID.randomUUID();
         CertificateDto cert = EntitiesGenerator.generateRandomCertificate();
-        cert.setEnableClientCertificate(true);
         cert.setEnableCertificateVerification(false);
+        cert.setEnableClientCertificate(true);
 
         //when
         when(httpClientProperties.get().getMaxTotalConnections()).thenReturn(2);
