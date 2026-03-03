@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
@@ -2854,5 +2855,44 @@ public class RequestServiceTest {
         assertTrue(responseMock.containsHeader(CONTENT_DISPOSITION));
         String headerValue = responseMock.getHeader(CONTENT_DISPOSITION);
         assertEquals(expectedHeaderValue, headerValue);
+    }
+
+    @Test
+    public void executeRequest_requestForHistory_shouldContainRawTemplateNotDecryptedValue() throws Exception {
+        // given
+        final UUID sseId = UUID.randomUUID();
+        final String rawTemplate = "${ENV.server.http.password}";
+        final String resolvedEncryptedValue = "{ENC}secret...";
+
+        HttpRequestEntitySaveRequest request = generateRandomHttpRequestEntitySaveRequest();
+        request.setBody(new RequestBody(rawTemplate, RequestBodyType.JSON));
+
+        // when
+        mockTimer(metricService.get());
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
+        when(httpClientService.get().getHttpClient(any(), any(), any(), any())).thenReturn(httpClient);
+        when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
+        when(scriptService.get().evaluateRequestPreScript(any(), any()))
+                .thenReturn(new PostmanExecuteScriptResponseDto().hasNextRequest(false));
+        when(scriptService.get().evaluateRequestPostScript(any(), any(), any()))
+                .thenReturn(new PostmanExecuteScriptResponseDto().hasNextRequest(false));
+        // Simulate resolveTemplatesWithOrder replacing ${ENV.server.http.password} with its raw encrypted env value
+        doAnswer(invocation -> {
+            HttpRequestEntitySaveRequest req = (HttpRequestEntitySaveRequest) invocation.getArgument(0);
+            req.getBody().setContent(resolvedEncryptedValue);
+            return null;
+        }).when(templateResolverService.get()).resolveTemplatesWithOrder(any(), any(), any());
+
+        requestService.get().executeRequest(request, "", "", sseId, Optional.empty(), request.getEnvironmentId(), null);
+
+        // then
+        ArgumentCaptor<HttpRequestEntitySaveRequest> requestForHistoryCaptor =
+                ArgumentCaptor.forClass(HttpRequestEntitySaveRequest.class);
+        verify(executionHistoryService.get()).logRequestExecution(any(String.class), any(UUID.class),
+                requestForHistoryCaptor.capture(), any(RequestExecutionResponse.class), any(), any());
+
+        assertEquals(rawTemplate, requestForHistoryCaptor.getValue().getBody().getContent());
     }
 }
