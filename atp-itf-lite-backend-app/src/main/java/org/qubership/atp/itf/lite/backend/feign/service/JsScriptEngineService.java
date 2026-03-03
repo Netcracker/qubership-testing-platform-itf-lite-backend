@@ -251,7 +251,7 @@ public class JsScriptEngineService {
                         break;
                     default:
                 }
-                targetContext.put(c.getKey(), c.getValue().toString());
+                targetContext.put(c.getKey(), encryptionService.decrypt(c.getValue().toString()));
             } else {
                 targetContext.put(c.getKey(), c.getValue());
             }
