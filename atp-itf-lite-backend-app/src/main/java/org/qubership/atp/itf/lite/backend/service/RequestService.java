@@ -1610,7 +1610,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
         Evaluator evaluator = macrosService.createMacrosEvaluator(request.getProjectId());
         Exception errorMessage = null;
-        RequestEntitySaveRequest requestForHistory = request;
+        RequestEntitySaveRequest requestForHistory = null;
         List<ConsoleLogDto> consoleLogs = null;
 
         try {
@@ -1627,10 +1627,10 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                 if (!jsResult.isPassed()) {
                     throw getExceptionIfScriptEngineScriptResultIsNotPassed(scriptResponseDto, true);
                 }
-                templateResolverService.resolveTemplatesWithOrder(request, resolvingContext, evaluator);
                 requestForHistory = generateRequestForHistory(request);
-                templateResolverService.processEncryptedValues(request, false);
                 templateResolverService.processEncryptedValues(requestForHistory, true);
+                templateResolverService.resolveTemplatesWithOrder(request, resolvingContext, evaluator);
+                templateResolverService.processEncryptedValues(request, false);
                 consoleLogs = jsResult.getConsoleLogs();
                 RequestPreExecuteResponse requestPreExecuteResponse = preExecuteProcessing(projectId,
                         request,
@@ -1935,8 +1935,8 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
     RequestEntitySaveRequest generateRequestForHistory(RequestEntitySaveRequest request) {
         try {
-            RequestEntitySaveRequest requestForHistoryDeepCopy = modelMapper.map(
-                    request,
+            RequestEntitySaveRequest requestForHistoryDeepCopy = objectMapper.readValue(
+                    objectMapper.writeValueAsString(request),
                     request.getClass());
             if (request instanceof HttpRequestEntitySaveRequest) {
                 HttpRequestEntitySaveRequest httpRequestEntitySaveRequest
