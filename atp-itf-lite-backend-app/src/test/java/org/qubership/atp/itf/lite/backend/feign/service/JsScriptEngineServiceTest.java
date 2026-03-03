@@ -351,6 +351,32 @@ public class JsScriptEngineServiceTest {
         Assertions.assertEquals("request entity too large", testResults.get(0).getError().getMessage());
     }
 
+    @Test
+    public void evaluatePreScript_whenConsoleLogContainsDecryptedValue_thenRedactToStars() throws IOException, AtpDecryptException, AtpEncryptException {
+        setupMockBooksResponse("JsScriptEngine/preResponseWithConsoleLog.json");
+        when(encryptionService.isEncrypted(eq("{ENC}{abc...}"))).thenReturn(true);
+        when(encryptionService.decrypt(eq("{ENC}{abc...}"))).thenReturn("secretValue");
+
+        HttpRequestEntitySaveRequest request = new HttpRequestEntitySaveRequest();
+        request.setId(UUID.randomUUID());
+        request.setName("test");
+        request.setHttpMethod(HttpMethod.GET);
+        request.setUrl("http://localhost:8080/path");
+        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setPreScripts("console.log(\"password is: \" + pm.environment.get(\"password\"));\n");
+
+        SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder()
+                .environment(new HashMap<String, Object>() {{
+                    put("password", "{ENC}{abc...}");
+                }})
+                .build();
+
+        PostmanExecuteScriptResponseDto executionResults =
+                scriptService.evaluateRequestPreScript(request, resolvingContext);
+
+        Assertions.assertEquals("password is: ***", executionResults.getConsoleLogs().get(0).getMessage());
+    }
+
     private void setupMockBooksResponse(String fileName) throws IOException {
         when(jsScriptEngineFeignClient.executePostmanScript(any(PostmanExecuteScriptRequestDto.class)))
                 .thenReturn(
