@@ -1935,9 +1935,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
     RequestEntitySaveRequest generateRequestForHistory(RequestEntitySaveRequest request) {
         try {
-            RequestEntitySaveRequest requestForHistoryDeepCopy = objectMapper.readValue(
-                    objectMapper.writeValueAsString(request),
-                    request.getClass());
+            RequestEntitySaveRequest requestForHistoryDeepCopy = org.apache.commons.lang3.SerializationUtils.clone(request);
             if (request instanceof HttpRequestEntitySaveRequest) {
                 HttpRequestEntitySaveRequest httpRequestEntitySaveRequest
                         = (HttpRequestEntitySaveRequest) requestForHistoryDeepCopy;
