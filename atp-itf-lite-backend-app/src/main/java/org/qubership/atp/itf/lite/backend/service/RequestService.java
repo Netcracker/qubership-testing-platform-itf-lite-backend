@@ -1628,7 +1628,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                     throw getExceptionIfScriptEngineScriptResultIsNotPassed(scriptResponseDto, true);
                 }
                 requestForHistory = generateRequestForHistory(request);
-                templateResolverService.processEncryptedValues(requestForHistory, true);
+                templateResolverService.resolveTemplatesWithOrderMasked(requestForHistory, resolvingContext, evaluator);
                 templateResolverService.resolveTemplatesWithOrder(request, resolvingContext, evaluator);
                 templateResolverService.processEncryptedValues(request, false);
                 consoleLogs = jsResult.getConsoleLogs();
