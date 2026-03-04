@@ -2895,4 +2895,109 @@ public class RequestServiceTest {
 
         assertEquals(rawTemplate, requestForHistoryCaptor.getValue().getBody().getContent());
     }
+
+    @Test
+    public void executeRequest_requestForHistory_encryptedVarsShouldBeMasked() throws Exception {
+        // given
+        final UUID sseId = UUID.randomUUID();
+        final String encryptedVarName = "server.http.password";
+        final String encryptedVarValue = "{ENC}someEncryptedValue";
+        final String plainVarName = "someVar";
+        final String plainVarValue = "resolvedValue";
+        final String bodyTemplate = "password=${" + encryptedVarName + "}&user=${" + plainVarName + "}";
+        final String expectedMaskedBody = "password=***&user=" + plainVarValue;
+
+        HttpRequestEntitySaveRequest request = generateRandomHttpRequestEntitySaveRequest();
+        request.setBody(new RequestBody(bodyTemplate, RequestBodyType.JSON));
+        request.setContextVariables(Arrays.asList(
+                new ContextVariable(encryptedVarName, encryptedVarValue, ContextVariableType.LOCAL),
+                new ContextVariable(plainVarName, plainVarValue, ContextVariableType.LOCAL)
+        ));
+
+        // when
+        mockTimer(metricService.get());
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
+        when(httpClientService.get().getHttpClient(any(), any(), any(), any())).thenReturn(httpClient);
+        when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
+        when(scriptService.get().evaluateRequestPreScript(any(), any()))
+                .thenReturn(new PostmanExecuteScriptResponseDto().hasNextRequest(false));
+        when(scriptService.get().evaluateRequestPostScript(any(), any(), any()))
+                .thenReturn(new PostmanExecuteScriptResponseDto().hasNextRequest(false));
+        // Simulate resolveTemplatesWithOrderMasked: encrypted vars become ***, plain vars are resolved
+        doAnswer(invocation -> {
+            HttpRequestEntitySaveRequest req = (HttpRequestEntitySaveRequest) invocation.getArgument(0);
+            req.getBody().setContent(expectedMaskedBody);
+            return null;
+        }).when(templateResolverService.get()).resolveTemplatesWithOrderMasked(any(), any(), any());
+
+        requestService.get().executeRequest(request, "", "", sseId, Optional.empty(), request.getEnvironmentId(), null);
+
+        // then
+        ArgumentCaptor<HttpRequestEntitySaveRequest> requestForHistoryCaptor =
+                ArgumentCaptor.forClass(HttpRequestEntitySaveRequest.class);
+        verify(executionHistoryService.get()).logRequestExecution(any(String.class), any(UUID.class),
+                requestForHistoryCaptor.capture(), any(RequestExecutionResponse.class), any(), any());
+
+        String historyBody = requestForHistoryCaptor.getValue().getBody().getContent();
+        assertThat(historyBody).contains("***");
+        assertThat(historyBody).doesNotContain(encryptedVarValue);
+        assertThat(historyBody).doesNotContain("${" + encryptedVarName + "}");
+        assertThat(historyBody).contains(plainVarValue);
+    }
+
+    @Test
+    public void executeRequest_requestForHistory_encryptedMacroArgShouldBeMasked() throws Exception {
+        // given
+        final UUID sseId = UUID.randomUUID();
+        final String encryptedVarName = "server.http.password";
+        final String encryptedVarValue = "{ENC}someEncryptedValue";
+        final String plainMacroResult = "12345";
+        // $RAND(5) is a plain macro (no encrypted arg), $CONTEXT('...') receives an encrypted context variable.
+        // In the masked pass, SimpleContext (no decryption) feeds {ENC}... straight into the macro;
+        // CryptoTools::maskEncryptedData then converts any remaining {ENC}... to ***.
+        final String bodyTemplate = "token=$RAND('5')&password=$CONTEXT('" + encryptedVarName + "')";
+        final String expectedMaskedBody = "token=" + plainMacroResult + "&password=***";
+
+        HttpRequestEntitySaveRequest request = generateRandomHttpRequestEntitySaveRequest();
+        request.setBody(new RequestBody(bodyTemplate, RequestBodyType.JSON));
+        request.setContextVariables(Collections.singletonList(
+                new ContextVariable(encryptedVarName, encryptedVarValue, ContextVariableType.LOCAL)
+        ));
+
+        // when
+        mockTimer(metricService.get());
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
+        when(httpClientService.get().getHttpClient(any(), any(), any(), any())).thenReturn(httpClient);
+        when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
+        when(scriptService.get().evaluateRequestPreScript(any(), any()))
+                .thenReturn(new PostmanExecuteScriptResponseDto().hasNextRequest(false));
+        when(scriptService.get().evaluateRequestPostScript(any(), any(), any()))
+                .thenReturn(new PostmanExecuteScriptResponseDto().hasNextRequest(false));
+        // Simulate resolveTemplatesWithOrderMasked: plain macros resolve normally,
+        // macros receiving an encrypted arg yield *** (via SimpleContext + CryptoTools::maskEncryptedData)
+        doAnswer(invocation -> {
+            HttpRequestEntitySaveRequest req = (HttpRequestEntitySaveRequest) invocation.getArgument(0);
+            req.getBody().setContent(expectedMaskedBody);
+            return null;
+        }).when(templateResolverService.get()).resolveTemplatesWithOrderMasked(any(), any(), any());
+
+        requestService.get().executeRequest(request, "", "", sseId, Optional.empty(), request.getEnvironmentId(), null);
+
+        // then
+        ArgumentCaptor<HttpRequestEntitySaveRequest> requestForHistoryCaptor =
+                ArgumentCaptor.forClass(HttpRequestEntitySaveRequest.class);
+        verify(executionHistoryService.get()).logRequestExecution(any(String.class), any(UUID.class),
+                requestForHistoryCaptor.capture(), any(RequestExecutionResponse.class), any(), any());
+
+        String historyBody = requestForHistoryCaptor.getValue().getBody().getContent();
+        assertThat(historyBody).contains("***");
+        assertThat(historyBody).doesNotContain(encryptedVarValue);
+        assertThat(historyBody).doesNotContain("$CONTEXT('" + encryptedVarName + "')");
+        assertThat(historyBody).contains(plainMacroResult);
+        assertThat(historyBody).doesNotContain("$RAND");
+    }
 }
