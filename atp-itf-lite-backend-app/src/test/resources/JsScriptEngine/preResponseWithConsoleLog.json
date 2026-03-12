@@ -1,0 +1,28 @@
+{
+  "postman": {
+    "globals": {},
+    "collectionVariables": {},
+    "environment": {},
+    "iterationData": {},
+    "variables": {},
+    "postmanRequest": {
+      "name": "test",
+      "url": {
+        "protocol": "http",
+        "host": ["localhost"],
+        "port": "8080",
+        "path": ["/path"]
+      },
+      "header": [],
+      "method": "GET"
+    }
+  },
+  "testResults": [],
+  "consoleLogs": [
+    {
+      "level": "info",
+      "message": "password is: secretValue",
+      "timestamp": 1234567890
+    }
+  ]
+}
