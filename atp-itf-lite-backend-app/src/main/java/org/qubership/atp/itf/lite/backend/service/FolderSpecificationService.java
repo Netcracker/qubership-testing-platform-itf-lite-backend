@@ -56,7 +56,9 @@ public class FolderSpecificationService {
             if (predicates.isEmpty()) {
                 return builder.conjunction();
             }
-            query.orderBy(builder.asc(root.get("order")));
+            if (query != null) {
+                query.orderBy(builder.asc(root.get("order")));
+            }
             return builder.and(predicates.toArray(new Predicate[0]));
         };
     }

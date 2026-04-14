@@ -16,6 +16,7 @@
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -63,15 +64,16 @@ public class ItfContextFeignClientPactUnitTest {
 
     @Autowired
     private ItfContextBalancerFeignClient itfContextBalancerFeignClient;
-    private String contextId = "9167234930111872000";
-    private UUID projectUuid = UUID.fromString("39cae351-9e3b-4fb6-a384-1c3616f4e76f");
+    private final String contextId = "9167234930111872000";
+    private final UUID projectUuid = UUID.fromString("39cae351-9e3b-4fb6-a384-1c3616f4e76f");
 
     @Test
     @PactVerification()
     public void allPass() {
         ResponseEntity<String> result = itfContextBalancerFeignClient.get(contextId, projectUuid);
         Assertions.assertEquals(200, result.getStatusCode().value());
-        Assertions.assertTrue(result.getHeaders().get("Content-Type").contains("application/json"));
+        Assertions.assertTrue(Objects.requireNonNull(result.getHeaders().get("Content-Type"))
+                .contains("application/json"));
         Assertions.assertEquals(result.getBody(), getResponse());
     }
 

@@ -68,7 +68,7 @@ class KafkaGetAccessTokenServiceTest {
         //check
         verify(kafkaTemplate, times(1)).send(topicNameCaptor.capture(), sseIdCaptor.capture(),
                 itfLiteGetAccessTokenFinishEventCaptor.capture());
-        assertEquals(kafkaGetAccessTokenService.finishTopic, topicNameCaptor.getAllValues().get(0));
+        assertEquals(kafkaGetAccessTokenService.finishTopic, topicNameCaptor.getAllValues().getFirst());
     }
 
     @Test

@@ -56,7 +56,7 @@ public class ListConsoleLogConverter implements AttributeConverter<List<ConsoleL
         List<ConsoleLogDto> consoleLogs = null;
         if (consoleLogJson != null) {
             try {
-                consoleLogs = objectMapper.readValue(consoleLogJson, new TypeReference<List<ConsoleLogDto>>() {
+                consoleLogs = objectMapper.readValue(consoleLogJson, new TypeReference<>() {
                 });
             } catch (final IOException e) {
                 log.error("JSON reading error", e);

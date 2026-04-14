@@ -59,7 +59,8 @@ public class ListContextVariableConverter implements AttributeConverter<List<Con
         if (requestParamsJson != null) {
             try {
                 requestParams = objectMapper.readValue(requestParamsJson,
-                        new TypeReference<List<ContextVariable>>() {});
+                        new TypeReference<>() {
+                        });
             } catch (final IOException e) {
                 log.error("JSON reading error", e);
             }

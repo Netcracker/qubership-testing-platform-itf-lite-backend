@@ -528,7 +528,7 @@ public class RamService {
                 throw new ItfLiteIllegalTestRunsCountInExecutionRequestException(executionRequestId);
             }
             contextVariableDtoResponse =
-                    ramTestRunsFeignClient.getAllContextVariables(testRunDto.get(0).getUuid());
+                    ramTestRunsFeignClient.getAllContextVariables(testRunDto.getFirst().getUuid());
         }
 
         if (request.getImportEntityType().equals(ImportContextRequest.ImportEntityType.TEST_RUN)) {
@@ -580,7 +580,7 @@ public class RamService {
                 log.error("Execution Request must contain only one test run to import cookies");
                 throw new ItfLiteIllegalTestRunsCountInExecutionRequestException(erId);
             }
-            return parseCookieFromLogRecords(testRunIds.get(0), null);
+            return parseCookieFromLogRecords(testRunIds.getFirst(), null);
         }
         return null;
     }
@@ -603,8 +603,7 @@ public class RamService {
         if (!CollectionUtils.isEmpty(logRecords)) {
             for (LogRecordDto logRecord : logRecords) {
                 if (logRecord instanceof RestLogRecordDto dto) {
-                    RestLogRecordDto restLogRecord = dto;
-                    importedCookies.addAll(parseRestLogRecordCookie(restLogRecord));
+                    importedCookies.addAll(parseRestLogRecordCookie(dto));
                 }
 
                 if (logRecord.getUuid().equals(logRecordId)) {

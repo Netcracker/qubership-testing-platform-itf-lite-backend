@@ -65,14 +65,14 @@ public class ToPostmanAuth {
                     break;
                 case BEARER:
                     this.type = ToPostmanAuthType.BEARER;
-                    this.bearer = Arrays.asList(
+                    this.bearer = List.of(
                             ToPostmanMapType.token(
                                     ((BearerRequestAuthorization) requestAuthorization).getToken()));
                     break;
                 case BASIC:
                     this.type = ToPostmanAuthType.BASIC;
                     BasicRequestAuthorization basicAuth = (BasicRequestAuthorization) requestAuthorization;
-                    this.basic = Arrays.asList(
+                    this.basic = List.of(
                             ToPostmanMapType.userName(basicAuth.getUsername())
                     );
                     break;

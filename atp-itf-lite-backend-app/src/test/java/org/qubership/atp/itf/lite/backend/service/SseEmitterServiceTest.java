@@ -1,6 +1,7 @@
 package org.qubership.atp.itf.lite.backend.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -107,9 +108,9 @@ public class SseEmitterServiceTest {
         sseEmitterService.get().fillHttpExecutionResponse(httpExecutionDetails, requestId, response);
 
         // then
-        assertEquals(contextVariable, response.getContextVariables().get(0));
+        assertEquals(contextVariable, response.getContextVariables().getFirst());
         assertEquals(cookieHeader, response.getCookieHeader());
-        assertEquals(responseCookie, response.getCookies().get(0));
+        assertEquals(responseCookie, response.getCookies().getFirst());
         assertEquals("test", response.getBody());
     }
 
@@ -253,7 +254,7 @@ public class SseEmitterServiceTest {
                 "Not Correctly itf lite exception or try tehnical exception");
 
         RequestExecutionResponse actualRequestExecutionResponse = requestExecutionResponseCaptor.getValue();
-        assertEquals(false, actualRequestExecutionResponse.isTestsPassed(), "Wait error and tests not passed");
+        assertFalse(actualRequestExecutionResponse.isTestsPassed(), "Wait error and tests not passed");
     }
 
     @Test

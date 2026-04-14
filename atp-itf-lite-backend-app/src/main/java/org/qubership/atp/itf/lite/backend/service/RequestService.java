@@ -1212,7 +1212,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             //update final response from sub collection
             if (!responses.isEmpty()) {
                 //update context. Get from latest request in sub collection
-                response.setContext(responses.get(responses.size() - 1).getContext());
+                response.setContext(responses.getLast().getContext());
                 //update testing status. If any failed then root also failed.
                 if (responses.stream().anyMatch(r -> TestingStatuses.FAILED.equals(r.getTestingStatus()))) {
                     response.setTestingStatus(TestingStatuses.FAILED);
@@ -1598,7 +1598,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                             request.getId()).stream().filter(fileData ->
                             finalFileDataListForFiltering.stream().noneMatch(receivedFileData ->
                                     receivedFileData.getFileName().equals(fileData.getFileName())))
-                    .collect(Collectors.toList());
+                    .toList();
             fileDataList.addAll(gridFsFileDatas);
         }
 
@@ -1610,7 +1610,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         List<ConsoleLogDto> consoleLogs = null;
 
         try {
-            JsExecutionResult jsResult = null;
+            JsExecutionResult jsResult;
             try {
                 request.normalize();
                 // Execute pre-script and saving test results
@@ -1786,7 +1786,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
     private ItfLiteException getExceptionIfScriptEngineScriptResultIsNotPassed(
             PostmanExecuteScriptResponseDto scriptResponseDto, boolean isPreScript) {
-        ItfLiteException exception = null;
+        ItfLiteException exception;
         if (isPreScript) {
             exception = new ItfLiteScriptEnginePreScriptExecutionException();
         } else {
@@ -1794,7 +1794,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         }
         if (!CollectionUtils.isEmpty(scriptResponseDto.getTestResults())) {
             PostmanExecuteScriptResponseTestResultsInnerErrorDto scriptResponseErrorDto =
-                    scriptResponseDto.getTestResults().get(0).getError();
+                    scriptResponseDto.getTestResults().getFirst().getError();
 
             if (isPreScript) {
                 exception = new ItfLiteScriptEnginePreScriptExecutionException(scriptResponseErrorDto.getMessage());
@@ -1846,7 +1846,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                                                                       UUID environmentId,
                                                                       SaveRequestResolvingContext resolvingContext,
                                                                       Evaluator evaluator) {
-        String authToken = null;
+        String authToken;
         try {
             authToken = requestAuthorizationService.processRequestAuthorization(projectId,
                     request, historyRequest, environmentId, evaluator, resolvingContext);
@@ -1868,10 +1868,10 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                     HttpHeaderSaveRequest cookieHeader = cookieService.cookieListToRequestHeader(uri,
                             httpRequest.getCookies());
                     if (cookieHeader != null && !StringUtils.isEmpty(cookieHeader.getValue())) {
-                        httpRequest.getRequestHeaders().add(0, cookieHeader);
+                        httpRequest.getRequestHeaders().addFirst(cookieHeader);
                     }
-                } catch (URISyntaxException ignore) {
-                    log.debug("Syntax exception", ignore);
+                } catch (URISyntaxException ex) {
+                    log.debug("Syntax exception", ex);
                 }
             }
         }
@@ -2380,16 +2380,12 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             if (!parameter.isDisabled()) {
                 final String key = parameter.getKey();
                 final String value = parameter.getValue();
-                try {
-                    if (!runtimeOptions.isDisableAutoEncoding()) {
-                        uriComponentsBuilder.queryParam(URLEncoder.encode(key, "UTF-8").replace("+", "%20"),
-                                URLEncoder.encode(value, "UTF-8").replace("+", "%20"));
-                    } else {
-                        uriComponentsBuilder.queryParam(key, value);
-                    }
-                } catch (UnsupportedEncodingException e) {
-                    log.error("Failed to encode query parameter '{}' with value: '{}'", key, value, e);
-                    throw new ItfLiteRequestQueryParamEncodingException(key, value);
+                if (!runtimeOptions.isDisableAutoEncoding()) {
+                    uriComponentsBuilder.queryParam(
+                            URLEncoder.encode(key, StandardCharsets.UTF_8).replace("+", "%20"),
+                            URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20"));
+                } else {
+                    uriComponentsBuilder.queryParam(key, value);
                 }
             }
         });
@@ -2609,7 +2605,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             final String value = parameter.getValue();
 
             try {
-                parameter.setKey(URLEncoder.encode(key, StandardCharsets.UTF_8.name()));
+                parameter.setKey(URLEncoder.encode(key, StandardCharsets.UTF_8));
                 parameter.setValue(envParamService.encodeParameterExceptEnv(value));
             } catch (UnsupportedEncodingException e) {
                 log.error("Failed to encode query parameter '{}' with value: '{}'", key, value, e);
@@ -2642,14 +2638,14 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     private UUID parseRequestPath(String requestPath) {
         String splitChar = "/";
         List<String> requestParts = Arrays.stream(requestPath.split(splitChar))
-                .map(String::trim).collect(Collectors.toList());
+                .map(String::trim).toList();
         if (isEmpty(requestParts)) {
             log.error("Request path is empty. Can't get request id");
             return null;
         }
 
         if (requestParts.size() == 1) {
-            List<Request> requests = requestRepository.findAllByName(requestParts.get(0));
+            List<Request> requests = requestRepository.findAllByName(requestParts.getFirst());
             if (!isEmpty(requests)) {
                 Request filteredRequest = requests.stream()
                         .filter(request -> request.getFolderId() == null).findAny().orElse(null);
@@ -2657,7 +2653,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             }
         }
 
-        List<Request> requests = requestRepository.findAllByName(requestParts.get(requestParts.size() - 1));
+        List<Request> requests = requestRepository.findAllByName(requestParts.getLast());
         UUID requestId = null;
         for (Request request : requests) {
             requestId = request.getId();
@@ -2676,7 +2672,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                     } else {
                         i--;
                         // folder by id and name is unique, that's why foundFolders contain only one element
-                        currentFolderId = foundFolders.get(0).getParentId();
+                        currentFolderId = foundFolders.getFirst().getParentId();
                     }
                 }
             }
@@ -2697,7 +2693,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             return null;
         }
 
-        BasicHeader basicHeader = new BasicHeader(CONTENT_DISPOSITION, headerValues.get(0));
+        BasicHeader basicHeader = new BasicHeader(CONTENT_DISPOSITION, headerValues.getFirst());
         HeaderElement[] headerElements = basicHeader.getElements();
         if (headerElements.length > 0) {
             HeaderElement headerElement = headerElements[0];
@@ -2725,7 +2721,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         }
 
         List<String> headerValues = contentTypeMapEntryOptional.get().getValue();
-        BasicHeader basicHeader = new BasicHeader(CONTENT_TYPE, headerValues.get(0));
+        BasicHeader basicHeader = new BasicHeader(CONTENT_TYPE, headerValues.getFirst());
         HeaderElement[] headerElements = basicHeader.getElements();
         if (headerElements.length > 0) {
             HeaderElement headerElement = headerElements[0];

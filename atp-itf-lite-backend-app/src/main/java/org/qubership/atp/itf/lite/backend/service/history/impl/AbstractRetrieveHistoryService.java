@@ -170,8 +170,8 @@ public abstract class AbstractRetrieveHistoryService<S extends AbstractNamedEnti
                 .byInstanceId(source.getId(), source.getClass())
                 .withSnapshotType(SnapshotType.INITIAL)
                 .build());
-        if (Objects.nonNull(snapshots) && snapshots.size() > 0) {
-            destination.setCreatedBy(snapshots.get(0).getCommitMetadata().getAuthor());
+        if (Objects.nonNull(snapshots) && !snapshots.isEmpty()) {
+            destination.setCreatedBy(snapshots.getFirst().getCommitMetadata().getAuthor());
         }
     }
 
@@ -264,8 +264,8 @@ public abstract class AbstractRetrieveHistoryService<S extends AbstractNamedEnti
         List<CdoSnapshot> snapshots = javers.findSnapshots(query);
         QueryBuilder queryBuilder = QueryBuilder.byInstanceId(uuid, getEntityClass())
                 .withVersion(Long.parseLong(version)).withScopeDeepPlus();
-        if (Objects.nonNull(snapshots) && snapshots.size() > 0) {
-            queryBuilder.withCommitId(snapshots.get(0).getCommitId());
+        if (Objects.nonNull(snapshots) && !snapshots.isEmpty()) {
+            queryBuilder.withCommitId(snapshots.getFirst().getCommitId());
         }
         List<Shadow<Object>> shadows = javers.findShadows(queryBuilder.build());
         log.debug("Shadows found : {}", shadows);

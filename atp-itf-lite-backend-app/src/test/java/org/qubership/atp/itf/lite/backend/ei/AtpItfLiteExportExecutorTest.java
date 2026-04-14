@@ -129,7 +129,7 @@ public class AtpItfLiteExportExecutorTest {
         Folder secondLevelFolder2 = generateFolder("folder#1_2_1", projectId, firstLevelFolder2.getId());
         List<Folder> folders = Arrays.asList(rootFolder, firstLevelFolder1, secondLevelFolder1, firstLevelFolder2, secondLevelFolder2);
         HttpRequest httpRequest = generateHttpRequest("httpRequest", projectId);
-        List<Request> requests = Arrays.asList(httpRequest);
+        List<Request> requests = List.of(httpRequest);
         ExportImportData exportData = new ExportImportData(projectId, new ExportScope(),
                 ExportFormat.ATP);
         exportData.getExportScope().getEntities().put(ServiceScopeEntities.ENTITY_ITF_LITE_FOLDERS.getValue(),
@@ -144,11 +144,11 @@ public class AtpItfLiteExportExecutorTest {
         Map<UUID, List<FileInfo>> mapOfFiles = new HashMap<>();
         List<FileInfo> fileInfo = Collections.singletonList(
                 new FileInfo(null, "fileName.txt",
-                requests.get(0).getId(), UUID.randomUUID(), "binary", "text/html", 0L));
-        mapOfFiles.put(requests.get(0).getId(), fileInfo);
+                requests.getFirst().getId(), UUID.randomUUID(), "binary", "text/html", 0L));
+        mapOfFiles.put(requests.getFirst().getId(), fileInfo);
         when(gridFsService.getFileInfosByRequestIds(any())).thenReturn(mapOfFiles);
         Map<UUID, InputStream> file = new HashMap<>();
-        file.put(fileInfo.get(0).getFileId(), new ByteArrayInputStream("string".getBytes()));
+        file.put(fileInfo.getFirst().getFileId(), new ByteArrayInputStream("string".getBytes()));
         when(gridFsService.getFilesByFileInfos(any())).thenReturn(file);
 
         exportExecutor.exportToFolder(exportData, getRootPath());
@@ -158,9 +158,8 @@ public class AtpItfLiteExportExecutorTest {
         assertTrue(expectedFolders.size() == actualFolders.size() && expectedFolders.containsAll(actualFolders)
                 && actualFolders.containsAll(expectedFolders));
         List<Request> actualRequests = getActualHttpRequests();
-        List<Request> expectedRequests = requests;
-        Assertions.assertEquals(expectedRequests, actualRequests);
-        checkFiles(fileInfo.get(0).getFileId(), fileInfo.get(0).getRequestId());
+        Assertions.assertEquals(requests, actualRequests);
+        checkFiles(fileInfo.getFirst().getFileId(), fileInfo.getFirst().getRequestId());
     }
 
     @Test
@@ -197,14 +196,14 @@ public class AtpItfLiteExportExecutorTest {
         soapNoAuthorization.setId(new UUID(1,2));
         soapNoAuthorization.setUrl("https://2.com");
         soapNoAuthorization.setHttpMethod(HttpMethod.GET);
-        soapNoAuthorization.setRequestHeaders(Arrays.asList(new RequestHeader(UUID.randomUUID(), "h1", "v1", "descr1", false)));
+        soapNoAuthorization.setRequestHeaders(List.of(new RequestHeader(UUID.randomUUID(), "h1", "v1", "descr1", false)));
         soapNoAuthorization.setBody(new RequestBody("<tag>raw</tag>", RequestBodyType.XML));
 
         HttpRequest postPreUserCredentialsBinaryBody = generateHttpRequest("POST with prerequest and User AUTHORIZATION binary body", projectId, folder2_1.getId(), TransportType.REST, 0);
         postPreUserCredentialsBinaryBody.setId(new UUID(1,3));
         postPreUserCredentialsBinaryBody.setUrl("https://3.com/projectId/{{projectId}}");
         postPreUserCredentialsBinaryBody.setHttpMethod(HttpMethod.POST);
-        postPreUserCredentialsBinaryBody.setRequestHeaders(Arrays.asList(new RequestHeader(UUID.randomUUID(), "h1", "v1", "descr1", true)));
+        postPreUserCredentialsBinaryBody.setRequestHeaders(List.of(new RequestHeader(UUID.randomUUID(), "h1", "v1", "descr1", true)));
         postPreUserCredentialsBinaryBody.setPreScripts("some prerequest script");
         postPreUserCredentialsBinaryBody.setBody(new RequestBody("", RequestBodyType.Binary));
         OAuth2RequestAuthorization passwordAuthorization = new OAuth2RequestAuthorization();
@@ -276,12 +275,12 @@ public class AtpItfLiteExportExecutorTest {
         when(folderRepository.findAllByProjectIdAndParentIdOrderByOrder(eq(projectId), eq(folder2_2.getId()))).thenReturn(null);
         when(folderRepository.findAllByProjectIdAndParentIdOrderByOrder(eq(projectId), eq(folder1.getId()))).thenReturn(Arrays.asList(folder1_1, folder1_2));
         when(folderRepository.findAllByProjectIdAndParentIdOrderByOrder(eq(projectId), eq(folder2.getId()))).thenReturn(Arrays.asList(folder2_1, folder2_2));
-        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder1.getId()))).thenReturn(Arrays.asList(withInheritAuthType));
-        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder1_1.getId()))).thenReturn(Arrays.asList(getRawBodyBearer));
-        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder1_2.getId()))).thenReturn(Arrays.asList(soapNoAuthorization));
-        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder2_1.getId()))).thenReturn(Arrays.asList(postPreUserCredentialsBinaryBody));
-        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder2_2.getId()))).thenReturn(Arrays.asList(postPrePostClientCredentialsFormDataBody));
-        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder2.getId()))).thenReturn(Arrays.asList(postAuthorizationCodeGraphQlBody));
+        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder1.getId()))).thenReturn(List.of(withInheritAuthType));
+        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder1_1.getId()))).thenReturn(List.of(getRawBodyBearer));
+        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder1_2.getId()))).thenReturn(List.of(soapNoAuthorization));
+        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder2_1.getId()))).thenReturn(List.of(postPreUserCredentialsBinaryBody));
+        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder2_2.getId()))).thenReturn(List.of(postPrePostClientCredentialsFormDataBody));
+        when(requestRepository.findAllByFolderIdOrderByOrder(eq(folder2.getId()))).thenReturn(List.of(postAuthorizationCodeGraphQlBody));
         when(gridFsService.getFileByFileInfo(fileInfoBinary)).thenReturn(new ByteArrayInputStream("string".getBytes()));
         when(gridFsService.getFileByFileInfo(fileInfoFormData1)).thenReturn(new ByteArrayInputStream("formdata1".getBytes()));
         when(gridFsService.getFileByFileInfo(fileInfoFormData2)).thenReturn(new ByteArrayInputStream("formdata2".getBytes()));
@@ -365,6 +364,7 @@ public class AtpItfLiteExportExecutorTest {
     private void checkFiles(UUID fileId, UUID requestId) {
         File dir = getPath(Constants.FILES, requestId.toString()).toFile();
         File[] files = dir.listFiles();
+        Assertions.assertNotNull(files);
         Assertions.assertEquals(2, files.length);
         assertTrue(getPath(Constants.FILES, requestId.toString(), fileId.toString()).toFile().exists());
         assertTrue(getPath(Constants.FILES, requestId.toString(), fileId+ ".json").toFile().exists());
@@ -374,6 +374,7 @@ public class AtpItfLiteExportExecutorTest {
         String dirName = Folder.class.getSimpleName();
         File dir = getPath(Constants.FOLDERS, dirName).toFile();
         File[] files = dir.listFiles();
+        Assertions.assertNotNull(files);
         return Arrays.stream(files)
                 .map(file -> readObjectFromFilePath(Folder.class, Constants.FOLDERS, dirName, file.getName()))
                 .collect(Collectors.toList());

@@ -102,7 +102,7 @@ public class GetAccessTokenByCodeService {
             looseMandatoryFields.add("redirectUri");
         }
         //Exception if any mandatory field is not present
-        if (looseMandatoryFields.size() > 0) {
+        if (!looseMandatoryFields.isEmpty()) {
             throwWithLog(log, new AuthActionMandatoryFieldException(looseMandatoryFields.toString()));
         }
         //Check that no another SSE

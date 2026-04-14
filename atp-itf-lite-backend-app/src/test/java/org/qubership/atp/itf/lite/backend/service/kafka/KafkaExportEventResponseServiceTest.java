@@ -288,7 +288,7 @@ public class KafkaExportEventResponseServiceTest {
         // then
         verify(sseEmitter, times(1)).send(sseEventBuilderArgumentCaptor.capture());
         assertEquals(1, sseEventBuilderArgumentCaptor.getAllValues().size());
-        compareEvents(expectedEventWithSuccess, sseEventBuilderArgumentCaptor.getAllValues().get(0));
+        compareEvents(expectedEventWithSuccess, sseEventBuilderArgumentCaptor.getAllValues().getFirst());
 
         verify(requestExportRepository.get()).deleteByRequestExportId(any());
 

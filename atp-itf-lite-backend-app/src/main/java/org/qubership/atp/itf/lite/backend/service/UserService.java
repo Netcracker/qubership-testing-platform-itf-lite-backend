@@ -53,7 +53,7 @@ public class UserService extends CrudService<UserSettings> {
     private String realm;
 
     @Qualifier("m2mRestTemplate")
-    private RestTemplate m2mRestTemplate;
+    private final RestTemplate m2mRestTemplate;
 
     private final UserSettingsRepository userSettingsRepository;
 

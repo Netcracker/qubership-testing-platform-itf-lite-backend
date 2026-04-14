@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -316,7 +317,7 @@ public class RequestServiceTest {
         RequestBodyType requestBodyType = requestService.get().getResponseBodyType(responseHeaders);
 
         // then
-        assertEquals(requestBodyType, RequestBodyType.Binary);
+        assertEquals(RequestBodyType.Binary, requestBodyType);
     }
 
     @Test
@@ -405,7 +406,7 @@ public class RequestServiceTest {
         // then
         assertEquals(request.getId(), settings.getId());
         assertEquals(request.getName(), settings.getName());
-        assertEquals(true, settings.isAutoCookieDisabled());
+        assertTrue(settings.isAutoCookieDisabled());
     }
 
     @Test
@@ -550,7 +551,7 @@ public class RequestServiceTest {
         // then
         ArgumentCaptor<Request> requestCaptor = ArgumentCaptor.forClass(Request.class);
         verify(repository.get()).save(requestCaptor.capture());
-        assertTrue(requestCaptor.getValue() instanceof HttpRequest);
+        assertInstanceOf(HttpRequest.class, requestCaptor.getValue());
     }
 
     @Test
@@ -567,11 +568,11 @@ public class RequestServiceTest {
         RequestBody newBody = new RequestBody("{\"property\": \"value\"}", RequestBodyType.JSON);
         httpRequestEntitySaveRequest.setBody(newBody);
         // remove one of headers
-        HttpHeaderSaveRequest requestHeader = httpRequestEntitySaveRequest.getRequestHeaders().get(0);
+        HttpHeaderSaveRequest requestHeader = httpRequestEntitySaveRequest.getRequestHeaders().getFirst();
         HttpHeaderSaveRequest generatedHeader = new HttpHeaderSaveRequest("key", "value", "", false, true);
         httpRequestEntitySaveRequest.setRequestHeaders(Arrays.asList(requestHeader, generatedHeader));
         // remove one of parameters
-        HttpParamSaveRequest requestParam = httpRequestEntitySaveRequest.getRequestParams().get(0);
+        HttpParamSaveRequest requestParam = httpRequestEntitySaveRequest.getRequestParams().getFirst();
         httpRequestEntitySaveRequest.setRequestParams(Collections.singletonList(requestParam));
         // when
         when(repository.get().findById(any())).thenReturn(Optional.of(httpRequest));
@@ -589,10 +590,10 @@ public class RequestServiceTest {
         assertEquals(newMethod, actualRequest.getHttpMethod());
         assertEquals(newBody, actualRequest.getBody());
         // http request contains only one header, without generated header
-        assertEquals(Collections.singletonList(httpRequest.getRequestHeaders().get(0)),
+        assertEquals(Collections.singletonList(httpRequest.getRequestHeaders().getFirst()),
                 actualRequest.getRequestHeaders());
         // http request contains ony one parameter
-        assertEquals(Collections.singletonList(httpRequest.getRequestParams().get(0)),
+        assertEquals(Collections.singletonList(httpRequest.getRequestParams().getFirst()),
                 actualRequest.getRequestParams());
     }
 
@@ -1086,7 +1087,7 @@ public class RequestServiceTest {
         targetFolder.setPermissionFolderId(folderId);
 
         // when
-        when(repository.get().findAllByProjectIdAndIdIn(any(), any())).thenReturn(Arrays.asList(request1));
+        when(repository.get().findAllByProjectIdAndIdIn(any(), any())).thenReturn(List.of(request1));
         when(repository.get().findAllByProjectIdAndFolderId(any(), any())).thenReturn(folderRequests);
         when(gridFsService.get().downloadFile(any())).thenReturn(Optional.of(dictionaryFileData));
         when(folderService.get().getFolder(folderId)).thenReturn(targetFolder);
@@ -1098,7 +1099,7 @@ public class RequestServiceTest {
 
         List<Request> copyRequests = captureRequests.getValue();
         assertEquals(1, copyRequests.size());
-        HttpRequest actualRequest1 = (HttpRequest) copyRequests.get(0);
+        HttpRequest actualRequest1 = (HttpRequest) copyRequests.getFirst();
         assertNotEquals(oldRequest1.getId(), actualRequest1.getId());
         assertEquals(oldRequest1.getName() + COPY_POSTFIX + COPY_POSTFIX, actualRequest1.getName());
         assertEquals(oldRequest1.getTransportType(), actualRequest1.getTransportType());
@@ -1299,7 +1300,7 @@ public class RequestServiceTest {
         targetFolder.setPermissionFolderId(folderId);
 
         // when
-        when(repository.get().findAllByProjectIdAndIdIn(any(), any())).thenReturn(Arrays.asList(request1));
+        when(repository.get().findAllByProjectIdAndIdIn(any(), any())).thenReturn(List.of(request1));
         when(folderService.get().getFolder(folderId)).thenReturn(targetFolder);
         requestService.get().moveRequests(requestEntitiesMoveRequest);
         // then
@@ -1368,7 +1369,7 @@ public class RequestServiceTest {
         list.add(new Folder());
 
         // when
-        when(repository.get().findAllById(any())).thenReturn(Arrays.asList(request1));
+        when(repository.get().findAllById(any())).thenReturn(List.of(request1));
         when(folderService.get().getFoldersByIds(any())).thenReturn(list);
         when(folderService.get().getRequestTreeByParentFolderId(any())).thenReturn(groupResponse);
         when(folderService.get().getFolder(any())).thenReturn(new Folder());
@@ -1398,7 +1399,7 @@ public class RequestServiceTest {
         expectedFolderDeleteRequest.setIds(Collections.singleton(UUID.fromString("2e22f779-f2a3-4977-9ba1-b47071c603e2")));
 
         // when
-        when(repository.get().findAllById(any())).thenReturn(Arrays.asList(request1));
+        when(repository.get().findAllById(any())).thenReturn(List.of(request1));
         when(folderService.get().getFoldersByIds(any())).thenReturn(list);
 
         requestService.get().bulkDeleteRequests(requestEntitiesBulkDelete);
@@ -1942,7 +1943,7 @@ public class RequestServiceTest {
         when(feignClientsProperties.get().getIsFeignAtpItfEnabled()).thenReturn(true);
         String actualContext = requestService.get().getContext(projectId, contextId);
         // then
-        assertEquals(actualContext, expectedContext);
+        assertEquals(expectedContext, actualContext);
     }
 
     @Test
@@ -1961,7 +1962,7 @@ public class RequestServiceTest {
         String actualContext = requestService.get().getContext(projectId, contextUrl);
 
         // then
-        assertEquals(actualContext, expectedContext);
+        assertEquals(expectedContext, actualContext);
         ArgumentCaptor<URI> itfUrlCaptor = ArgumentCaptor.forClass(URI.class);
         ArgumentCaptor<String> itfRouteCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<UUID> itfProjectIdCaptor = ArgumentCaptor.forClass(UUID.class);
@@ -1969,8 +1970,8 @@ public class RequestServiceTest {
         verify(itfPlainFeignClient.get()).getContext(itfUrlCaptor.capture(), itfRouteCaptor.capture(),
                 itfProjectIdCaptor.capture(),
                 contextIdCaptor.capture());
-        assertEquals(itfUrlCaptor.getValue(), new URI(itfUrl));
-        assertEquals(contextIdCaptor.getValue(), contextId);
+        assertEquals(new URI(itfUrl), itfUrlCaptor.getValue());
+        assertEquals(contextId, contextIdCaptor.getValue());
     }
 
     @Test
@@ -2173,7 +2174,7 @@ public class RequestServiceTest {
         HttpRequestEntitySaveRequest httpRequestEntitySaveRequest = EntitiesGenerator
                 .generateRandomHttpRequestEntitySaveRequestWithFormData();
         httpRequestEntitySaveRequest.getBody().setFormDataBody(
-                singletonList(httpRequestEntitySaveRequest.getBody().getFormDataBody().get(0))
+                singletonList(httpRequestEntitySaveRequest.getBody().getFormDataBody().getFirst())
         );
         httpRequestEntitySaveRequest.setId(requestId);
         when(repository.get().findById(requestId)).thenReturn(Optional.of(httpRequest));
@@ -2452,9 +2453,9 @@ public class RequestServiceTest {
 
         HttpRequestEntitySaveRequest requestForHistory = requestForHistoryCaptor.getValue();
         assertEquals(1, requestForHistory.getRequestHeaders().size());
-        assertFalse(requestForHistory.getRequestHeaders().get(0).isDisabled());
+        assertFalse(requestForHistory.getRequestHeaders().getFirst().isDisabled());
         assertEquals(1, requestForHistory.getRequestParams().size());
-        assertFalse(requestForHistory.getRequestParams().get(0).isDisabled());
+        assertFalse(requestForHistory.getRequestParams().getFirst().isDisabled());
     }
 
     @Test

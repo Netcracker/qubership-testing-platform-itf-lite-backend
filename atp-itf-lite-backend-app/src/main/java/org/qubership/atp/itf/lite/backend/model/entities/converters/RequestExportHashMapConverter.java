@@ -53,7 +53,8 @@ public class RequestExportHashMapConverter implements AttributeConverter<Map<UUI
         Map<UUID, RequestExportStatus> requestStatuses = null;
         try {
             requestStatuses = new ObjectMapper().readValue(requestStatusesJson,
-                    new TypeReference<Map<UUID, RequestExportStatus>>() {});
+                    new TypeReference<>() {
+                    });
         } catch (final IOException e) {
             log.error("JSON reading error", e);
         }

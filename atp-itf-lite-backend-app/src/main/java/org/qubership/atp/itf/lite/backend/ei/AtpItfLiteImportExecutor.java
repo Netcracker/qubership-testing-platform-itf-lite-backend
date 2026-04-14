@@ -95,6 +95,6 @@ public class AtpItfLiteImportExecutor implements ImportExecutor {
     }
 
     private Path getWorkDir(String path, String entityType) {
-        return Path.of(path.toString(), entityType);
+        return Path.of(path, entityType);
     }
 }

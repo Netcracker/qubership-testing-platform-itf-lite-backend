@@ -116,7 +116,7 @@ public class ActionService {
 
         String actionName = action.getName();
         if (actionName.matches(ActionName.EXECUTE_REQUEST_BY_ID.getRegexp())) {
-            String requestIdStr = resolveActionParameter(action.getParameters().get(0).getValue(), context);
+            String requestIdStr = resolveActionParameter(action.getParameters().getFirst().getValue(), context);
             try {
                 UUID requestId = UUID.fromString(requestIdStr);
                 return getExecuteRequestActionStrategy(requestId, environmentId);
@@ -126,7 +126,7 @@ public class ActionService {
                         requestIdStr));
             }
         } else if (actionName.matches(ActionName.EXECUTE_FOLDER_BY_ID.getRegexp())) {
-            String folderIdStr = resolveActionParameter(action.getParameters().get(0).getValue(), context);
+            String folderIdStr = resolveActionParameter(action.getParameters().getFirst().getValue(), context);
             try {
                 UUID folderId = UUID.fromString(folderIdStr);
                 return getExecuteFolderStrategy(folderId, environmentId);
@@ -135,7 +135,7 @@ public class ActionService {
                 throw new ItfLiteException("Failed to get folderId - bad uuid format: %s".formatted(folderIdStr));
             }
         } else if (actionName.matches(ActionName.EXECUTE_FOLDER_BY_PATH.getRegexp())) {
-            ComplexActionParameter complexParam = action.getParameters().get(0).getComplexParam();
+            ComplexActionParameter complexParam = action.getParameters().getFirst().getComplexParam();
             if (Objects.isNull(complexParam)) {
                 log.error("ComplexActionParameters are null");
                 throw new ItfLiteException("ComplexActionParameters are null");

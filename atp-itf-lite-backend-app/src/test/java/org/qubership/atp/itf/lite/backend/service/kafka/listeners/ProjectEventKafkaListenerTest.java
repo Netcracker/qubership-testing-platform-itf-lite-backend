@@ -26,7 +26,7 @@ import ch.qos.logback.core.read.ListAppender;
 @Isolated
 public class ProjectEventKafkaListenerTest {
 
-    private static ProjectEventKafkaListener eventListener = new ProjectEventKafkaListener();
+    private static final ProjectEventKafkaListener eventListener = new ProjectEventKafkaListener();
     private UUID projectId;
 
     @BeforeEach

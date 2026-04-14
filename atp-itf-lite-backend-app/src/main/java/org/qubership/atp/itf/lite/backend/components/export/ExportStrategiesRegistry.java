@@ -51,7 +51,7 @@ public class ExportStrategiesRegistry {
                 .orElse(new ExportStrategy() {
                             @Override
                             public void export(ExportImportData exportData, Path workDir) {
-                                log.info("ITF Lite not support `{}` export format: {}", exportData.getFormat());
+                                log.info("ITF Lite not support `{}` export format", exportData.getFormat());
                             }
 
                             @Override

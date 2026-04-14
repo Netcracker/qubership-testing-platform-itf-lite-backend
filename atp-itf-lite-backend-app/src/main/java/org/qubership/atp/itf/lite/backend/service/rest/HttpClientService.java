@@ -283,7 +283,7 @@ public class HttpClientService {
                         log.trace("run IdleConnectionMonitor - Http Client Connection manager is not initialised");
                     }
                 } catch (Exception e) {
-                    log.error("run IdleConnectionMonitor - Exception occurred. msg={}, e={}", e.getMessage(), e);
+                    log.error("run IdleConnectionMonitor - Exception occurred. msg={}", e.getMessage(), e);
                 }
             }
         };

@@ -85,7 +85,7 @@ public class BearerAuthorizationStrategy extends AbstractAuthorizationStrategy i
             bearerRequestAuthorization.setToken(authorizationInfo.get(Constants.TOKEN));
         }
         if (bearerRequestAuthorization.getToken() == null
-                || bearerRequestAuthorization.getToken().equals("")) {
+                || bearerRequestAuthorization.getToken().isEmpty()) {
             return null;
         }
         return bearerRequestAuthorization;

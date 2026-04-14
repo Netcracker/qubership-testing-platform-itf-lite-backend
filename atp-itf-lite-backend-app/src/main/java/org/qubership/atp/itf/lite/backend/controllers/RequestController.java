@@ -136,7 +136,7 @@ public class RequestController {
         if (request instanceof HttpRequest httpRequest) {
             RequestHeader authHeader = requestService.generateAuthorizationHeader(request.getAuthorization());
             if (nonNull(authHeader)) {
-                httpRequest.getRequestHeaders().add(0, authHeader);
+                httpRequest.getRequestHeaders().addFirst(authHeader);
             }
 
             List<org.qubership.atp.itf.lite.backend.model.entities.http.RequestParam> requestParams =

@@ -170,7 +170,7 @@ public class ExecuteRequestDto implements Serializable {
     TERMINATE_IF_PREREQUISITE_FAIL("TERMINATE_IF_PREREQUISITE_FAIL"),
     COLLECT_SSM_METRICS_ON_FAIL("COLLECT_SSM_METRICS_ON_FAIL");
 
-    private String value;
+    private final String value;
 
     FlagsEnum(String value) {
       this.value = value;

@@ -120,14 +120,14 @@ public class AtpItfLiteImportExecutorTest {
                 mock(FileService.class),
                 gridFsService,
                 new ObjectMapper());
-        exportExecutor = new AtpItfLiteExportExecutor(new ExportStrategiesRegistry(Arrays.asList(atpExportStrategy)));
+        exportExecutor = new AtpItfLiteExportExecutor(new ExportStrategiesRegistry(List.of(atpExportStrategy)));
 
         projectId = UUID.randomUUID();
         folders = new ArrayList<>();
         folders.add(generateFolder("folder", projectId));
 
         HttpRequest httpRequest = generateHttpRequest("httpRequest", projectId);
-        httpRequest.setFolderId(folders.get(0).getId());
+        httpRequest.setFolderId(folders.getFirst().getId());
         httpRequest.setRequestParams(Collections.singletonList(
                 new RequestParam(UUID.randomUUID(), "test", "test", "", false)));
         httpRequest.setRequestHeaders(Collections.singletonList(
@@ -137,7 +137,7 @@ public class AtpItfLiteImportExecutorTest {
 
         HttpRequest httpRequestWithFormData = generateRandomHttpRequestWithFormData();
         httpRequestWithFormData.setProjectId(projectId);
-        httpRequestWithFormData.setFolderId(folders.get(0).getId());
+        httpRequestWithFormData.setFolderId(folders.getFirst().getId());
         oAuth2AuthorizationSaveRequest = generateRandomOAuth2AuthorizationSaveRequest();
         httpRequestWithFormData.setAuthorization(modelMapper.map(oAuth2AuthorizationSaveRequest,
                 OAuth2RequestAuthorization.class));
@@ -211,9 +211,9 @@ public class AtpItfLiteImportExecutorTest {
         String expectedRequestName1 = "httpRequest";
         String expectedRequestName2 = "httpRequest Copy";
         HttpRequest httpRequest = generateHttpRequest(expectedRequestName1, projectId);
-        httpRequest.setFolderId(folders.get(0).getId());
+        httpRequest.setFolderId(folders.getFirst().getId());
         HttpRequest httpRequestCopy = generateHttpRequest(expectedRequestName2, projectId);
-        httpRequestCopy.setFolderId(folders.get(0).getId());
+        httpRequestCopy.setFolderId(folders.getFirst().getId());
         requests = new ArrayList<>();
         requests.add(httpRequest);
         requests.add(httpRequestCopy);
@@ -231,9 +231,9 @@ public class AtpItfLiteImportExecutorTest {
 
         List<Request> existedRequests = new ArrayList<>();
         Request existedRequest1 = generateHttpRequest(expectedRequestName1, projectId);
-        existedRequest1.setFolderId(folders.get(0).getId());
+        existedRequest1.setFolderId(folders.getFirst().getId());
         Request existedRequest2 = generateHttpRequest(expectedRequestName2, projectId);
-        existedRequest2.setFolderId(folders.get(0).getId());
+        existedRequest2.setFolderId(folders.getFirst().getId());
         existedRequests.add(existedRequest1);
         existedRequests.add(existedRequest2);
 

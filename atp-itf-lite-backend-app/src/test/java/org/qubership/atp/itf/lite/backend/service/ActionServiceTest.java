@@ -85,7 +85,9 @@ public class ActionServiceTest {
         UUID projectId = UUID.randomUUID();
         executionRequest.setActionEntity(requestExecuteAction);
         executionRequest.setProjectId(projectId);
-        executionRequest.setContext(new HashMap<String, Object>(){{ put("requestId", requestId);}});
+        executionRequest.setContext(new HashMap<>() {{
+            put("requestId", requestId);
+        }});
 
         Request request = EntitiesGenerator.generateHttpRequest("test", projectId);
 

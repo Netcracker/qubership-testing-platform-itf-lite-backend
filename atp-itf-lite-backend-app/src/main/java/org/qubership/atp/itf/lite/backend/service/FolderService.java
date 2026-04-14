@@ -262,7 +262,7 @@ public class FolderService extends CrudService<Folder> implements EntityHistoryS
                     gr.setHasWritePermissions(true);
                     return gr;
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         topLevelEntities.addAll(topLevelRequests);
 

@@ -62,7 +62,7 @@ public class DynamicVariablesService {
      * Inserts new scripts with the new dynamic variables found.
      */
     public String insertDynamicVariablesIntoPreScripts(String preScript, Set<String> dynamicVariables) {
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         if (preScript == null) {
             preScript = "";
         }
@@ -73,7 +73,7 @@ public class DynamicVariablesService {
                                 .replaceAll("\\}\\}", ""),
                         variable);
                 if (!preScript.contains(temporary)) {
-                    stringBuffer.append(temporary + "\r\n");
+                    stringBuffer.append(temporary).append("\r\n");
                 }
             }
         }

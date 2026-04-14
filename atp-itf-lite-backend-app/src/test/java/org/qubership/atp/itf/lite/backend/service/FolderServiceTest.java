@@ -193,7 +193,7 @@ public class FolderServiceTest {
         // then
         assertEquals(folder.getId(), settings.getId());
         assertEquals(folder.getName(), settings.getName());
-        assertEquals(true, settings.isAutoCookieDisabled());
+        assertTrue(settings.isAutoCookieDisabled());
     }
 
     @Test
@@ -265,28 +265,32 @@ public class FolderServiceTest {
         //then
         ArgumentCaptor<List<Folder>> captureFolders = ArgumentCaptor.forClass(ArrayList.class);
         verify(folderRepository.get(), times(2)).saveAll(captureFolders.capture());
-        List<Folder> copyFolders = new ArrayList<>(captureFolders.getAllValues().get(0));
+        List<Folder> copyFolders = new ArrayList<>(captureFolders.getAllValues().getFirst());
         Assertions.assertEquals(2, copyFolders.size());
-        Assertions.assertEquals(copyFolders.get(0).isDisableSslCertificateVerification(),
+
+        Folder firstFolder = copyFolders.getFirst();
+        Assertions.assertEquals(firstFolder.isDisableSslCertificateVerification(),
                 upsetRequest.isDisableSslCertificateVerification());
-        Assertions.assertEquals(copyFolders.get(0).isDisableSslClientCertificate(),
+        Assertions.assertEquals(firstFolder.isDisableSslClientCertificate(),
                 upsetRequest.isDisableSslClientCertificate());
-        Assertions.assertEquals(copyFolders.get(0).isDisableFollowingRedirect(),
+        Assertions.assertEquals(firstFolder.isDisableFollowingRedirect(),
                 upsetRequest.isDisableFollowingRedirect());
-        Assertions.assertEquals(copyFolders.get(0).isAutoCookieDisabled(),
+        Assertions.assertEquals(firstFolder.isAutoCookieDisabled(),
                 upsetRequest.isAutoCookieDisabled());
 
         ArgumentCaptor<List<Request>> captureFoldersRequests = ArgumentCaptor.forClass(ArrayList.class);
         verify(requestRepository.get(), times(1)).saveAll(captureFoldersRequests.capture());
         List<Request> copyFoldersRequests = new ArrayList<>(captureFoldersRequests.getValue());
         Assertions.assertEquals(3, copyFoldersRequests.size());
-        Assertions.assertEquals(copyFoldersRequests.get(0).isDisableFollowingRedirect(),
+
+        Request firstRequest = copyFoldersRequests.getFirst();
+        Assertions.assertEquals(firstRequest.isDisableFollowingRedirect(),
                 upsetRequest.isDisableFollowingRedirect());
-        Assertions.assertEquals(copyFoldersRequests.get(0).isDisableSslCertificateVerification(),
+        Assertions.assertEquals(firstRequest.isDisableSslCertificateVerification(),
                 upsetRequest.isDisableSslCertificateVerification());
-        Assertions.assertEquals(copyFoldersRequests.get(0).isDisableSslClientCertificate(),
+        Assertions.assertEquals(firstRequest.isDisableSslClientCertificate(),
                 upsetRequest.isDisableSslClientCertificate());
-        Assertions.assertEquals(copyFoldersRequests.get(0).isAutoCookieDisabled(),
+        Assertions.assertEquals(firstRequest.isAutoCookieDisabled(),
                 upsetRequest.isAutoCookieDisabled());
     }
 
@@ -386,13 +390,13 @@ public class FolderServiceTest {
         //then
         ArgumentCaptor<List<Folder>> captureFolders = ArgumentCaptor.forClass(ArrayList.class);
         verify(folderRepository.get(), times(2)).saveAll(captureFolders.capture());
-        List<Folder> copyFolders = new ArrayList<>(captureFolders.getAllValues().get(0));
-        assertEquals(copyFolders.size(), 1, "Copy folders objects");
+        List<Folder> copyFolders = new ArrayList<>(captureFolders.getAllValues().getFirst());
+        assertEquals(1, copyFolders.size(), "Copy folders objects");
 
         ArgumentCaptor<List<Request>> captureFoldersRequests = ArgumentCaptor.forClass(ArrayList.class);
         verify(requestRepository.get(), times(1)).saveAll(captureFoldersRequests.capture());
         List<Request> copyFoldersRequests = new ArrayList<>(captureFoldersRequests.getValue());
-        assertEquals(copyFoldersRequests.size(), 1, "Copy folders requests");
+        assertEquals(1, copyFoldersRequests.size(), "Copy folders requests");
     }
 
     @Test
@@ -418,14 +422,14 @@ public class FolderServiceTest {
         //then
         ArgumentCaptor<List<Folder>> captureFolders = ArgumentCaptor.forClass(ArrayList.class);
         verify(folderRepository.get(), times(2)).saveAll(captureFolders.capture());
-        List<Folder> copyFolders = new ArrayList<>(captureFolders.getAllValues().get(0));
-        assertEquals(copyFolders.size(), 1, "Copy folders objects");
-        assertNull(copyFolders.get(0).getParentId(), "Copy folders requests");
+        List<Folder> copyFolders = new ArrayList<>(captureFolders.getAllValues().getFirst());
+        assertEquals(1, copyFolders.size(), "Copy folders objects");
+        assertNull(copyFolders.getFirst().getParentId(), "Copy folders requests");
 
         ArgumentCaptor<List<Request>> captureFoldersRequests = ArgumentCaptor.forClass(ArrayList.class);
         verify(requestRepository.get(), times(1)).saveAll(captureFoldersRequests.capture());
         List<Request> copyFoldersRequests = new ArrayList<>(captureFoldersRequests.getValue());
-        assertEquals(copyFoldersRequests.size(), 1, "Copy folders requests");
+        assertEquals(1, copyFoldersRequests.size(), "Copy folders requests");
     }
 
     @Test
@@ -459,10 +463,10 @@ public class FolderServiceTest {
         //then
         ArgumentCaptor<List<Folder>> captureFolders = ArgumentCaptor.forClass(ArrayList.class);
         verify(folderRepository.get(), times(2)).saveAll(captureFolders.capture());
-        List<Folder> copyFolders = new ArrayList<>(captureFolders.getAllValues().get(0));
+        List<Folder> copyFolders = new ArrayList<>(captureFolders.getAllValues().getFirst());
         assertEquals(1, copyFolders.size(), "Copy folders objects");
         assertEquals(folderChild.getName() + Constants.COPY_POSTFIX + Constants.COPY_POSTFIX,
-                copyFolders.get(0).getName());
+                copyFolders.getFirst().getName());
 
         ArgumentCaptor<List<Request>> captureFoldersRequests = ArgumentCaptor.forClass(ArrayList.class);
         verify(requestRepository.get(), times(1)).saveAll(captureFoldersRequests.capture());
@@ -515,10 +519,10 @@ public class FolderServiceTest {
         //then
         ArgumentCaptor<List<Folder>> copiedFoldersCapture = ArgumentCaptor.forClass(List.class);
         verify(folderRepository.get(), times(2)).saveAll(copiedFoldersCapture.capture());
-        List<Folder> copiedFolders = copiedFoldersCapture.getAllValues().get(0);
+        List<Folder> copiedFolders = copiedFoldersCapture.getAllValues().getFirst();
         Assertions.assertNotNull(copiedFolders);
         Assertions.assertEquals(1, copiedFolders.size());
-        RequestAuthorization folderAuth = copiedFolders.get(0).getAuthorization();
+        RequestAuthorization folderAuth = copiedFolders.getFirst().getAuthorization();
         Assertions.assertEquals(targetFolderId,
                 ((InheritFromParentRequestAuthorization) folderAuth).getAuthorizationFolderId());
     }
@@ -543,7 +547,7 @@ public class FolderServiceTest {
         //then
         ArgumentCaptor<List<Folder>> captureFolders = ArgumentCaptor.forClass(ArrayList.class);
         verify(folderRepository.get(), times(2)).saveAll(captureFolders.capture());
-        Folder folder = captureFolders.getAllValues().get(0).get(0);
+        Folder folder = captureFolders.getAllValues().getFirst().getFirst();
         assertEquals(folder.getId(), folderChild.getId());
         assertEquals(folder.getParentId(), folderParent.getParentId());
     }
@@ -561,7 +565,7 @@ public class FolderServiceTest {
 
         //when
         when(folderRepository.get().findHeirsIdsByIdIn(eq(folderIds)))
-                .thenReturn(new HashSet<UUID>() {{
+                .thenReturn(new HashSet<>() {{
                     add(folderParent.getId());
                     add(folderChild.getId());
                 }});
@@ -613,7 +617,7 @@ public class FolderServiceTest {
 
         //when
         when(folderRepository.get().findHeirsIdsByIdIn(eq(folderIds)))
-                .thenReturn(new HashSet<UUID>() {{
+                .thenReturn(new HashSet<>() {{
                     add(folderParent.getId());
                     add(folderChild.getId());
                 }});
@@ -649,11 +653,11 @@ public class FolderServiceTest {
         // then
         ArgumentCaptor<List<Folder>> foldersSaveCaptor = ArgumentCaptor.forClass(List.class);
         verify(folderRepository.get(), times(2)).saveAll(foldersSaveCaptor.capture());
-        final List<Folder> savedFolders = foldersSaveCaptor.getAllValues().get(0);
+        final List<Folder> savedFolders = foldersSaveCaptor.getAllValues().getFirst();
         assertNotNull(savedFolders, "Saved folders list shouldn't be null");
         assertFalse(savedFolders.isEmpty(), "Saved folders list shouldn't be empty");
         assertEquals(folders.size(), savedFolders.size(), "Saved folders list size should be equal to fetched from the db");
-        final Folder changedFolder = folders.get(order);
+        final Folder changedFolder = folders.getFirst();
         assertEquals(changedFolderId, changedFolder.getId(), "Changed folder id should be equal to the requested one");
         assertEquals(order, changedFolder.getOrder(), "Changed folder order should be equal to the requested value");
     }
@@ -664,7 +668,7 @@ public class FolderServiceTest {
         final FolderUpsetRequest createRequest = new FolderUpsetRequest();
         createRequest.setParentId(UUID.randomUUID());
         createRequest.setProjectId(UUID.randomUUID());
-        Set<UUID> assignedUsers = new HashSet<UUID>() {{
+        Set<UUID> assignedUsers = new HashSet<>() {{
             add(UUID.randomUUID());
             add(UUID.randomUUID());
         }};
@@ -735,7 +739,7 @@ public class FolderServiceTest {
         final FolderEditRequest createRequest = new FolderEditRequest();
         createRequest.setProjectId(projectId);
         createRequest.setParentId(UUID.randomUUID());
-        List<UUID> assignedUsers = new ArrayList<UUID>() {{
+        List<UUID> assignedUsers = new ArrayList<>() {{
             add(UUID.randomUUID());
             add(UUID.randomUUID());
         }};
@@ -745,7 +749,7 @@ public class FolderServiceTest {
         when(folderRepository.get().findById(folder2Id)).thenReturn(Optional.of(folder2));
         when(folderRepository.get().findById(folder3Id)).thenReturn(Optional.of(folder3));
         when(folderRepository.get().findAllByProjectId(any(UUID.class))).thenReturn(Arrays.asList(folder1, folder2, folder3));
-        when(requestRepository.get().findAllByProjectId(any(UUID.class))).thenReturn(Arrays.asList(request21));
+        when(requestRepository.get().findAllByProjectId(any(UUID.class))).thenReturn(List.of(request21));
         when(folderRepository.get().save(any(Folder.class))).thenAnswer(args -> args.getArguments()[0]);
         when(requestRepository.get().findById(request21Id)).thenReturn(Optional.of(request21));
         folderService.get().editFolder(folder1Id, createRequest);
@@ -816,7 +820,7 @@ public class FolderServiceTest {
         when(folderRepository.get().findById(folder2Id)).thenReturn(Optional.of(folder2));
         when(folderRepository.get().findById(folder3Id)).thenReturn(Optional.of(folder3));
         when(folderRepository.get().findAllByProjectId(any(UUID.class))).thenReturn(Arrays.asList(folder1, folder2, folder3));
-        when(requestRepository.get().findAllByProjectId(any(UUID.class))).thenReturn(Arrays.asList(request21));
+        when(requestRepository.get().findAllByProjectId(any(UUID.class))).thenReturn(List.of(request21));
         when(folderRepository.get().save(any(Folder.class))).thenAnswer(args -> args.getArguments()[0]);
         when(requestRepository.get().findById(request21Id)).thenReturn(Optional.of(request21));
         folderService.get().editFolder(folder1Id, createRequest);
@@ -993,7 +997,7 @@ public class FolderServiceTest {
         final FolderCopyRequest copyRequest = new FolderCopyRequest();
         copyRequest.setProjectId(projectId);
         copyRequest.setToFolderId(folder1Id);
-        Set<UUID> foldersToCopy = new HashSet<UUID>() {{
+        Set<UUID> foldersToCopy = new HashSet<>() {{
             add(folder3Id);
         }};
         copyRequest.setIds(foldersToCopy);
@@ -1003,8 +1007,8 @@ public class FolderServiceTest {
                 .thenReturn(foldersToCopy);
         when(folderRepository.get().findAllByProjectId(any(UUID.class)))
                 .thenReturn(Arrays.asList(folder1, folder2, folder3Copied));
-        when(folderRepository.get().findAllByIdIn(eq(foldersToCopy))).thenReturn(Arrays.asList(folder3));
-        when(requestRepository.get().findAllByFolderIdIn(eq(foldersToCopy))).thenReturn(Arrays.asList(request31));
+        when(folderRepository.get().findAllByIdIn(eq(foldersToCopy))).thenReturn(List.of(folder3));
+        when(requestRepository.get().findAllByFolderIdIn(eq(foldersToCopy))).thenReturn(List.of(request31));
         when(requestRepository.get().findAllByProjectId(any(UUID.class))).thenReturn(Arrays.asList(request21, request31Copied));
         when(folderRepository.get().findById(eq(folder1Id))).thenReturn(Optional.of(folder1));
         when(folderRepository.get().findById(eq(folder2Id))).thenReturn(Optional.of(folder2));
@@ -1021,9 +1025,9 @@ public class FolderServiceTest {
         verify(requestRepository.get(), times(1)).save(savedRequestCapture.capture());
 
         List<Folder> savedFolders = savedFolderCapture.getAllValues();
-        assertEquals(folder1Id, savedFolders.get(0).getPermissionFolderId());
+        assertEquals(folder1Id, savedFolders.getFirst().getPermissionFolderId());
         List<Request> savedRequests = savedRequestCapture.getAllValues();
-        assertEquals(folder1Id, savedRequests.get(0).getPermissionFolderId());
+        assertEquals(folder1Id, savedRequests.getFirst().getPermissionFolderId());
     }
 
     @Test
@@ -1159,15 +1163,15 @@ public class FolderServiceTest {
         expectedFolder.setChildFolders("[\"" + childFolder2.getName() + "\",\"" + childFolder1.getName() + "\"]");
         expectedFolder.setChildRequests("[\"" + childRequest1.getName() + "\",\"" + childRequest2.getName() + "\"]");
         ArgumentCaptor<List<Folder>> argumentCaptorFolder = ArgumentCaptor.forClass(List.class);
-        folderServiceSpy.saveAll(Arrays.asList(parentFolder));
+        folderServiceSpy.saveAll(List.of(parentFolder));
 
         //check
         verify(folderRepository.get(), times(2)).saveAll(argumentCaptorFolder.capture());
         List<List<Folder>> actualFolders = argumentCaptorFolder.getAllValues();
         assertEquals(2, actualFolders.size());
-        List<Folder> firstList = actualFolders.get(0);
+        List<Folder> firstList = actualFolders.getFirst();
         assertEquals(1, firstList.size());
-        assertEquals(expectedFolder, firstList.get(0));
+        assertEquals(expectedFolder, firstList.getFirst());
         assertEquals(0, actualFolders.get(1).size());
     }
 }

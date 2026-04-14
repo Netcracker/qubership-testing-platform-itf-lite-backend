@@ -57,7 +57,8 @@ public class ListResponseCookieConverter implements AttributeConverter<List<Resp
         if (requestParamsJson != null) {
             try {
                 requestParams = objectMapper.readValue(requestParamsJson,
-                        new TypeReference<List<ResponseCookie>>() {});
+                        new TypeReference<>() {
+                        });
             } catch (final IOException e) {
                 log.error("JSON reading error", e);
             }

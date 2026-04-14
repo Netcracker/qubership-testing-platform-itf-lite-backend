@@ -31,7 +31,7 @@ import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.hc.client5.http.cookie.ClientCookie;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.itf.lite.backend.exceptions.cookie.IllegalCookieException;
 import org.qubership.atp.itf.lite.backend.feign.dto.PostmanCookieDto;
@@ -92,7 +92,7 @@ public class CookieUtils {
             List<HttpCookie> parsedCookies = HttpCookie.parse(cookieDto.getValue());
             newCookie.setKey(cookieDto.getKey());
             newCookie.setValue(cookieDto.getValue());
-            newCookie.setDomain(parsedCookies.get(0).getDomain());
+            newCookie.setDomain(parsedCookies.getFirst().getDomain());
             cookies.add(newCookie);
         });
         return cookies;
@@ -185,13 +185,14 @@ public class CookieUtils {
             newCookie.setDomain(cookie.getDomain());
 
             List<HttpCookie> parsedCookies = HttpCookie.parse(cookie.getValue());
+            HttpCookie firstCookie = parsedCookies.getFirst();
 
-            newCookie.setValue(parsedCookies.get(0).getValue());
-            newCookie.setPath(parsedCookies.get(0).getPath());
+            newCookie.setValue(firstCookie.getValue());
+            newCookie.setPath(firstCookie.getPath());
             newCookie.setExpires(
-                    timestampToCookieDate(System.currentTimeMillis() + parsedCookies.get(0).getMaxAge() * 1000));
-            newCookie.setHttpOnly(parsedCookies.get(0).isHttpOnly());
-            newCookie.setSecure(parsedCookies.get(0).getSecure());
+                    timestampToCookieDate(System.currentTimeMillis() + firstCookie.getMaxAge() * 1000));
+            newCookie.setHttpOnly(firstCookie.isHttpOnly());
+            newCookie.setSecure(firstCookie.getSecure());
             responseCookies.add(newCookie);
         });
         return responseCookies;
@@ -236,7 +237,6 @@ public class CookieUtils {
         df.setTimeZone(TimeZone.getTimeZone("GMT"));
         return df.format(expdate);
     }
-
 
     /**
      * Convert date to string in cookie format.
@@ -301,7 +301,7 @@ public class CookieUtils {
                 c.setExpires(dateToCookieDate(respCookie.getExpiryDate()));
             }
             c.setSecure(respCookie.isSecure());
-            if (respCookie instanceof ClientCookie cc) {
+            if (respCookie instanceof BasicClientCookie cc) {
                 String httpOnly = cc.getAttribute("httponly");
                 if (nonNull(httpOnly)) {
                     c.setHttpOnly(Boolean.parseBoolean(httpOnly));

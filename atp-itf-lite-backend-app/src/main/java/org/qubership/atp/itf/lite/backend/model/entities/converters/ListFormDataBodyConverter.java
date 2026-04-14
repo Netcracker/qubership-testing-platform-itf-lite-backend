@@ -56,7 +56,8 @@ public class ListFormDataBodyConverter implements AttributeConverter<List<FormDa
         List<FormDataPart> requestParams = null;
         if (requestParamsJson != null) {
             try {
-                requestParams = objectMapper.readValue(requestParamsJson, new TypeReference<List<FormDataPart>>() {});
+                requestParams = objectMapper.readValue(requestParamsJson, new TypeReference<>() {
+                });
             } catch (final IOException e) {
                 log.error("JSON reading error", e);
             }

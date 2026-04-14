@@ -151,8 +151,8 @@ public class EnvironmentVariableServiceTest {
         // then
         assertEquals(expectedUrl, request.getUrl());
         assertEquals(1, request.getRequestHeaders().size());
-        assertEquals(expectedHeader, request.getRequestHeaders().get(0).getValue());
+        assertEquals(expectedHeader, request.getRequestHeaders().getFirst().getValue());
         assertEquals(1, request.getRequestParams().size());
-        assertEquals(expectedQuery, request.getRequestParams().get(0).getValue());
+        assertEquals(expectedQuery, request.getRequestParams().getFirst().getValue());
     }
 }

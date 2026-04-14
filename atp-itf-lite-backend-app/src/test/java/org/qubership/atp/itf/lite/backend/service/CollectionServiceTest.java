@@ -198,9 +198,9 @@ public class CollectionServiceTest {
         List<Map<String, String>> authParametersMaps = oAuth2AuthorizationParametersMapCaptor.getAllValues();
         // password_credentials verify
         Map<String, String> passwordCredentialsMap = generateOAuth2AuthMap(OAuth2GrantType.PASSWORD_CREDENTIALS);
-        Assertions.assertEquals(passwordCredentialsMap.size(), authParametersMaps.get(0).size());
+        Assertions.assertEquals(passwordCredentialsMap.size(), authParametersMaps.getFirst().size());
         Assertions.assertTrue(passwordCredentialsMap.entrySet().stream().allMatch(expectedValue ->
-                expectedValue.getValue().equals(authParametersMaps.get(0).get(expectedValue.getKey()))));
+                expectedValue.getValue().equals(authParametersMaps.getFirst().get(expectedValue.getKey()))));
         // client_credentials verify
         Map<String, String> clientCredentialsMap = generateOAuth2AuthMap(OAuth2GrantType.CLIENT_CREDENTIALS);
         Assertions.assertEquals(clientCredentialsMap.size(), authParametersMaps.get(1).size());
@@ -331,9 +331,9 @@ public class CollectionServiceTest {
         // then
         Assertions.assertAll(
                 () -> Assertions.assertEquals(expectedPreScript, actualPreScripts, "Not correctly create pre scripts with new variables"),
-        () -> Assertions.assertEquals(expectedParamsFirst, httpRequest.getRequestParams().get(0).toString(), "Not correctly collect headers"),
+        () -> Assertions.assertEquals(expectedParamsFirst, httpRequest.getRequestParams().getFirst().toString(), "Not correctly collect headers"),
         () -> Assertions.assertEquals(expectedParamsSecond, httpRequest.getRequestParams().get(1).toString(), "Not correctly collect headers"),
-        () -> Assertions.assertEquals(expectedRequestHeader, httpRequest.getRequestHeaders().get(0).toString(), "Not correctly collect headers"),
+        () -> Assertions.assertEquals(expectedRequestHeader, httpRequest.getRequestHeaders().getFirst().toString(), "Not correctly collect headers"),
         () -> Assertions.assertEquals(expectedBody, httpRequest.getBody().getContent(), "Not correctly collect content body"),
         () -> Assertions.assertEquals(RequestBodyType.JSON, httpRequest.getBody().getType(), "Not correctly body type"),
         () -> Assertions.assertEquals(HttpMethod.GET, httpRequest.getHttpMethod(), "Not correctly http method")
@@ -345,7 +345,7 @@ public class CollectionServiceTest {
     public void executeCollection_CollectionRequestHasContextVariables_ExecutionRequestDtoShoudContainContextVariablesMap() {
         // given
         String authToken = "authToken";
-        List<ContextVariable> contextVariables = new ArrayList<ContextVariable>(){{
+        List<ContextVariable> contextVariables = new ArrayList<>() {{
             add(new ContextVariable("key_1", "value_1", ContextVariableType.GLOBAL));
             add(new ContextVariable("key_2", "value_2", ContextVariableType.COLLECTION));
             add(new ContextVariable("key_3", "value_3", ContextVariableType.DATA));
@@ -395,11 +395,11 @@ public class CollectionServiceTest {
         Assertions.assertEquals(capturedExecuteRequestDto.getLogCollectorTemplateId(), request.getLogCollectorTemplateId());
         Assertions.assertEquals(capturedExecuteRequestDto.getProjectId(), request.getProjectId());
         Assertions.assertEquals(capturedExecuteRequestDto.getTestPlanId(), defaultTestPlanId);
-        Assertions.assertEquals(capturedExecuteRequestDto.getThreadCount(), 1);
+        Assertions.assertEquals(1, capturedExecuteRequestDto.getThreadCount());
         Assertions.assertEquals(capturedExecuteRequestDto.getIsMandatoryCheck(), request.isMandatoryCheck());
         Assertions.assertEquals(capturedExecuteRequestDto.getIsSsmCheck(), request.isSsmCheck());
         Assertions.assertEquals(capturedExecuteRequestDto.getIsIgnoreFailedChecks(), request.isIgnoreFailedChecks());
-        Assertions.assertEquals(capturedExecuteRequestDto.getTestScenarios().get(0).getTestScenarioName(), request.getName());
+        Assertions.assertEquals(capturedExecuteRequestDto.getTestScenarios().getFirst().getTestScenarioName(), request.getName());
         Assertions.assertEquals(capturedExecuteRequestDto.getDataSetStorageId(), request.getDataSetStorageId());
         Assertions.assertEquals(capturedExecuteRequestDto.getDatasetId(), request.getDataSetId());
         Assertions.assertEquals(capturedExecuteRequestDto.getContextVariables(), request.convertContextVariablesToMap());
@@ -407,7 +407,7 @@ public class CollectionServiceTest {
 
     @Test
     public void executeCollection_ConvertConbtextVariables_ContextVariablesHasCorrectPrefix() {
-        List<ContextVariable> contextVariables = new ArrayList<ContextVariable>(){{
+        List<ContextVariable> contextVariables = new ArrayList<>() {{
             add(new ContextVariable("key_1", "value_1", ContextVariableType.GLOBAL));
             add(new ContextVariable("key_2", "value_2", ContextVariableType.COLLECTION));
             add(new ContextVariable("key_3", "value_3", ContextVariableType.DATA));
@@ -427,7 +427,7 @@ public class CollectionServiceTest {
 
         collectionsService.get().processContentTypeHeader(requestHeaders, requestBody);
 
-        assertEquals(requestHeaders, requestHeaders, "Headers list shouldn't be changed");
+        assertEquals(0, requestHeaders.size(), "Headers list shouldn't be changed");
     }
 
     @Test

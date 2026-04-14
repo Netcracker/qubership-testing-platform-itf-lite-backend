@@ -56,13 +56,13 @@ public class CustomFolderRepositoryImpl implements CustomFolderRepository {
         cq.select(folder.get("id"));
         if (path.size() == 1) {
             cq.where(cb.and(
-                    cb.equal(folder.get("name"), path.get(0)),
+                    cb.equal(folder.get("name"), path.getFirst()),
                     cb.equal(folder.get("projectId"), projectId)),
                     cb.isNull(folder.get("parentId")));
         } else {
             Subquery<UUID> subquery = getParentFolder(cb, cq.subquery(UUID.class), path, path.size() - 2, projectId);
             cq.where(cb.and(
-                    cb.equal(folder.get("name"), path.get(path.size() - 1)),
+                    cb.equal(folder.get("name"), path.getLast()),
                     folder.get("parentId").in(subquery)));
         }
 
@@ -95,7 +95,7 @@ public class CustomFolderRepositoryImpl implements CustomFolderRepository {
     /**
      * Collect folder heirs ids with parent folder ids.
      * @param ids parent folder ids
-     * @return list of collected ids
+     * @return Set of collected ids
      */
     public Set<UUID> findHeirsIdsByIdIn(Collection<UUID> ids) {
         Query query = em.createNativeQuery("""
