@@ -38,7 +38,6 @@ import org.qubership.atp.itf.lite.backend.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -134,7 +133,7 @@ public class ItfLiteFileService {
             DiskFileItem fileItem = (DiskFileItem) new DiskFileItemFactory()
                     .createItem(null, fileData.getContentType(), true, fileData.getFileName());
             IOUtils.copy(new ByteArrayInputStream(fileData.getContent()), fileItem.getOutputStream());
-            return Optional.of(new CommonsMultipartFile(fileItem));
+            return Optional.of(new DiskFileItemMultipartFile(fileItem));
         } catch (Exception exception) {
             log.warn("Can't read file with name {} by request id {}", fileData.getFileName(), requestId);
             return Optional.empty();
