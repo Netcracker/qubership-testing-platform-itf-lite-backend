@@ -35,7 +35,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.qubership.atp.adapter.common.adapters.AtpKafkaRamAdapter;
 import org.qubership.atp.adapter.common.adapters.providers.RamAdapterProvider;
 import org.qubership.atp.adapter.common.context.AtpCompaund;
@@ -272,8 +271,8 @@ public class RamService {
         resultMessage.setResponse(createLogRecordPartsResponse(request, requestExecutionResponse));
         resultMessage.setProtocolType(request.getTransportType().toString());
         resultMessage.setItfLiteRequestId(request.getId());
-        resultMessage.setIsPreScriptPresent(Strings.isNotBlank(request.getPreScripts()));
-        resultMessage.setIsPostScriptPresent(Strings.isNotBlank(request.getPostScripts()));
+        resultMessage.setIsPreScriptPresent(StringUtils.isNotBlank(request.getPreScripts()));
+        resultMessage.setIsPostScriptPresent(StringUtils.isNotBlank(request.getPostScripts()));
         setTimestampInMessage(requestExecutionResponse, resultMessage);
         log.debug("Send rest message with id = {} into ram adapter", resultMessage.getUuid());
         AtpRamWriter atpRamWriter = AtpRamWriter.getAtpRamWriter();

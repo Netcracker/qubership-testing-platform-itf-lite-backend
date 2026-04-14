@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -52,17 +52,17 @@ public class ToPostmanUrl {
         try {
             URL url = new URL(urlString);
             this.protocol = url.getProtocol();
-            if (Strings.isNotBlank(url.getHost())) {
+            if (StringUtils.isNotBlank(url.getHost())) {
                 this.host = Arrays.asList(url.getHost().split("\\."));
             }
             if (url.getPort() != -1) {
                 this.port = String.valueOf(url.getPort());
             }
-            if (Strings.isNotBlank(url.getPath())) {
+            if (StringUtils.isNotBlank(url.getPath())) {
                 String path = url.getPath().startsWith("/") ? url.getPath().replaceFirst("/", "") : url.getPath();
                 this.path = Arrays.asList(path.split("/"));
             }
-            if (Strings.isNotBlank(url.getQuery())) {
+            if (StringUtils.isNotBlank(url.getQuery())) {
                 this.query = Arrays.stream(url.getQuery().split("&"))
                         .map(s -> {
                             String[] keyValue = s.split("=");
@@ -72,7 +72,7 @@ public class ToPostmanUrl {
             }
 
         } catch (MalformedURLException e) {
-            this.host = Arrays.asList(urlString);
+            this.host = List.of(urlString);
             log.warn("Failed to parse URL '{}' during export to POSTMAN", urlString);
         }
     }

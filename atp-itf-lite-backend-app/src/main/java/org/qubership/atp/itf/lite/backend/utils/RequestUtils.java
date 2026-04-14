@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.Header;
-import org.apache.logging.log4j.util.Strings;
 import org.qubership.atp.auth.springbootstarter.exceptions.AtpException;
 import org.qubership.atp.itf.lite.backend.exceptions.ItfLiteException;
 import org.qubership.atp.itf.lite.backend.model.api.Parameter;
@@ -154,7 +154,7 @@ public class RequestUtils {
                 .status(status.value())
                 .timestamp(new Date())
                 .message(exception.getMessage())
-                .reason((responseStatus == null) ? Strings.EMPTY : responseStatus.reason())
+                .reason((responseStatus == null) ? StringUtils.EMPTY : responseStatus.reason())
                 .build();
     }
 

@@ -18,7 +18,7 @@ package org.qubership.atp.itf.lite.backend.model.entities.converters;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.qubership.atp.itf.lite.backend.exceptions.ItfLiteException;
 import org.qubership.atp.itf.lite.backend.model.api.response.ErrorResponseSerializable;
 import org.qubership.atp.itf.lite.backend.utils.RequestUtils;
@@ -54,7 +54,7 @@ public class ErrorResponseSerializableConverter implements AttributeConverter<Er
 
     @Override
     public ErrorResponseSerializable convertToEntityAttribute(String errorMessageString) {
-        if (Strings.isNotBlank(errorMessageString)) {
+        if (StringUtils.isNotBlank(errorMessageString)) {
             try {
                 return objectMapper.readValue(errorMessageString, ErrorResponseSerializable.class);
             } catch (final IOException e) {

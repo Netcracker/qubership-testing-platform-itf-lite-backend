@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +46,7 @@ public class UserServiceTest {
         // given
         final UserSettings userSettings = EntitiesGenerator.generateUserSettings();
         // when
-        String token = Strings.EMPTY;
+        String token = StringUtils.EMPTY;
         service.get().saveUserSettings(userSettings, token);
         // then
         verify(repository.get()).save(userSettings);

@@ -26,7 +26,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.qubership.atp.itf.lite.backend.feign.dto.HeaderDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.PostmanPostmanRequestDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.PostmanUrlDto;
@@ -197,7 +196,7 @@ public class HttpRequestEntitySaveRequest extends RequestEntitySaveRequest {
 
     private List<HeaderDto> parseQuery(String query) {
         List<HeaderDto> queryParameters = new ArrayList<>();
-        if (Strings.isEmpty(query)) {
+        if (StringUtils.isEmpty(query)) {
             return queryParameters;
         }
         String[] queryParams = query.split("&");

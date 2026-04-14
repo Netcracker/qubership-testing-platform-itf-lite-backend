@@ -18,7 +18,7 @@ package org.qubership.atp.itf.lite.backend.model.entities.converters;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.qubership.atp.itf.lite.backend.model.api.request.http.HttpHeaderSaveRequest;
 import org.springframework.stereotype.Component;
 
@@ -52,7 +52,7 @@ public class HttpHeaderSaveRequestConverter implements AttributeConverter<HttpHe
 
     @Override
     public HttpHeaderSaveRequest convertToEntityAttribute(String httpHeaderSaveRequest) {
-        if (Strings.isNotBlank(httpHeaderSaveRequest)) {
+        if (StringUtils.isNotBlank(httpHeaderSaveRequest)) {
             try {
                 return objectMapper.readValue(httpHeaderSaveRequest, HttpHeaderSaveRequest.class);
             } catch (final IOException e) {
