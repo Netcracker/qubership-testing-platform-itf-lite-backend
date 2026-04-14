@@ -40,15 +40,15 @@ import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
-import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HeaderElement;
-import org.apache.hc.core5.http.HeaderElementIterator;
 import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.config.Registry;
 import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.http.message.BasicHeaderElementIterator;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.apache.hc.core5.util.TimeValue;
 import org.qubership.atp.auth.springbootstarter.exceptions.AtpException;
 import org.qubership.atp.itf.lite.backend.configuration.HttpClientProperties;
 import org.qubership.atp.itf.lite.backend.exceptions.internal.ItfLiteSslCertificateVerificationFileException;
@@ -205,7 +205,7 @@ public class HttpClientService {
                 //ALLOW ALL
                 sslContextBuilder.loadTrustMaterial(null, new TrustAllStrategy());
             } catch (NoSuchAlgorithmException | KeyStoreException e) {
-                log.error("Pooling Connection Manager Initialisation failure because of " + e.getMessage(), e);
+                log.error("Pooling Connection Manager Initialisation failure because of {}", e.getMessage(), e);
             }
         }
 
@@ -214,7 +214,7 @@ public class HttpClientService {
             sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build(),
                     NoopHostnameVerifier.INSTANCE);
         } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            log.error("Pooling Connection Manager Initialisation failure because of " + e.getMessage(), e);
+            log.error("Pooling Connection Manager Initialisation failure because of {}", e.getMessage(), e);
         }
 
         RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder
@@ -244,19 +244,19 @@ public class HttpClientService {
     private ConnectionKeepAliveStrategy connectionKeepAliveStrategy() {
         return new ConnectionKeepAliveStrategy() {
             @Override
-            public long getKeepAliveDuration(ClassicHttpResponse response, HttpContext context) {
-                HeaderElementIterator responseHeaderIterator = new BasicHeaderElementIterator(
+            public TimeValue getKeepAliveDuration(HttpResponse response, HttpContext context) {
+                BasicHeaderElementIterator responseHeaderIterator = new BasicHeaderElementIterator(
                         response.headerIterator(HttpHeaders.KEEP_ALIVE));
                 while (responseHeaderIterator.hasNext()) {
-                    HeaderElement headerElement = responseHeaderIterator.nextElement();
+                    HeaderElement headerElement = responseHeaderIterator.next();
                     String param = headerElement.getName();
                     String value = headerElement.getValue();
 
                     if (value != null && param.equalsIgnoreCase("timeout")) {
-                        return Long.parseLong(value) * 1000;
+                        return TimeValue.of(Long.parseLong(value), TimeUnit.SECONDS);
                     }
                 }
-                return httpClientProperties.getDefaultKeepAliveTimeMillis();
+                return TimeValue.of(httpClientProperties.getDefaultKeepAliveTimeMillis(), TimeUnit.MILLISECONDS);
             }
         };
     }
@@ -276,11 +276,13 @@ public class HttpClientService {
                 try {
                     if (connectionManager != null) {
                         log.trace("run IdleConnectionMonitor - Closing expired and idle connections...");
-                        connectionManager.closeExpiredConnections();
-                        connectionManager.closeIdleConnections(
-                                httpClientProperties.getCloseIdleConnectionWaitTimeSecs(), TimeUnit.SECONDS);
+                        connectionManager.closeExpired();
+                        connectionManager.closeIdle(
+                                TimeValue.of(
+                                        httpClientProperties.getCloseIdleConnectionWaitTimeSecs(),
+                                        TimeUnit.SECONDS));
                     } else {
-                        log.trace("run IdleConnectionMonitor - Http Client Connection manager is not initialised");
+                        log.trace("run IdleConnectionMonitor - Http Client Connection manager is not initialized");
                     }
                 } catch (Exception e) {
                     log.error("run IdleConnectionMonitor - Exception occurred. msg={}", e.getMessage(), e);
