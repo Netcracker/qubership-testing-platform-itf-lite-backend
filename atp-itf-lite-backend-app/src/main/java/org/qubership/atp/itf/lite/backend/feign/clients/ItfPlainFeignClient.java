@@ -19,7 +19,9 @@ package org.qubership.atp.itf.lite.backend.feign.clients;
 import org.qubership.atp.auth.springbootstarter.config.FeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 
-@FeignClient(name = "ItfPlainFeignClient", url = "http://empty-url",
-        configuration = FeignConfiguration.class, qualifier = "ItfPlainFeignClient")
+@FeignClient(name = "ItfPlainFeignClient",
+        url = "http://empty-url",
+        configuration = FeignConfiguration.class,
+        qualifiers = {"ItfPlainFeignClient"})
 public interface ItfPlainFeignClient extends ItfFeignClient {
 }

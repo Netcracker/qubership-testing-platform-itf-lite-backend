@@ -32,8 +32,14 @@ public class HttpRequestConfiguration {
      */
     @Bean
     public ItfLiteHttpRequestInterceptor itfLiteHttpRequestInterceptor(Oauth2FeignClientInterceptor oauthInterceptor) {
+
         ItfLiteHttpRequestInterceptor httpRequestInterceptor = new ItfLiteHttpRequestInterceptor(oauthInterceptor);
+
+        // Commented temporarily,
+        // because qubership-atp-adapter-common library should be migrated to httpclient5 too
+        /*
         RequestUtils.registerHttpInterceptor(httpRequestInterceptor);
+         */
         return httpRequestInterceptor;
     }
 }

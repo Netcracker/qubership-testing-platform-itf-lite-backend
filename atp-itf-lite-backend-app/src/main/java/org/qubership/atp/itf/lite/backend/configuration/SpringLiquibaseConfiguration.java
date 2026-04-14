@@ -35,9 +35,9 @@ import lombok.Getter;
 @EnableConfigurationProperties(LiquibaseProperties.class)
 public class SpringLiquibaseConfiguration {
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
-    private LiquibaseProperties properties;
+    private final LiquibaseProperties properties;
 
     @Value("${spring.application.name}")
     private String serviceName;
@@ -62,7 +62,6 @@ public class SpringLiquibaseConfiguration {
         liquibase.setDefaultSchema(this.properties.getDefaultSchema());
         liquibase.setDropFirst(this.properties.isDropFirst());
         liquibase.setShouldRun(this.properties.isEnabled());
-        liquibase.setLabels(this.properties.getLabels());
         Map<String, String> params = this.properties.getParameters();
         if (params == null) {
             params = new HashMap<>();
