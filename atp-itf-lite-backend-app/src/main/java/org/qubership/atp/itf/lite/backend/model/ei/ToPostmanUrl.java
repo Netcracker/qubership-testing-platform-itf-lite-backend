@@ -17,6 +17,7 @@
 package org.qubership.atp.itf.lite.backend.model.ei;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +51,7 @@ public class ToPostmanUrl {
     public ToPostmanUrl(String urlString) {
         this.raw = urlString;
         try {
-            URL url = new URL(urlString);
+            URL url = URI.create(urlString).toURL();
             this.protocol = url.getProtocol();
             if (StringUtils.isNotBlank(url.getHost())) {
                 this.host = Arrays.asList(url.getHost().split("\\."));
