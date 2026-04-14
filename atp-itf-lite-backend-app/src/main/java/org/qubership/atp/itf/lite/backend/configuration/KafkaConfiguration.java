@@ -60,6 +60,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
@@ -141,7 +142,7 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<UUID, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(itfLiteExecutionFinishConsumerFactory());
-        factory.setMessageConverter(new StringJsonMessageConverter());
+        factory.setRecordMessageConverter(new StringJsonMessageConverter());
         return factory;
     }
 
@@ -303,13 +304,25 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<UUID, GetAccessTokenFinish> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(getAccessTokenConsumerFactory());
-        factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setCommonErrorHandler((e, consumerRecord) -> {
-            log.error("Error during kafka event processing in {}, consumerRecord: {}",
-                    GET_ACCESS_TOKEN_KAFKA_CONTAINER_FACTORY_BEAN_NAME, consumerRecord, e);
-            throw new ItfLiteKafkaListenerContainerFactoryException();
-        });
+        factory.setRecordMessageConverter(new StringJsonMessageConverter());
+        factory.setCommonErrorHandler(configureDefaultErrorHandler(GET_ACCESS_TOKEN_KAFKA_CONTAINER_FACTORY_BEAN_NAME));
         return factory;
+    }
+
+    private DefaultErrorHandler configureDefaultErrorHandler(String beanName) {
+        // Create error handler with default configuration.
+        //  The 2nd (optional) parameter is to set retry config,
+        //  For example:
+        //      - new FixedBackOff(1000L, 3L) // Timeout 1 second, 3 attempts max.
+        return new DefaultErrorHandler(
+                // recoverer - What to do after all retries are over
+                (record, exception) -> {
+                    log.error("Error during kafka event processing in {}, consumerRecord: {}",
+                            beanName,
+                            record,
+                            exception);
+                    throw new ItfLiteKafkaListenerContainerFactoryException();
+                });
     }
 
     /**
@@ -425,12 +438,8 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<UUID, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(catalogConsumerFactory());
-        factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setCommonErrorHandler((e, consumerRecord) -> {
-            log.error("Error during kafka event processing in {}, consumerRecord: {}",
-                    CATALOG_PROJECT_EVENT_CONTAINER_FACTORY, consumerRecord, e);
-            throw new ItfLiteKafkaListenerContainerFactoryException();
-        });
+        factory.setRecordMessageConverter(new StringJsonMessageConverter());
+        factory.setCommonErrorHandler(configureDefaultErrorHandler(CATALOG_PROJECT_EVENT_CONTAINER_FACTORY));
         return factory;
     }
 
@@ -454,12 +463,8 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<UUID, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(miaConsumerFactory());
-        factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setCommonErrorHandler((e, consumerRecord) -> {
-            log.error("Error during kafka event processing in {}, consumerRecord: {}",
-                    MIA_EXPORT_KAFKA_CONTAINER_FACTORY_BEAN_NAME, consumerRecord, e);
-            throw new ItfLiteKafkaListenerContainerFactoryException();
-        });
+        factory.setRecordMessageConverter(new StringJsonMessageConverter());
+        factory.setCommonErrorHandler(configureDefaultErrorHandler(MIA_EXPORT_KAFKA_CONTAINER_FACTORY_BEAN_NAME));
         return factory;
     }
 
@@ -483,12 +488,8 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<UUID, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(itfConsumerFactory());
-        factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setCommonErrorHandler((e, consumerRecord) -> {
-            log.error("Error during kafka event processing in {}, consumerRecord: {}",
-                    ITF_EXPORT_KAFKA_CONTAINER_FACTORY_BEAN_NAME, consumerRecord, e);
-            throw new ItfLiteKafkaListenerContainerFactoryException();
-        });
+        factory.setRecordMessageConverter(new StringJsonMessageConverter());
+        factory.setCommonErrorHandler(configureDefaultErrorHandler(ITF_EXPORT_KAFKA_CONTAINER_FACTORY_BEAN_NAME));
         return factory;
     }
 
@@ -502,12 +503,8 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<UUID, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(environmentConsumerFactory());
-        factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setCommonErrorHandler((e, consumerRecord) -> {
-            log.error("Error during kafka event processing in {}, consumerRecord: {}",
-                    ENVIRONMENT_KAFKA_CONTAINER_FACTORY_BEAN_NAME, consumerRecord, e);
-            throw new ItfLiteKafkaListenerContainerFactoryException();
-        });
+        factory.setRecordMessageConverter(new StringJsonMessageConverter());
+        factory.setCommonErrorHandler(configureDefaultErrorHandler(ENVIRONMENT_KAFKA_CONTAINER_FACTORY_BEAN_NAME));
         return factory;
     }
 
