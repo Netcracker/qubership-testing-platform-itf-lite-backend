@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -25,9 +25,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
 import org.apache.logging.log4j.util.Strings;
 import org.qubership.atp.itf.lite.backend.feign.dto.HeaderDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.PostmanPostmanRequestDto;
@@ -40,10 +37,12 @@ import org.qubership.atp.itf.lite.backend.model.entities.gridfs.FileData;
 import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
 import org.qubership.atp.itf.lite.backend.utils.RequestUtils;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -84,7 +83,7 @@ public class HttpRequestEntitySaveRequest extends RequestEntitySaveRequest {
                 h.setValue(evaluateFunction.apply(h.getValue()));
             });
         }
-        if (!Objects.isNull(body) && !StringUtils.isEmpty(body.getContent())) {
+        if (!Objects.isNull(body) && !ObjectUtils.isEmpty(body.getContent())) {
             body.setContent(evaluateFunction.apply(body.getContent()));
         }
     }
@@ -111,7 +110,7 @@ public class HttpRequestEntitySaveRequest extends RequestEntitySaveRequest {
 
     @Override
     public void normalize() {
-        this.url = StringUtils.isEmpty(this.url) ? this.url : this.url.trim();
+        this.url = ObjectUtils.isEmpty(this.url) ? this.url : this.url.trim();
     }
 
     /**

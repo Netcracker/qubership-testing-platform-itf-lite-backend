@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package org.qubership.atp.itf.lite.backend.components.auth;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import org.qubership.atp.crypt.exception.AtpDecryptException;
 import org.qubership.atp.itf.lite.backend.enums.auth.RequestAuthorizationType;
 import org.qubership.atp.itf.lite.backend.model.AuthorizationStrategyRequest;
@@ -36,6 +34,8 @@ import org.qubership.atp.itf.lite.backend.utils.AuthorizationUtils;
 import org.qubership.atp.itf.lite.backend.utils.Constants;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+
+import jakarta.annotation.Nullable;
 
 @Component
 public class BearerAuthorizationStrategy extends AbstractAuthorizationStrategy implements RequestAuthorizationStrategy {

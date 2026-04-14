@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -59,32 +59,27 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.camel.util.function.TriConsumer;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.entity.EntityBuilder;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.CookieStore;
+import org.apache.hc.client5.http.entity.EntityBuilder;
+import org.apache.hc.client5.http.entity.mime.ByteArrayBody;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.entity.mime.StringBody;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HeaderElement;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.modelmapper.ModelMapper;
@@ -206,6 +201,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Striped;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -313,10 +312,9 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         Request request = isNull(projectId) ? get(requestId)
                 : getByProjectIdAndId(projectId, requestId);
 
-        if (!request.isAutoCookieDisabled() && request instanceof HttpRequest) {
+        if (!request.isAutoCookieDisabled() && request instanceof HttpRequest httpRequest) {
             List<Cookie> cookies = cookieService.getNotExpiredCookiesByUserIdAndProjectId(request.getProjectId());
             if (!CollectionUtils.isEmpty(cookies)) {
-                HttpRequest httpRequest = (HttpRequest) request;
                 if (StringUtils.isNotEmpty(httpRequest.getUrl())) {
                     try {
                         URI uri = new URI(httpRequest.getUrl());
@@ -453,7 +451,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
         ServletOutputStream responseOutputStream = response.getOutputStream();
         responseOutputStream.write(requestBinaryFile.getContent());
-        response.setHeader(CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"",
+        response.setHeader(CONTENT_DISPOSITION, "attachment; filename=\"%s\"".formatted(
                 requestBinaryFile.getFileName()));
         response.setHeader(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION);
         response.setHeader(CONTENT_TYPE, requestBinaryFile.getContentType());
@@ -481,7 +479,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
         ServletOutputStream responseOutputStream = response.getOutputStream();
         responseOutputStream.write(file.getContent());
-        response.setHeader(CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"",
+        response.setHeader(CONTENT_DISPOSITION, "attachment; filename=\"%s\"".formatted(
                 file.getFileName()));
         response.setHeader(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION);
         response.flushBuffer();
@@ -500,7 +498,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
         Optional<RequestExecutionDetails> detailsOptional =
                 detailsRepository.findByRequestExecutionByExecutionId(executionId);
-        if (!detailsOptional.isPresent()) {
+        if (detailsOptional.isEmpty()) {
             log.warn("Details information for request id {} not found by EXECUTION ID {}.", requestId, executionId);
             response.setStatus(HttpStatus.NOT_FOUND.value());
             return;
@@ -528,7 +526,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         String safeFileName = rawFileName.replaceAll("[\\\\/:*?\"<>|\\r\\n]", "_");
 
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",
+        response.setHeader("Content-Disposition", "attachment; filename=\"%s\"".formatted(
                 safeFileName + extension));
         response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         response.setHeader("X-Content-Type-Options", "nosniff");
@@ -570,7 +568,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         log.info("Find request by projectId {} and request id {}", projectId, requestId);
         return requestRepository.findByProjectIdAndId(projectId, requestId).orElseThrow(() -> {
             log.error("Failed to find request by projectId = {} and id = {}", projectId, requestId);
-            return new EntityNotFoundException(String.format("Failed to find request by projectId = %s and id = %s",
+            return new EntityNotFoundException("Failed to find request by projectId = %s and id = %s".formatted(
                     projectId, requestId));
         });
     }
@@ -1442,8 +1440,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         executorContextEnricher.enrich(resolvingContext.getVariables(), token, request.getName());
 
         UUID projectId = request.getProjectId();
-        if (request instanceof HttpRequestEntitySaveRequest) {
-            HttpRequestEntitySaveRequest httpRequest = (HttpRequestEntitySaveRequest) request;
+        if (request instanceof HttpRequestEntitySaveRequest httpRequest) {
             if (!request.isAutoCookieDisabled()) {
                 httpRequest.setCookies(cookieService.getNotExpiredCookiesByUserIdAndProjectId(projectId));
             }
@@ -1498,8 +1495,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                 });
         details.setContextVariables(response.getContextVariables());
 
-        if (request instanceof HttpRequestEntitySaveRequest) {
-            HttpRequestEntitySaveRequest httpRequest = (HttpRequestEntitySaveRequest) request;
+        if (request instanceof HttpRequestEntitySaveRequest httpRequest) {
             List<Cookie> cookies = request.getCookies();
             if (!CollectionUtils.isEmpty(cookies)) {
                 if (!request.isAutoCookieDisabled()) {
@@ -1833,10 +1829,10 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                                                            UUID environmentId,
                                                            SaveRequestResolvingContext resolvingContext,
                                                            Evaluator evaluator) {
-        if (request instanceof HttpRequestEntitySaveRequest && historyRequest instanceof HttpRequestEntitySaveRequest) {
+        if (request instanceof HttpRequestEntitySaveRequest saveRequest && historyRequest instanceof HttpRequestEntitySaveRequest saveRequest1) {
             return httpRequestPreExecuteProcessing(projectId,
-                    (HttpRequestEntitySaveRequest) request,
-                    (HttpRequestEntitySaveRequest) historyRequest,
+                    saveRequest,
+                    saveRequest1,
                     environmentId,
                     resolvingContext,
                     evaluator);
@@ -1865,8 +1861,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     }
 
     private void addCookieHeader(RequestEntitySaveRequest request) {
-        if (request instanceof HttpRequestEntitySaveRequest && !request.isAutoCookieDisabled()) {
-            HttpRequestEntitySaveRequest httpRequest = (HttpRequestEntitySaveRequest) request;
+        if (request instanceof HttpRequestEntitySaveRequest httpRequest && !request.isAutoCookieDisabled()) {
             if (!CollectionUtils.isEmpty(httpRequest.getCookies())) {
                 try {
                     URI uri = new URI(httpRequest.getUrl());
@@ -1975,10 +1970,10 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     }
 
     private void updateRequestForHistory(RequestEntitySaveRequest request, RequestEntitySaveRequest historyRequest) {
-        if (request instanceof HttpRequestEntitySaveRequest) {
+        if (request instanceof HttpRequestEntitySaveRequest saveRequest) {
             if (historyRequest != null) {
                 ((HttpRequestEntitySaveRequest) historyRequest)
-                        .setFile(((HttpRequestEntitySaveRequest) request)
+                        .setFile(saveRequest
                                 .getFile());
             }
             log.debug("Copy file data for history request {}", historyRequest);
@@ -2005,8 +2000,8 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         CookieStore httpCookieStore = new BasicCookieStore();
         try (CloseableHttpClient client =
                      httpClientService.getHttpClient(projectId, runtimeOptions, urlWithParameters, httpCookieStore)) {
-            HttpEntityEnclosingRequestBase request =
-                    (HttpEntityEnclosingRequestBase) method.getHttpRequest(urlWithParameters);
+            HttpUriRequestBase request =
+                    (HttpUriRequestBase) method.getHttpRequest(urlWithParameters);
             request.setEntity(entity);
             request.setHeaders(headers);
 
@@ -2081,7 +2076,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                                         List<FileData> fileDataList) throws URISyntaxException, IOException {
         final RequestBody body = httpRequest.getBody();
 
-        if (isNull(body) && !binaryFileOpt.isPresent()) {
+        if (isNull(body) && binaryFileOpt.isEmpty()) {
             return null;
         } else if (binaryFileOpt.isPresent()) {
             MultipartFile binaryFile = binaryFileOpt.get();
@@ -2283,7 +2278,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
      * @param afterExecutionDate  after execution date
      * @return RequestExecutionResponse
      */
-    private RequestExecutionResponse createResponse(HttpRequestEntitySaveRequest httpRequest, HttpResponse response,
+    private RequestExecutionResponse createResponse(HttpRequestEntitySaveRequest httpRequest, ClassicHttpResponse response,
                                                     Date beforeExecutionDate, Date afterExecutionDate,
                                                     CookieStore cookieStore, UUID projectId)
             throws IOException {
@@ -2312,8 +2307,8 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                 httpRequest.getTransportType());
 
         RequestBodyType bodyType = getResponseBodyType(respHeaders);
-        String statusCode = String.valueOf(response.getStatusLine().getStatusCode());
-        String statusText = response.getStatusLine().getReasonPhrase();
+        String statusCode = String.valueOf(response.getCode());
+        String statusText = response.getReasonPhrase();
         BigInteger duration = BigInteger.valueOf(afterExecutionDate.getTime() - beforeExecutionDate.getTime());
         return RequestExecutionResponse.builder()
                 .id(httpRequest.getId())
@@ -2693,7 +2688,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     private String getResponseFilenameFromResponseHeaders(Map<String, List<String>> headersMap) {
         Optional<Map. Entry<String, List<String>>> contentDispositionMapEntryOptional = headersMap.entrySet().stream()
                 .filter(entry -> CONTENT_DISPOSITION.equalsIgnoreCase(entry.getKey())).findFirst();
-        if (!contentDispositionMapEntryOptional.isPresent()) {
+        if (contentDispositionMapEntryOptional.isEmpty()) {
             return null;
         }
 
@@ -2725,7 +2720,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
         Optional<Map. Entry<String, List<String>>> contentTypeMapEntryOptional = headersMap.entrySet().stream()
                 .filter(entry -> CONTENT_TYPE.equalsIgnoreCase(entry.getKey())).findFirst();
-        if (!contentTypeMapEntryOptional.isPresent()) {
+        if (contentTypeMapEntryOptional.isEmpty()) {
             return null;
         }
 

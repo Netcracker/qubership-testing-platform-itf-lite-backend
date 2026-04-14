@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -304,7 +304,7 @@ public class KafkaConfiguration {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(getAccessTokenConsumerFactory());
         factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setErrorHandler((e, consumerRecord) -> {
+        factory.setCommonErrorHandler((e, consumerRecord) -> {
             log.error("Error during kafka event processing in {}, consumerRecord: {}",
                     GET_ACCESS_TOKEN_KAFKA_CONTAINER_FACTORY_BEAN_NAME, consumerRecord, e);
             throw new ItfLiteKafkaListenerContainerFactoryException();
@@ -426,7 +426,7 @@ public class KafkaConfiguration {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(catalogConsumerFactory());
         factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setErrorHandler((e, consumerRecord) -> {
+        factory.setCommonErrorHandler((e, consumerRecord) -> {
             log.error("Error during kafka event processing in {}, consumerRecord: {}",
                     CATALOG_PROJECT_EVENT_CONTAINER_FACTORY, consumerRecord, e);
             throw new ItfLiteKafkaListenerContainerFactoryException();
@@ -455,7 +455,7 @@ public class KafkaConfiguration {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(miaConsumerFactory());
         factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setErrorHandler((e, consumerRecord) -> {
+        factory.setCommonErrorHandler((e, consumerRecord) -> {
             log.error("Error during kafka event processing in {}, consumerRecord: {}",
                     MIA_EXPORT_KAFKA_CONTAINER_FACTORY_BEAN_NAME, consumerRecord, e);
             throw new ItfLiteKafkaListenerContainerFactoryException();
@@ -484,7 +484,7 @@ public class KafkaConfiguration {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(itfConsumerFactory());
         factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setErrorHandler((e, consumerRecord) -> {
+        factory.setCommonErrorHandler((e, consumerRecord) -> {
             log.error("Error during kafka event processing in {}, consumerRecord: {}",
                     ITF_EXPORT_KAFKA_CONTAINER_FACTORY_BEAN_NAME, consumerRecord, e);
             throw new ItfLiteKafkaListenerContainerFactoryException();
@@ -503,7 +503,7 @@ public class KafkaConfiguration {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(environmentConsumerFactory());
         factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setErrorHandler((e, consumerRecord) -> {
+        factory.setCommonErrorHandler((e, consumerRecord) -> {
             log.error("Error during kafka event processing in {}, consumerRecord: {}",
                     ENVIRONMENT_KAFKA_CONTAINER_FACTORY_BEAN_NAME, consumerRecord, e);
             throw new ItfLiteKafkaListenerContainerFactoryException();

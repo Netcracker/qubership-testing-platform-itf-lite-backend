@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -34,16 +34,16 @@ public class ItfLiteHttpRequestExecuteException extends ItfLiteException {
      * Atp Http request exception.
      */
     public ItfLiteHttpRequestExecuteException(HttpClientErrorException httpClientErrorException) {
-        super(DEFAULT_MESSAGE + String.format("\nCode:%s\n Message:%s",
+        super(DEFAULT_MESSAGE + "\nCode:%s\n Message:%s".formatted(
                 httpClientErrorException.getResponseBodyAsString(),
                 httpClientErrorException.getStatusCode().value()));
     }
 
     public ItfLiteHttpRequestExecuteException(Exception exception) {
-        super(DEFAULT_MESSAGE + String.format("\n%s", exception.getMessage()));
+        super(DEFAULT_MESSAGE + "\n%s".formatted(exception.getMessage()));
     }
 
     public ItfLiteHttpRequestExecuteException(Throwable throwable) {
-        super(DEFAULT_MESSAGE + String.format("\n%s", throwable.getMessage()));
+        super(DEFAULT_MESSAGE + "\n%s".formatted(throwable.getMessage()));
     }
 }

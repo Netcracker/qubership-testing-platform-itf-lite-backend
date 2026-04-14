@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -24,9 +24,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.qubership.atp.integration.configuration.configuration.AuditAction;
@@ -80,6 +77,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -134,8 +133,7 @@ public class RequestController {
     public ResponseEntity<Request> getRequest(@RequestParam(required = false) UUID projectId,
                                               @PathVariable(value = ApiPath.REQUEST_ID) UUID requestId) {
         Request request = requestService.getRequest(requestId, projectId);
-        if (request instanceof HttpRequest) {
-            HttpRequest httpRequest = (HttpRequest) request;
+        if (request instanceof HttpRequest httpRequest) {
             RequestHeader authHeader = requestService.generateAuthorizationHeader(request.getAuthorization());
             if (nonNull(authHeader)) {
                 httpRequest.getRequestHeaders().add(0, authHeader);

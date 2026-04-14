@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public class ProjectEventKafkaListener {
             case DELETE: {
                 log.info("Received event from catalogue: {}", event);
                 // clear files with certificates for project
-                File folder = new File(String.format(CERTIFICATE_FOLDER, event.getProjectId()));
+                File folder = new File(CERTIFICATE_FOLDER.formatted(event.getProjectId()));
                 try {
                     FileUtils.cleanDirectory(folder);
                 } catch (Exception e) {

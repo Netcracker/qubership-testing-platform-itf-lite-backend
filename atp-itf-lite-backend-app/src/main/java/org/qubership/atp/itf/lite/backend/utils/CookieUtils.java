@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.http.cookie.ClientCookie;
+import org.apache.hc.client5.http.cookie.ClientCookie;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.itf.lite.backend.exceptions.cookie.IllegalCookieException;
 import org.qubership.atp.itf.lite.backend.feign.dto.PostmanCookieDto;
@@ -39,7 +39,7 @@ import org.qubership.atp.itf.lite.backend.model.api.dto.CookieDto;
 import org.qubership.atp.itf.lite.backend.model.api.dto.CookiesDto;
 import org.qubership.atp.itf.lite.backend.model.api.dto.ResponseCookie;
 import org.qubership.atp.itf.lite.backend.model.entities.Cookie;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -118,7 +118,7 @@ public class CookieUtils {
         String valueCookie = cookie.getValue();
         if (cookie.getValue().toLowerCase().contains("domain")) {
             return valueCookie;
-        } else if (!StringUtils.isEmpty(cookie.getDomain())) {
+        } else if (!ObjectUtils.isEmpty(cookie.getDomain())) {
             return valueCookie + " Domain=" + cookie.getDomain() + ";";
         }
         return valueCookie;
@@ -154,7 +154,7 @@ public class CookieUtils {
      * @return list of parsed cookies
      */
     public static List<Cookie> parseCookieHeader(String domain, String headerValue) {
-        if (StringUtils.isEmpty(domain)) {
+        if (ObjectUtils.isEmpty(domain)) {
             log.error("Domain is null");
             throw new IllegalCookieException("Domain can not be null or empty");
         }
@@ -165,7 +165,7 @@ public class CookieUtils {
             Cookie newCookie = new Cookie();
             newCookie.setKey(parsedCookie.getName());
             newCookie.setValue(httpCookieToString(parsedCookie));
-            newCookie.setDomain(StringUtils.isEmpty(parsedCookie.getDomain()) ? domain : parsedCookie.getDomain());
+            newCookie.setDomain(ObjectUtils.isEmpty(parsedCookie.getDomain()) ? domain : parsedCookie.getDomain());
             cookies.add(newCookie);
         });
         return cookies;
@@ -204,13 +204,13 @@ public class CookieUtils {
         StringBuilder sb = new StringBuilder();
         sb.append(responseCookie.getName()).append('=').append(responseCookie.getValue());
 
-        if (!StringUtils.isEmpty(responseCookie.getDomain())) {
+        if (!ObjectUtils.isEmpty(responseCookie.getDomain())) {
             sb.append("; Domain=").append(responseCookie.getDomain());
         }
-        if (!StringUtils.isEmpty(responseCookie.getPath())) {
+        if (!ObjectUtils.isEmpty(responseCookie.getPath())) {
             sb.append("; Path=").append(responseCookie.getPath());
         }
-        if (!StringUtils.isEmpty(responseCookie.getExpires())) {
+        if (!ObjectUtils.isEmpty(responseCookie.getExpires())) {
             sb.append("; Expires=").append(responseCookie.getExpires());
         }
         if (responseCookie.isHttpOnly()) {
@@ -252,28 +252,28 @@ public class CookieUtils {
 
     private static String httpCookieToString(HttpCookie httpCookie) {
         StringJoiner sj = new StringJoiner("; ");
-        if (StringUtils.isEmpty(httpCookie.getName())) {
+        if (ObjectUtils.isEmpty(httpCookie.getName())) {
             log.error("Cookie name is empty");
             throw new IllegalCookieException("Cookie name can not be empty");
         }
         String value = httpCookie.getValue();
-        sj.add(String.format("%s=%s", httpCookie.getName(), isNull(value) ? "" : value));
+        sj.add("%s=%s".formatted(httpCookie.getName(), isNull(value) ? "" : value));
 
-        if (!StringUtils.isEmpty(httpCookie.getDomain())) {
-            sj.add(String.format("%s=%s", Constants.DOMAIN_KEY, httpCookie.getDomain()));
+        if (!ObjectUtils.isEmpty(httpCookie.getDomain())) {
+            sj.add("%s=%s".formatted(Constants.DOMAIN_KEY, httpCookie.getDomain()));
         }
-        if (!StringUtils.isEmpty(httpCookie.getPath())) {
-            sj.add(String.format("%s=%s", Constants.PATH_KEY, httpCookie.getPath()));
+        if (!ObjectUtils.isEmpty(httpCookie.getPath())) {
+            sj.add("%s=%s".formatted(Constants.PATH_KEY, httpCookie.getPath()));
         }
         if (httpCookie.getMaxAge() > -1) {
-            sj.add(String.format("%s=%s", Constants.EXPIRES_KEY, timestampToCookieDate(
+            sj.add("%s=%s".formatted(Constants.EXPIRES_KEY, timestampToCookieDate(
                     System.currentTimeMillis() + httpCookie.getMaxAge() * 1000)));
         }
         if (httpCookie.getSecure()) {
-            sj.add(String.format("%s", Constants.SECURE_KEY));
+            sj.add("%s".formatted(Constants.SECURE_KEY));
         }
         if (httpCookie.isHttpOnly()) {
-            sj.add(String.format("%s", Constants.HTTP_ONLY_KEY));
+            sj.add("%s".formatted(Constants.HTTP_ONLY_KEY));
         }
         return sj.toString();
     }
@@ -285,13 +285,13 @@ public class CookieUtils {
      * @return list of response cookies
      */
     public static List<ResponseCookie> parseResponseCookie(String requestDomain,
-                                                           List<org.apache.http.cookie.Cookie> responseCookies) {
+                                                           List<org.apache.hc.client5.http.cookie.Cookie> responseCookies) {
         List<ResponseCookie> respCookies = new ArrayList<>();
         responseCookies.forEach(respCookie -> {
             ResponseCookie c = new ResponseCookie();
             c.setName(respCookie.getName());
             c.setValue(respCookie.getValue());
-            if (StringUtils.isEmpty(respCookie.getDomain())) {
+            if (ObjectUtils.isEmpty(respCookie.getDomain())) {
                 c.setDomain(requestDomain);
             } else {
                 c.setDomain(respCookie.getDomain());
@@ -301,8 +301,7 @@ public class CookieUtils {
                 c.setExpires(dateToCookieDate(respCookie.getExpiryDate()));
             }
             c.setSecure(respCookie.isSecure());
-            if (respCookie instanceof ClientCookie) {
-                ClientCookie cc = (ClientCookie) respCookie;
+            if (respCookie instanceof ClientCookie cc) {
                 String httpOnly = cc.getAttribute("httponly");
                 if (nonNull(httpOnly)) {
                     c.setHttpOnly(Boolean.parseBoolean(httpOnly));

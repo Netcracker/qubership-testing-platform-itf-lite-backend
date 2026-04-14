@@ -1,7 +1,7 @@
 package org.qubership.atp.itf.lite.backend.ei;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -401,7 +400,7 @@ public class AtpItfLiteExportExecutorTest {
     }
 
     private Path getPath(String... path) {
-        return Paths.get(getRootFilePath(), path);
+        return Path.of(getRootFilePath(), path);
     }
 
     private String getRootFilePath() {
@@ -414,10 +413,10 @@ public class AtpItfLiteExportExecutorTest {
 
     public Path getRootPath() {
         String[] allSegments = AtpItfLiteExportExecutorTest.class.getName().split("[.]");
-        return Paths.get(getDefaultPath().toString(), allSegments);
+        return Path.of(getDefaultPath().toString(), allSegments);
     }
 
     public Path getDefaultPath() {
-        return Paths.get(DEFAULT_RESOURCES_PATH);
+        return Path.of(DEFAULT_RESOURCES_PATH);
     }
 }

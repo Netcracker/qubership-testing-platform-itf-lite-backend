@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -18,10 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.ExternalResourceSupport;
 import org.qubership.atp.auth.springbootstarter.config.FeignConfiguration;
 import org.qubership.atp.itf.lite.backend.feign.clients.ItfContextBalancerFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
@@ -44,8 +45,9 @@ import au.com.dius.pact.consumer.junit.PactVerification;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @EnableFeignClients(clients = {ItfContextBalancerFeignClient.class})
+@ExtendWith(ExternalResourceSupport.class)
 @Import({JacksonAutoConfiguration.class,
         HttpMessageConvertersAutoConfiguration.class,
         FeignConfiguration.class,
@@ -68,9 +70,9 @@ public class ItfContextFeignClientPactUnitTest {
     @PactVerification()
     public void allPass() {
         ResponseEntity<String> result = itfContextBalancerFeignClient.get(contextId, projectUuid);
-        Assert.assertEquals(200, result.getStatusCode().value());
-        Assert.assertTrue(result.getHeaders().get("Content-Type").contains("application/json"));
-        Assert.assertEquals(result.getBody(), getResponse());
+        Assertions.assertEquals(200, result.getStatusCode().value());
+        Assertions.assertTrue(result.getHeaders().get("Content-Type").contains("application/json"));
+        Assertions.assertEquals(result.getBody(), getResponse());
     }
 
     @Pact(consumer = "atp-itf-lite")

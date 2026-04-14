@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -20,13 +20,6 @@ import static java.util.Objects.nonNull;
 
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import org.javers.core.metamodel.annotation.DiffInclude;
 import org.qubership.atp.itf.lite.backend.converters.history.FolderVersioningMapper;
 import org.qubership.atp.itf.lite.backend.model.entities.auth.RequestAuthorization;
@@ -35,6 +28,12 @@ import org.qubership.atp.itf.lite.backend.model.entities.converters.PermissionEn
 import org.qubership.atp.itf.lite.backend.service.FolderService;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

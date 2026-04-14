@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -16,20 +16,16 @@
 
 package org.qubership.atp.itf.lite.backend.feign.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
 
-import javax.annotation.Generated;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 public class FileInfoDto implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
   private String name;
   private String id;

@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -98,6 +96,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.google.gson.Gson;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -137,7 +136,7 @@ public class RamService {
                 return createdTestPlan.getUuid();
             } else {
                 throw new AtpException(
-                        String.format("Default Test Plan with name \"%s\" not found and cannot be created",
+                        "Default Test Plan with name \"%s\" not found and cannot be created".formatted(
                                 DEFAULT_ITF_LITE_RUN_COLLECTION_TEST_PLAN_NAME));
             }
         } else {
@@ -419,14 +418,14 @@ public class RamService {
 
     private void addFromDataPart(StringJoiner sj, String logRecordId, FormDataPart fdp) {
         if (ValueType.TEXT.equals(fdp.getType())) {
-            sj.add(String.format("%s: %s", fdp.getKey(), fdp.getValue()));
+            sj.add("%s: %s".formatted(fdp.getKey(), fdp.getValue()));
         } else {
             UUID fileId = fdp.getFileId();
             if (nonNull(fileId)) {
                 Optional<FileData> optFile = gridFsService.downloadFileByFileId(fileId);
                 if (optFile.isPresent()) {
                     FileData file = optFile.get();
-                    sj.add(String.format("%s: %s", fdp.getKey(),
+                    sj.add("%s: %s".formatted(fdp.getKey(),
                             createLinkToDownloadFile(logRecordId, fdp.getFileId(), file)));
                     AtpRamWriter.getAtpRamWriter().uploadFileForLogRecord(logRecordId,
                             new ByteArrayInputStream(file.getContent()), fdp.getFileId().toString());
@@ -603,8 +602,8 @@ public class RamService {
         List<LogRecordDto> logRecords = ramTestRunsFeignClient.getAllFilteredLogRecords(testRunId, filter).getBody();
         if (!CollectionUtils.isEmpty(logRecords)) {
             for (LogRecordDto logRecord : logRecords) {
-                if (logRecord instanceof RestLogRecordDto) {
-                    RestLogRecordDto restLogRecord = ((RestLogRecordDto) logRecord);
+                if (logRecord instanceof RestLogRecordDto dto) {
+                    RestLogRecordDto restLogRecord = dto;
                     importedCookies.addAll(parseRestLogRecordCookie(restLogRecord));
                 }
 
@@ -663,7 +662,7 @@ public class RamService {
     public void openNewExecuteRequestSection(String requestName, Long createdDateStamp) {
         Message msg = new Message();
         msg.setType(TypeAction.ITF.name());
-        msg.setName(String.format("Execute request \"%s\"", requestName));
+        msg.setName("Execute request \"%s\"".formatted(requestName));
         msg.setExecutionStatus(ExecutionStatuses.IN_PROGRESS.name());
         msg.setCreatedDateStamp(createdDateStamp);
         AtpRamWriter writer = AtpRamWriter.getAtpRamWriter();

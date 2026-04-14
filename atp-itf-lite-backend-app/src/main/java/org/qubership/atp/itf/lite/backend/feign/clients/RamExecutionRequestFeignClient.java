@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -24,16 +24,14 @@ import org.qubership.atp.auth.springbootstarter.config.FeignConfiguration;
 import org.qubership.atp.itf.lite.backend.feign.dto.TestRunDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "${feign.atp.ram.name}", url = "${feign.atp.ram.url}",
         path = "${feign.atp.ram.route}", configuration = FeignConfiguration.class)
 public interface RamExecutionRequestFeignClient {
 
-    @RequestMapping(
-            method = RequestMethod.GET,
+    @GetMapping(
             value = "/api/executionrequests/{ids}/testRunsBySomeExecutionRequests",
             produces = { "application/json" }
     )
@@ -41,8 +39,7 @@ public interface RamExecutionRequestFeignClient {
             @PathVariable("ids") String ids
     );
 
-    @RequestMapping(
-            method = RequestMethod.GET,
+    @GetMapping(
             value = "/api/executionrequests/{id}/testruns/ids",
             produces = { "application/json" }
     )

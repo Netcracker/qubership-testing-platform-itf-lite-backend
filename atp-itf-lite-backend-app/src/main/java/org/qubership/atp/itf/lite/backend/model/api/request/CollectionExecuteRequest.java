@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.NotNull;
-
 import org.qubership.atp.itf.lite.backend.catalog.models.Flags;
 import org.qubership.atp.itf.lite.backend.catalog.models.FlagsDeserializer;
 import org.qubership.atp.itf.lite.backend.model.api.response.GroupResponse;
@@ -31,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data

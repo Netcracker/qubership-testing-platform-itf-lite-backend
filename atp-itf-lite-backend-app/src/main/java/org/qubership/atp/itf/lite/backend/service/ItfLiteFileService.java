@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -21,13 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.annotation.Nullable;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -43,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -172,7 +170,7 @@ public class ItfLiteFileService {
      * @return {@link MultipartFile}
      */
     public Optional<Path> getRequestPathToFileById(UUID fileId, Date modifiedWhen, Path folder) throws IOException {
-        Path requestFilePath = Paths.get(folder.toString(), fileId.toString());
+        Path requestFilePath = Path.of(folder.toString(), fileId.toString());
 
         if (Files.exists(requestFilePath)) {
             Optional<Path> filePathOptional =
@@ -202,11 +200,11 @@ public class ItfLiteFileService {
                                          UUID newRequestId, Path folder) throws IOException {
         Optional<Path> oldPathToFile = getRequestPathToFile(oldRequestId, modifiedWhen, folder);
         if (oldPathToFile.isPresent()) {
-            Path newPathToDirectory = Paths.get(folder.toString(), newRequestId.toString());
+            Path newPathToDirectory = Path.of(folder.toString(), newRequestId.toString());
             Files.createDirectories(newPathToDirectory);
 
             String fileName = oldPathToFile.get().getFileName().toString();
-            Path newPathToFile = Paths.get(newPathToDirectory.toString(), fileName);
+            Path newPathToFile = Path.of(newPathToDirectory.toString(), fileName);
             Files.copy(oldPathToFile.get(), newPathToFile);
             log.info("File by path '{}' was copied to '{}'", oldPathToFile.get(), newPathToFile);
 
@@ -239,7 +237,7 @@ public class ItfLiteFileService {
     }
 
     private Optional<Path> getPathToFile(UUID requestId, Date modifiedWhen, Path folder) throws IOException {
-        Path requestFilePath = Paths.get(folder.toString(), requestId.toString());
+        Path requestFilePath = Path.of(folder.toString(), requestId.toString());
 
         if (Files.exists(requestFilePath)) {
             Optional<Path> filePathOptional =

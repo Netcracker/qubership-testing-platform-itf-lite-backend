@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class BadFormDataFormatException extends ItfLiteException {
 
     public BadFormDataFormatException(String formDataPart) {
-        super(String.format("Bad form data format in \"%s\"", formDataPart));
+        super("Bad form data format in \"%s\"".formatted(formDataPart));
     }
 
 }

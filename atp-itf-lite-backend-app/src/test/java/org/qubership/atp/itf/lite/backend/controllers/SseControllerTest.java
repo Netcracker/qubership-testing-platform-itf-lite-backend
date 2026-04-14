@@ -17,8 +17,10 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.itf.lite.backend.handlers.MethodArgumentExceptionHandler;
 import org.qubership.atp.itf.lite.backend.model.api.ApiPath;
@@ -35,13 +37,14 @@ import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-@ContextConfiguration(classes = {SseController.class, MethodArgumentExceptionHandler.class})
+@SpringJUnitConfig(classes = {SseController.class, MethodArgumentExceptionHandler.class})
+@ExtendWith(MockitoExtension.class)
 @MockBeans({
         @MockBean(UserService.class),
         @MockBean(ModelMapper.class)

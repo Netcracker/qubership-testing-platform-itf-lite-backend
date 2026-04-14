@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -22,17 +22,16 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
-
 import org.qubership.atp.itf.lite.backend.model.entities.Folder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -99,17 +98,18 @@ public class CustomFolderRepositoryImpl implements CustomFolderRepository {
      * @return list of collected ids
      */
     public Set<UUID> findHeirsIdsByIdIn(Collection<UUID> ids) {
-        Query query = em.createNativeQuery("WITH RECURSIVE heirs(id, parent_id) AS (\n"
-                + "\tSELECT folder.id, folder.parent_id\n"
-                + "\tFROM public.folders folder\n"
-                + "\tWHERE folder.id IN :ids\n"
-                + "\tUNION ALL\n"
-                + "\tSELECT child.id, child.parent_id\n"
-                + "\tFROM public.folders child\n"
-                + "\tJOIN heirs parent\n"
-                + "\tON parent.id = child.parent_id\n"
-                + ")\n"
-                + "SELECT CAST(id as text) from heirs");
+        Query query = em.createNativeQuery("""
+                WITH RECURSIVE heirs(id, parent_id) AS (
+                	SELECT folder.id, folder.parent_id
+                	FROM public.folders folder
+                	WHERE folder.id IN :ids
+                	UNION ALL
+                	SELECT child.id, child.parent_id
+                	FROM public.folders child
+                	JOIN heirs parent
+                	ON parent.id = child.parent_id
+                )
+                SELECT CAST(id as text) from heirs""");
         query.setParameter("ids", ids);
 
         try {

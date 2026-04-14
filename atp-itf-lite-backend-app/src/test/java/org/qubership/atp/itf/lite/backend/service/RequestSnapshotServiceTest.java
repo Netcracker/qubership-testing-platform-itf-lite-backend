@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.itf.lite.backend.dataaccess.repository.RequestSnapshotRepository;
 import org.qubership.atp.itf.lite.backend.enums.TransportType;
@@ -46,6 +46,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@ExtendWith(MockitoExtension.class)
 class RequestSnapshotServiceTest {
 
     @InjectMocks
@@ -65,13 +66,6 @@ class RequestSnapshotServiceTest {
 
     @Mock
     private RequestSnapshotRepository repository;
-
-
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void test_saveSnapshot() throws JsonProcessingException {

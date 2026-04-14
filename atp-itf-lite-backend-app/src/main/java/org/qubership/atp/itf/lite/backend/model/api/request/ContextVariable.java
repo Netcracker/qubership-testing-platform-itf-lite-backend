@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.qubership.atp.itf.lite.backend.annotations.SerializableCheckable;
 import org.qubership.atp.itf.lite.backend.enums.ContextVariableType;
 import org.qubership.atp.itf.lite.backend.feign.dto.ContextVariableDto;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,7 +44,7 @@ public class ContextVariable implements Serializable {
      */
     public ContextVariable(ContextVariableDto contextVariableDto) {
         this.key = contextVariableDto.getName();
-        this.value = StringUtils.isEmpty(contextVariableDto.getAfterValue())
+        this.value = ObjectUtils.isEmpty(contextVariableDto.getAfterValue())
                 ? contextVariableDto.getBeforeValue()
                 : contextVariableDto.getAfterValue();
         this.contextVariableType = ContextVariableType.fromContextVariableKey(contextVariableDto.getName());

@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -18,13 +18,12 @@ package org.qubership.atp.itf.lite.backend.service.history.impl;
 
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-
 import org.qubership.atp.itf.lite.backend.exceptions.history.ItfLiteRevisionHistoryIncorrectValueException;
 import org.qubership.atp.itf.lite.backend.model.entities.AbstractNamedEntity;
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

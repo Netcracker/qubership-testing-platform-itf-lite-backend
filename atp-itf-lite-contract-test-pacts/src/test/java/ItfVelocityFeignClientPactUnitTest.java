@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -18,10 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.ExternalResourceSupport;
 import org.qubership.atp.auth.springbootstarter.config.FeignConfiguration;
 import org.qubership.atp.itf.lite.backend.feign.clients.ItfVelocityBalancerFeignClient;
 import org.qubership.atp.itf.lite.backend.feign.dto.ResponseObjectDto;
@@ -35,9 +36,8 @@ import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
@@ -49,9 +49,9 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import lombok.extern.slf4j.Slf4j;
 
-@RunWith(SpringRunner.class)
 @EnableFeignClients(clients = {ItfVelocityBalancerFeignClient.class})
-@ContextConfiguration(classes = {ItfVelocityFeignClientPactUnitTest.TestApp.class})
+@ExtendWith(ExternalResourceSupport.class)
+@SpringJUnitConfig(classes = {ItfVelocityFeignClientPactUnitTest.TestApp.class})
 @Import({JacksonAutoConfiguration.class,
         HttpMessageConvertersAutoConfiguration.class,
         FeignConfiguration.class,
@@ -79,9 +79,9 @@ public class ItfVelocityFeignClientPactUnitTest {
     public void allPass() {
         ResponseEntity<ResponseObjectDto> result
                 = itfVelocityBalancerFeignClient.get(projectUuid, null, getRequest());
-        Assert.assertEquals(200, result.getStatusCode().value());
-        Assert.assertTrue(result.getHeaders().get("Content-Type").contains("application/json"));
-        Assert.assertEquals(result.getBody(), getResponse());
+        Assertions.assertEquals(200, result.getStatusCode().value());
+        Assertions.assertTrue(result.getHeaders().get("Content-Type").contains("application/json"));
+        Assertions.assertEquals(result.getBody(), getResponse());
     }
 
     @Pact(consumer = "atp-itf-lite")

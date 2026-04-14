@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class GetAccessTokenByCodeService {
             throwWithLog(log, new AuthActionMandatoryFieldException("'" + authorizationCode + "'"));
         }
         Optional<GetAuthorizationCode> getAuthorizationCodeOptional = getAuthorizationCodeRepository.findById(sseId);
-        if (!getAuthorizationCodeOptional.isPresent()) {
+        if (getAuthorizationCodeOptional.isEmpty()) {
             throwWithLog(log, new AuthActionInvalidSseException(sseId));
         }
         MdcUtils.put(ItfLiteMdcField.SSE_ID.toString(), sseId);

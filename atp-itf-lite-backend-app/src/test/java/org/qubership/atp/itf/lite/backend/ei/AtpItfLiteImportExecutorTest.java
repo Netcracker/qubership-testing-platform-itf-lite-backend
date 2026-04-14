@@ -21,7 +21,6 @@ import static org.qubership.atp.itf.lite.backend.utils.Constants.COPY_POSTFIX;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -317,7 +316,7 @@ public class AtpItfLiteImportExecutorTest {
     }
 
     public Path getRootPath() {
-        return Paths.get(DEFAULT_RESOURCES_PATH, "exportImportData");
+        return Path.of(DEFAULT_RESOURCES_PATH, "exportImportData");
     }
 
 }

@@ -179,7 +179,7 @@ public class SseEmitterServiceTest {
         // given
         SseEmitter expectedEmitter = mock(SseEmitter.class);
         String errorMessage = "Exception";
-        String expectedExceptionMessage = String.format(ExceptionConstants.EXECUTE_REQUEST_MESSAGE_TEMPLATE,
+        String expectedExceptionMessage = ExceptionConstants.EXECUTE_REQUEST_MESSAGE_TEMPLATE.formatted(
                 errorMessage);
         RuntimeException requestExecutionFailedException = new RuntimeException(errorMessage);
         // when

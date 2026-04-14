@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.qubership.atp.itf.lite.backend.ei;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -51,8 +50,8 @@ public class AtpItfLiteImportExecutor implements ImportExecutor {
     @Override
     public void importData(ExportImportData exportImportData, Path path) throws RuntimeException {
         log.info("Start import. Data: {}, WorkDir: {}", exportImportData, path);
-        folderImporterService.importFolders(Paths.get(path.toString(), Constants.FOLDERS), exportImportData);
-        requestImporterService.importRequests(Paths.get(path.toString(), Constants.REQUESTS), exportImportData);
+        folderImporterService.importFolders(Path.of(path.toString(), Constants.FOLDERS), exportImportData);
+        requestImporterService.importRequests(Path.of(path.toString(), Constants.REQUESTS), exportImportData);
         requestImporterService.importFiles(exportImportData, path);
         log.info("End of import");
     }
@@ -96,6 +95,6 @@ public class AtpItfLiteImportExecutor implements ImportExecutor {
     }
 
     private Path getWorkDir(String path, String entityType) {
-        return Paths.get(path.toString(), entityType);
+        return Path.of(path.toString(), entityType);
     }
 }

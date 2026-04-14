@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -617,7 +617,7 @@ public class CollectionsService {
                 }
                 newFdp.setValue(fileName);
                 ImportCollectionsResponse result = new ImportCollectionsResponse();
-                result.setComment(String.format(REQUEST_WITHOUT_FILE_MESSAGE_FORMAT, fileName));
+                result.setComment(REQUEST_WITHOUT_FILE_MESSAGE_FORMAT.formatted(fileName));
                 result.setImportStatus(ImportCollectionStatus.WARNING);
                 result.setErrorType(ImportCollectionError.FORMDATA_FILE_REQUIRED);
                 result.setFormDataPartId(newFdp.getId());
@@ -637,7 +637,7 @@ public class CollectionsService {
                                 .filter(authType -> authType.getName()
                                         .equals(auth.getAsJsonPrimitive(Constants.TYPE).getAsString().toUpperCase()))
                                 .findFirst();
-                if (!optionalRequestAuthorizationType.isPresent()
+                if (optionalRequestAuthorizationType.isEmpty()
                         || !auth.has(auth.getAsJsonPrimitive(Constants.TYPE).getAsString())) {
                     return null;
                 }

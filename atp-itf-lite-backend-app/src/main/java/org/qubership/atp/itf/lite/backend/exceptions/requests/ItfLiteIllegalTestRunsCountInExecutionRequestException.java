@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.qubership.atp.itf.lite.backend.exceptions.requests;
 
-import static java.lang.String.format;
-
 import java.util.UUID;
 
 import org.qubership.atp.itf.lite.backend.exceptions.ItfLiteException;
@@ -29,7 +27,7 @@ public class ItfLiteIllegalTestRunsCountInExecutionRequestException extends ItfL
     public static final String DEFAULT_MESSAGE = "Found more then one test run in execution request with id: %s";
 
     public ItfLiteIllegalTestRunsCountInExecutionRequestException(UUID executionRequestId) {
-        super(format(DEFAULT_MESSAGE, executionRequestId));
+        super(DEFAULT_MESSAGE.formatted(executionRequestId));
     }
 }
 

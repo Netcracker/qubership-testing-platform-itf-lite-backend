@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class ContextVariablesReplacer {
                 String foundParameter = findParameterByName(match.replace("\\\"", ""), context);
                 value = foundParameter == null ? value : value.replace(matcher.group(0), foundParameter);
             } catch (RuntimeException | AtpDecryptException exception) {
-                String message = String.format("Error occurred while injecting context variable [%s].\n%s\n%s",
+                String message = "Error occurred while injecting context variable [%s].\n%s\n%s".formatted(
                         matcher.group(0),
                         exception.getClass().getName(),
                         exception.getMessage());
@@ -67,7 +67,7 @@ public class ContextVariablesReplacer {
                                        Map<String, Object> context) throws AtpDecryptException {
         Object foundValue = context.get(parameterName);
         if (foundValue == null) {
-            log.debug(String.format("Parameter %s not found in any variables context", parameterName));
+            log.debug("Parameter %s not found in any variables context".formatted(parameterName));
             return null;
         }
         return cryptService.decryptIfEncrypted(foundValue.toString());

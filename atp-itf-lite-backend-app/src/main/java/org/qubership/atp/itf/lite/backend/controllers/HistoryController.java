@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package org.qubership.atp.itf.lite.backend.controllers;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.qubership.atp.integration.configuration.configuration.AuditAction;
 import org.qubership.atp.itf.lite.backend.enums.TransportType;
@@ -42,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

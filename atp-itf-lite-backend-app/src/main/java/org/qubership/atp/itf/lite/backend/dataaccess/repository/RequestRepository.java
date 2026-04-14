@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 import org.qubership.atp.itf.lite.backend.enums.TransportType;
 import org.qubership.atp.itf.lite.backend.model.RequestRuntimeOptions;
@@ -31,6 +29,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import jakarta.transaction.Transactional;
 
 @JaversSpringDataAuditable
 public interface RequestRepository extends JpaRepository<Request, UUID>, JpaSpecificationExecutor<Request> {

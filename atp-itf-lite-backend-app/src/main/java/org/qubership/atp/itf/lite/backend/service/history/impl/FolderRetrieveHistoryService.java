@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import org.qubership.atp.itf.lite.backend.feign.dto.history.CompareEntityRespons
 import org.qubership.atp.itf.lite.backend.feign.dto.history.FolderHistoryChangeDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.history.HistoryItemTypeDto;
 import org.qubership.atp.itf.lite.backend.model.entities.Folder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +34,6 @@ public class FolderRetrieveHistoryService extends AbstractRetrieveHistoryService
 
     private final FolderRepository folderRepository;
 
-    @Autowired
     public FolderRetrieveHistoryService(Javers javers,
                                         FolderVersioningMapper mapping,
                                         FolderRepository folderRepository) {
@@ -70,7 +68,7 @@ public class FolderRetrieveHistoryService extends AbstractRetrieveHistoryService
         if (folder.getParentId() != null) {
             Folder parentFolder = null;
             try {
-                parentFolder = folderRepository.getOne(folder.getParentId());
+                parentFolder = folderRepository.getReferenceById(folder.getParentId());
             } finally {
                 resolvedEntity.setParentFolder(parentFolder == null
                         ? "Parent folder with ID #" + folder.getParentId() + " has been deleted"

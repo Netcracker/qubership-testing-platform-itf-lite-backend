@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -26,6 +26,6 @@ public class ItfLiteRevisionHistoryIncorrectClassException extends ItfLiteExcept
             + "match class of actual object '%s'.";
 
     public ItfLiteRevisionHistoryIncorrectClassException(String snapshotClass, String objectClass) {
-        super(String.format(DEFAULT_MESSAGE, snapshotClass, objectClass));
+        super(DEFAULT_MESSAGE.formatted(snapshotClass, objectClass));
     }
 }

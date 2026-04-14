@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -25,24 +25,22 @@ import org.qubership.atp.itf.lite.backend.feign.dto.LogRecordDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.LogRecordFilteringRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "${feign.atp.ram.name}", url = "${feign.atp.ram.url}",
         path = "${feign.atp.ram.route}", configuration = FeignConfiguration.class)
 public interface RamTestRunsFeignClient {
 
-    @RequestMapping(
-            method = RequestMethod.GET,
+    @GetMapping(
             value = "/api/testruns/{testRunId}/contextVariables/all",
             produces = { "application/json" }
     )
     ResponseEntity<List<ContextVariableDto>> getAllContextVariables(@PathVariable("testRunId") UUID testRunId);
 
-    @RequestMapping(
-            method = RequestMethod.POST,
+    @PostMapping(
             value = "/api/testruns/{uuid}/logrecords",
             produces = { "application/json" },
             consumes = { "application/json" }

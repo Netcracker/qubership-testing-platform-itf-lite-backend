@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ import org.qubership.atp.ram.enums.TestingStatuses;
 import org.qubership.atp.ram.enums.TypeAction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -122,7 +122,7 @@ public class ActionService {
                 return getExecuteRequestActionStrategy(requestId, environmentId);
             } catch (IllegalArgumentException ex) {
                 log.error("Failed to parse requestId from action parameter: {}", requestIdStr, ex);
-                throw new ItfLiteException(String.format("Failed to get requestId - bad uuid format: %s",
+                throw new ItfLiteException("Failed to get requestId - bad uuid format: %s".formatted(
                         requestIdStr));
             }
         } else if (actionName.matches(ActionName.EXECUTE_FOLDER_BY_ID.getRegexp())) {
@@ -132,7 +132,7 @@ public class ActionService {
                 return getExecuteFolderStrategy(folderId, environmentId);
             } catch (IllegalArgumentException ex) {
                 log.error("Failed to parse folderId from action parameter: {}", folderIdStr, ex);
-                throw new ItfLiteException(String.format("Failed to get folderId - bad uuid format: %s", folderIdStr));
+                throw new ItfLiteException("Failed to get folderId - bad uuid format: %s".formatted(folderIdStr));
             }
         } else if (actionName.matches(ActionName.EXECUTE_FOLDER_BY_PATH.getRegexp())) {
             ComplexActionParameter complexParam = action.getParameters().get(0).getComplexParam();
@@ -248,7 +248,7 @@ public class ActionService {
 
         // open itf section
         Message itfMessage = new Message();
-        itfMessage.setName(String.format("%s \"%s\"", ActionName.EXECUTE_REQUEST_BY_ID.getName(), request.getName()));
+        itfMessage.setName("%s \"%s\"".formatted(ActionName.EXECUTE_REQUEST_BY_ID.getName(), request.getName()));
         itfMessage.setExecutionStatus(ExecutionStatuses.IN_PROGRESS.name());
         itfMessage.setType(TypeAction.ITF.toString());
         AtpRamWriter writer = AtpRamWriter.getAtpRamWriter();
@@ -271,7 +271,7 @@ public class ActionService {
         ContextEntity context = response.getContext();
         if (nonNull(context)) {
             String contextStr = context.getJsonString();
-            if (!StringUtils.isEmpty(contextStr)) {
+            if (!ObjectUtils.isEmpty(contextStr)) {
                 try {
                     return objectMapper.readValue(contextStr, new TypeReference<HashMap<String, Object>>() {});
                 } catch (JsonProcessingException ex) {

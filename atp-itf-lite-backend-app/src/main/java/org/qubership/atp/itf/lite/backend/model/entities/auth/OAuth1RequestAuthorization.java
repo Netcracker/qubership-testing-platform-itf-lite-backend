@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -16,19 +16,18 @@
 
 package org.qubership.atp.itf.lite.backend.model.entities.auth;
 
-import static javax.persistence.EnumType.STRING;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import static jakarta.persistence.EnumType.STRING;
 
 import org.javers.core.metamodel.annotation.DiffInclude;
 import org.qubership.atp.itf.lite.backend.enums.auth.OAuth1AddDataType;
 import org.qubership.atp.itf.lite.backend.enums.auth.OAuth1SignatureMethod;
 import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

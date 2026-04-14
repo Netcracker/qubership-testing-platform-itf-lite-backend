@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,7 +14,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.qubership.atp.itf.lite.backend.components.replacer.ContextVariablesReplacer;
 import org.qubership.atp.itf.lite.backend.model.entities.FileBody;
@@ -24,10 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBeans;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = ItfLiteFileService.class, properties = {"atp.itf.lite.clean.file.cache.time-sec=3600"})
 @MockBeans({
         @MockBean(GridFsService.class)
@@ -47,8 +43,8 @@ public class ItfLiteFileServiceTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        path = Paths.get("src/test/resources/tests");
-        pathToFile = Paths.get(path.toString(), requestUuid2.toString(), "file.txt");
+        path = Path.of("src/test/resources/tests");
+        pathToFile = Path.of(path.toString(), requestUuid2.toString(), "file.txt");
         Files.write(pathToFile, "string".getBytes());
     }
 
@@ -68,10 +64,10 @@ public class ItfLiteFileServiceTest {
 
         itfLiteFileService.copyFileForCopiedRequest(requestUuid2, new Date(1707413388860L), newUuid, path);
 
-        Path resultFile = Paths.get(path.toString(), newUuid.toString(), "file.txt");
+        Path resultFile = Path.of(path.toString(), newUuid.toString(), "file.txt");
         Assertions.assertTrue(resultFile.toFile().exists());
         Files.delete(resultFile);
-        Files.delete(Paths.get(path.toString(), newUuid.toString()));
+        Files.delete(Path.of(path.toString(), newUuid.toString()));
     }
 
     @Test

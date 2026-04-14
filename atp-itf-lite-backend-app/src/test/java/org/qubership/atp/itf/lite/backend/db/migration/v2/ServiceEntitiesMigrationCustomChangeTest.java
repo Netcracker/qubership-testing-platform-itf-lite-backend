@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.qubership.atp.auth.springbootstarter.entities.ServiceEntities;
 import org.qubership.atp.auth.springbootstarter.services.UsersService;
 import org.qubership.atp.itf.lite.backend.configuration.SpringLiquibaseBeanAware;
@@ -28,7 +29,8 @@ import liquibase.database.Database;
 
 @DirtiesContext
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(locations={"classpath:application.properties"})
+@ExtendWith(MockitoExtension.class)
+@TestPropertySource(locations = {"classpath:application.properties"})
 public class ServiceEntitiesMigrationCustomChangeTest {
 
     @Value("${spring.profiles.active:disable-security}")

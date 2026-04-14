@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -22,13 +22,12 @@ import java.util.UUID;
 import org.qubership.atp.auth.springbootstarter.config.FeignConfiguration;
 import org.qubership.atp.itf.lite.backend.model.api.response.environments.System;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "${feign.atp.environments.name}", url = "${feign.atp.environments.url}",
         path = "${feign.atp.environments.route}", configuration = FeignConfiguration.class)
 public interface EnvironmentsFeignClient {
-    @RequestMapping(method = RequestMethod.GET, value = "api/environments/{environmentId}/systems?full")
+    @GetMapping("api/environments/{environmentId}/systems?full")
     List<System> getEnvironmentSystems(@PathVariable(value = "environmentId") UUID environmentId);
 }

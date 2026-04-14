@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package org.qubership.atp.itf.lite.backend.handlers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.qubership.atp.itf.lite.backend.model.api.response.ArgumentNotValidExceptionResponse;
 import org.qubership.atp.itf.lite.backend.model.api.response.ArgumentNotValidExceptionResponse.FieldError;
 import org.springframework.validation.BindingResult;
@@ -28,6 +26,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 @ResponseBody

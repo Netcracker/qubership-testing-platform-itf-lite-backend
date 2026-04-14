@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -83,9 +83,9 @@ public class RequestToCurlFormatConverter implements CurlOptions {
         headers.forEach(header -> {
             if (!header.isDisabled() && !StringUtils.isEmpty(header.getKey())) {
                 if (StringUtils.isEmpty(header.getValue())) {
-                    currentCurlRequest.append(String.format("-H \"%s;\" ", header.getKey()));
+                    currentCurlRequest.append("-H \"%s;\" ".formatted(header.getKey()));
                 } else {
-                    currentCurlRequest.append(String.format("-H \"%s: %s\" ", header.getKey(), header.getValue()));
+                    currentCurlRequest.append("-H \"%s: %s\" ".formatted(header.getKey(), header.getValue()));
                 }
             }
         });
@@ -120,7 +120,7 @@ public class RequestToCurlFormatConverter implements CurlOptions {
                 case Binary:
                     FileBody fileBody = body.getBinaryBody();
                     if (Objects.nonNull(fileBody) && !StringUtils.isEmpty(fileBody.getFileName())) {
-                        currentCurlRequest.append(String.format("--data-binary \"@%s\" ", fileBody.getFileName()));
+                        currentCurlRequest.append("--data-binary \"@%s\" ".formatted(fileBody.getFileName()));
                     }
                     break;
                 case GraphQL:
@@ -149,7 +149,7 @@ public class RequestToCurlFormatConverter implements CurlOptions {
                 if (formDataPart.isDisabled()) {
                     continue;
                 }
-                curlBuilder.append(String.format("-F '%s=", formDataPart.getKey()));
+                curlBuilder.append("-F '%s=".formatted(formDataPart.getKey()));
                 if (ValueType.FILE.equals(formDataPart.getType())) {
                     curlBuilder.append("@");
                 }

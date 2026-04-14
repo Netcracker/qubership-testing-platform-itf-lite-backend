@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -20,14 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.auth.springbootstarter.entities.UserInfo;
 import org.qubership.atp.itf.lite.backend.dataaccess.repository.UserSettingsRepository;
 import org.qubership.atp.itf.lite.backend.model.entities.user.UserSettings;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParser;
@@ -37,6 +34,7 @@ import org.springframework.security.jwt.JwtHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -64,7 +62,6 @@ public class UserService extends CrudService<UserSettings> {
     /**
      * Constructor.
      */
-    @Autowired
     public UserService(RestTemplate m2mRestTemplate, UserSettingsRepository userSettingsRepository,
                        ModelMapper modelMapper) {
         this.m2mRestTemplate = m2mRestTemplate;
@@ -94,7 +91,7 @@ public class UserService extends CrudService<UserSettings> {
         try {
             userInfo = m2mRestTemplate.getForObject(issuer + "/users/" + userId.toString(), UserInfo.class);
         } catch (Exception e) {
-            log.error(String.format("Could not find user: %s ", userId.toString()));
+            log.error("Could not find user: %s ".formatted(userId.toString()));
             return null;
         }
 

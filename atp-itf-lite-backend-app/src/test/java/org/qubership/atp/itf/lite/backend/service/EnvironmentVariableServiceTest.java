@@ -1,7 +1,6 @@
 package org.qubership.atp.itf.lite.backend.service;
 
 import static com.google.common.collect.ImmutableMap.of;
-import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -109,7 +108,7 @@ public class EnvironmentVariableServiceTest {
         assertEquals(expectedPassword, actualPasswordCaptor.getValue());
 
         String expectedErrorMessage =
-                format(ItfLiteRequestEnvironmentVariableNotFoundException.DEFAULT_MESSAGE, environmentVariableLogin);
+                ItfLiteRequestEnvironmentVariableNotFoundException.DEFAULT_MESSAGE.formatted(environmentVariableLogin);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 

@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public abstract class AbstractRequestRetrieveHistoryService<S extends Request, D
         if (folderId != null) {
             Folder parentFolder = null;
             try {
-                parentFolder = folderRepository.getOne(folderId);
+                parentFolder = folderRepository.getReferenceById(folderId);
             } catch (Exception e) {
                 log.error("Cannot get folder by folder id {}", folderId, e);
             }

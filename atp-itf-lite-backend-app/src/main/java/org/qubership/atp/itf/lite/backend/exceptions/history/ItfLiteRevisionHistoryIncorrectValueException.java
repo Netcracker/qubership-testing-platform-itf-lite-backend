@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -26,6 +26,6 @@ public class ItfLiteRevisionHistoryIncorrectValueException extends ItfLiteExcept
             + "for object class %s. Error message: %s";
 
     public ItfLiteRevisionHistoryIncorrectValueException(String field, String objectClass, String errorMessage) {
-        super(String.format(DEFAULT_MESSAGE, field, objectClass, errorMessage));
+        super(DEFAULT_MESSAGE.formatted(field, objectClass, errorMessage));
     }
 }

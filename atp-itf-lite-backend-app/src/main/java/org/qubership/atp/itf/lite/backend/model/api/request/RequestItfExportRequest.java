@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ import java.math.BigInteger;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.validation.constraints.NotNull;
-
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,6 +45,6 @@ public class RequestItfExportRequest extends RequestExportRequest {
 
     @Override
     public String getDestination() {
-        return String.format(ITF_DESTINATION_TEMPLATE, itfUrl, systemId, operationId);
+        return ITF_DESTINATION_TEMPLATE.formatted(itfUrl, systemId, operationId);
     }
 }

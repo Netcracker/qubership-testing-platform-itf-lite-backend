@@ -172,7 +172,7 @@ public class KafkaExportEventResponseServiceTest {
                 .name(SseEventType.EXPORT_FINISHED.name())
                 .data(expectedExportFailedResult, MediaType.APPLICATION_JSON);
 
-        String message = String.format(ATP_EXPORT_FINISHED_TEMPLATE,
+        String message = ATP_EXPORT_FINISHED_TEMPLATE.formatted(
                 ImportToolType.MIA.name(), requestExportEntity.getDestination());
         Notification expectedNotification = new Notification(
                 message, Notification.Type.INFO, requestExportEntity.getUserId());
@@ -256,7 +256,7 @@ public class KafkaExportEventResponseServiceTest {
         RequestExportEntity requestExportEntity = generateRequestExportEntity(requestExportId, sseId, userId,
                 requestStatuses);
         RequestItfExportRequest requestItfExportRequest = generateRequestItfExportRequest();
-        String itfDestination = String.format(ITF_DESTINATION_TEMPLATE, requestItfExportRequest.getItfUrl(),
+        String itfDestination = ITF_DESTINATION_TEMPLATE.formatted(requestItfExportRequest.getItfUrl(),
                 requestItfExportRequest.getSystemId(), requestItfExportRequest.getOperationId());
         requestExportEntity.setDestination(itfDestination);
         ItfExportResponseEvent expectedItfExportSuccessResponseEvent = generateItfExportSuccessResponseEvent(sseId,
@@ -275,7 +275,7 @@ public class KafkaExportEventResponseServiceTest {
                 .name(SseEventType.EXPORT_FINISHED.name())
                 .data(expectedExportSuccessResult, MediaType.APPLICATION_JSON);
 
-        String message = String.format(ATP_EXPORT_FINISHED_TEMPLATE,
+        String message = ATP_EXPORT_FINISHED_TEMPLATE.formatted(
                 ImportToolType.ITF.name(), requestExportEntity.getDestination());
         Notification expectedNotification = new Notification(
                 message, Notification.Type.INFO, requestExportEntity.getUserId());

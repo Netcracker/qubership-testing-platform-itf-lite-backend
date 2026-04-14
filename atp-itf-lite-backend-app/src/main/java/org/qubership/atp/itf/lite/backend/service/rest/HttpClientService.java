@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -28,27 +28,27 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HeaderElement;
-import org.apache.http.HeaderElementIterator;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.ConnectionKeepAliveStrategy;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustAllStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicHeaderElementIterator;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.hc.client5.http.ConnectionKeepAliveStrategy;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.cookie.CookieStore;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HeaderElement;
+import org.apache.hc.core5.http.HeaderElementIterator;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.http.message.BasicHeaderElementIterator;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.qubership.atp.auth.springbootstarter.exceptions.AtpException;
 import org.qubership.atp.itf.lite.backend.configuration.HttpClientProperties;
 import org.qubership.atp.itf.lite.backend.exceptions.internal.ItfLiteSslCertificateVerificationFileException;
@@ -59,6 +59,7 @@ import org.qubership.atp.itf.lite.backend.service.CertificateService;
 import org.qubership.atp.itf.lite.backend.service.EncryptionService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -70,6 +71,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @EnableConfigurationProperties(HttpClientProperties.class)
 @AllArgsConstructor
+@Configuration
 @Slf4j
 public class HttpClientService {
 
@@ -105,9 +107,9 @@ public class HttpClientService {
                                              String requestUrl,
                                              CookieStore cookieStore) {
         RequestConfig.Builder configBuilder = RequestConfig.custom()
-                .setConnectionRequestTimeout(httpClientProperties.getRequestTimeout())
-                .setConnectTimeout(httpClientProperties.getConnectionTimeout())
-                .setSocketTimeout(httpClientProperties.getSocketTimeout());
+                .setConnectionRequestTimeout(httpClientProperties.getRequestTimeout(), TimeUnit.MILLISECONDS)
+                .setConnectTimeout(httpClientProperties.getConnectionTimeout(), TimeUnit.MILLISECONDS)
+                .setResponseTimeout(httpClientProperties.getSocketTimeout(), TimeUnit.MILLISECONDS);
         if (runtimeOptions.isDisableFollowingRedirect()) {
             configBuilder.setRedirectsEnabled(false);
         }
@@ -242,9 +244,9 @@ public class HttpClientService {
     private ConnectionKeepAliveStrategy connectionKeepAliveStrategy() {
         return new ConnectionKeepAliveStrategy() {
             @Override
-            public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+            public long getKeepAliveDuration(ClassicHttpResponse response, HttpContext context) {
                 HeaderElementIterator responseHeaderIterator = new BasicHeaderElementIterator(
-                        response.headerIterator(HTTP.CONN_KEEP_ALIVE));
+                        response.headerIterator(HttpHeaders.KEEP_ALIVE));
                 while (responseHeaderIterator.hasNext()) {
                     HeaderElement headerElement = responseHeaderIterator.nextElement();
                     String param = headerElement.getName();

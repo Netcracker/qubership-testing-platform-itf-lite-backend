@@ -255,22 +255,26 @@ public class CollectionServiceTest {
 
     @Test
     public void importCollections_CollectionsWithPreAndPostScripts_ScriptsShouldBeParsed() throws Exception {
-        String expectedPostScript1 = "tests[\"response code is 401\"] = responseCode.code === 401;\n" +
-                "tests[\"response has WWW-Authenticate header\"] = (postman.getResponseHeader('WWW-Authenticate'));\n" +
-                "\n" +
-                "var authenticateHeader = postman.getResponseHeader('WWW-Authenticate'),\n" +
-                "realmStart = authenticateHeader.indexOf('\"',authenticateHeader.indexOf(\"realm\")) + 1 ,\n" +
-                "realmEnd = authenticateHeader.indexOf('\"',realmStart),\n" +
-                "realm = authenticateHeader.slice(realmStart,realmEnd),\n" +
-                "nonceStart = authenticateHeader.indexOf('\"',authenticateHeader.indexOf(\"nonce\")) + 1,\n" +
-                "nonceEnd = authenticateHeader.indexOf('\"',nonceStart),\n" +
-                "nonce = authenticateHeader.slice(nonceStart,nonceEnd);\n" +
-                "\n" +
-                "postman.setGlobalVariable('echo_digest_realm', realm);\n" +
-                "postman.setGlobalVariable('echo_digest_nonce', nonce);";
-        String expectedPostScript2 = "pm.test(\"test\", function() {\n" +
-                "console.log(pm.collectionVariables.get(\"name\"));\n" +
-                "});";
+        String expectedPostScript1 = """
+                tests["response code is 401"] = responseCode.code === 401;
+                tests["response has WWW-Authenticate header"] = (postman.getResponseHeader('WWW-Authenticate'));
+                
+                var authenticateHeader = postman.getResponseHeader('WWW-Authenticate'),
+                realmStart = authenticateHeader.indexOf('"',authenticateHeader.indexOf("realm")) + 1 ,
+                realmEnd = authenticateHeader.indexOf('"',realmStart),
+                realm = authenticateHeader.slice(realmStart,realmEnd),
+                nonceStart = authenticateHeader.indexOf('"',authenticateHeader.indexOf("nonce")) + 1,
+                nonceEnd = authenticateHeader.indexOf('"',nonceStart),
+                nonce = authenticateHeader.slice(nonceStart,nonceEnd);
+                
+                postman.setGlobalVariable('echo_digest_realm', realm);
+                postman.setGlobalVariable('echo_digest_nonce', nonce);\
+                """;
+        String expectedPostScript2 = """
+                pm.test("test", function() {
+                console.log(pm.collectionVariables.get("name"));
+                });\
+                """;
         String expectedPreScript = "pm.collectionVariables.set(\"name\", pm.collectionVariables.get(\"name\") + \"_newValue\");";
         File jsonFile = new File(PATH_TO_JSON_WITH_EVENT);
         FileInputStream input = new FileInputStream(jsonFile);

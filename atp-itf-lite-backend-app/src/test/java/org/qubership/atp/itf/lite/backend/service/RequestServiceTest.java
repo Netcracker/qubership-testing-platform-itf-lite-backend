@@ -64,19 +64,20 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpVersion;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicStatusLine;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.message.RequestLine;
+import org.apache.hc.core5.http.message.StatusLine;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpVersion;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.core5.http.io.entity.BasicHttpEntity;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.core5.http.message.BasicHeader;
+import org.apache.hc.core5.http.message.BasicStatusLine;
 import org.apache.tika.mime.MimeTypeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -420,7 +421,7 @@ public class RequestServiceTest {
         );
         // then
         String requestEntityName = Request.class.getSimpleName();
-        String expectedErrorMessage = String.format(AtpEntityNotFoundException.DEFAULT_ID_MESSAGE, requestEntityName, requestId);
+        String expectedErrorMessage = AtpEntityNotFoundException.DEFAULT_ID_MESSAGE.formatted(requestEntityName, requestId);
         assertEquals(expectedErrorMessage, exception.getMessage());
         verify(repository.get()).findById(requestId);
     }
@@ -1482,36 +1483,39 @@ public class RequestServiceTest {
         expectedRequest.getRequestHeaders().add(new RequestHeader("Authorization", "Bearer {{authToken}}", "", false));
         RequestBody expectedBody = new RequestBody();
         expectedBody.setContent("{\"query\":\"query searchBillingAccount($filter: [String!]) {\\r\\n    searchBillingAccount @ filter(filters: $filter) {\\r\\n        id\\r\\n        name\\r\\n        billingMethod{\\r\\n            id\\r\\n            name\\r\\n        }\\r\\n        accountNumber\\r\\n        status\\r\\n        customer{\\r\\n            id\\r\\n            name\\r\\n            }\\r\\n        relatedProducts{\\r\\n            id\\r\\n            name\\r\\n            status\\r\\n            }\\r\\n\\r\\n    }\\r\\n}\\r\\n\",\"variables\":{\"filter\":[\"msisdn=590110865\"]}}");
-        expectedBody.setQuery("query searchBillingAccount($filter: [String!]) {\n"
-                + "    searchBillingAccount @ filter(filters: $filter) {\n"
-                + "        id\n"
-                + "        name\n"
-                + "        billingMethod{\n"
-                + "            id\n"
-                + "            name\n"
-                + "        }\n"
-                + "        accountNumber\n"
-                + "        status\n"
-                + "        customer{\n"
-                + "            id\n"
-                + "            name\n"
-                + "            }\n"
-                + "        relatedProducts{\n"
-                + "            id\n"
-                + "            name\n"
-                + "            status\n"
-                + "            }\n"
-                + "\n"
-                + "    }\n"
-                + "}\n");
+        expectedBody.setQuery("""
+                query searchBillingAccount($filter: [String!]) {
+                    searchBillingAccount @ filter(filters: $filter) {
+                        id
+                        name
+                        billingMethod{
+                            id
+                            name
+                        }
+                        accountNumber
+                        status
+                        customer{
+                            id
+                            name
+                            }
+                        relatedProducts{
+                            id
+                            name
+                            status
+                            }
+                
+                    }
+                }
+                """);
         expectedBody.setVariables("{\"filter\":[\"msisdn=590110865\"]}");
         expectedBody.setType(RequestBodyType.GraphQL);
         expectedRequest.setBody(expectedBody);
         // TODO: Discuss if we should set requestMethod (if not present in curl) based on --data parameter.
-        String curlString = "curl -X POST --location --globoff 'http://test.test/api/graphql-server/graphql' \\\n"
-                + "--header 'Content-Type: application/json' \\\n"
-                + "--header 'Authorization: Bearer {{authToken}}' \\\n"
-                + "--data '{\"query\":\"query searchBillingAccount($filter: [String!]) {\\r\\n    searchBillingAccount @ filter(filters: $filter) {\\r\\n        id\\r\\n        name\\r\\n        billingMethod{\\r\\n            id\\r\\n            name\\r\\n        }\\r\\n        accountNumber\\r\\n        status\\r\\n        customer{\\r\\n            id\\r\\n            name\\r\\n            }\\r\\n        relatedProducts{\\r\\n            id\\r\\n            name\\r\\n            status\\r\\n            }\\r\\n\\r\\n    }\\r\\n}\\r\\n\",\"variables\":{\"filter\":[\"msisdn=590110865\"]}}'";
+        String curlString = """
+                curl -X POST --location --globoff 'http://test.test/api/graphql-server/graphql' \\
+                --header 'Content-Type: application/json' \\
+                --header 'Authorization: Bearer {{authToken}}' \\
+                --data '{"query":"query searchBillingAccount($filter: [String!]) {\\r\\n    searchBillingAccount @ filter(filters: $filter) {\\r\\n        id\\r\\n        name\\r\\n        billingMethod{\\r\\n            id\\r\\n            name\\r\\n        }\\r\\n        accountNumber\\r\\n        status\\r\\n        customer{\\r\\n            id\\r\\n            name\\r\\n            }\\r\\n        relatedProducts{\\r\\n            id\\r\\n            name\\r\\n            status\\r\\n            }\\r\\n\\r\\n    }\\r\\n}\\r\\n","variables":{"filter":["msisdn=590110865"]}}'""";
         CurlStringImportRequest importRequest = new CurlStringImportRequest(expectedRequest.getId(), curlString);
         // when
         when(repository.get().findById(any())).thenReturn(Optional.of(expectedRequest));
@@ -1529,7 +1533,7 @@ public class RequestServiceTest {
         String bodyString = "{\"id\":\"123\"}";
 
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(response.getAllHeaders()).thenReturn(new Header[]{
                 new BasicHeader("Content-Type", "application/json")
         });
@@ -1594,34 +1598,36 @@ public class RequestServiceTest {
         request.getRequestHeaders().add(new HttpHeaderSaveRequest("Authorization", "Bearer {{authToken}}", "", false));
         RequestBody body = new RequestBody();
         body.setContent("{\"query\":\"query searchBillingAccount($filter: [String!]) {\\r\\n    searchBillingAccount @ filter(filters: $filter) {\\r\\n        id\\r\\n        name\\r\\n        billingMethod{\\r\\n            id\\r\\n            name\\r\\n        }\\r\\n        accountNumber\\r\\n        status\\r\\n        customer{\\r\\n            id\\r\\n            name\\r\\n            }\\r\\n        relatedProducts{\\r\\n            id\\r\\n            name\\r\\n            status\\r\\n            }\\r\\n\\r\\n    }\\r\\n}\\r\\n\",\"variables\":{\"filter\":[\"msisdn=590110865\"]}}");
-        body.setQuery("query searchBillingAccount($filter: [String!]) {\n"
-                + "    searchBillingAccount @ filter(filters: $filter) {\n"
-                + "        id\n"
-                + "        name\n"
-                + "        billingMethod{\n"
-                + "            id\n"
-                + "            name\n"
-                + "        }\n"
-                + "        accountNumber\n"
-                + "        status\n"
-                + "        customer{\n"
-                + "            id\n"
-                + "            name\n"
-                + "            }\n"
-                + "        relatedProducts{\n"
-                + "            id\n"
-                + "            name\n"
-                + "            status\n"
-                + "            }\n"
-                + "\n"
-                + "    }\n"
-                + "}\n");
+        body.setQuery("""
+                query searchBillingAccount($filter: [String!]) {
+                    searchBillingAccount @ filter(filters: $filter) {
+                        id
+                        name
+                        billingMethod{
+                            id
+                            name
+                        }
+                        accountNumber
+                        status
+                        customer{
+                            id
+                            name
+                            }
+                        relatedProducts{
+                            id
+                            name
+                            status
+                            }
+                
+                    }
+                }
+                """);
         body.setVariables("{\"filter\":[\"msisdn=590110865\"]}");
         body.setType(RequestBodyType.GraphQL);
         request.setBody(body);
 
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(response.getAllHeaders()).thenReturn(new Header[]{
                 new BasicHeader("Content-Type", "application/json")
         });
@@ -1690,7 +1696,7 @@ public class RequestServiceTest {
         when(scriptService.get().evaluateRequestPostScript(any(), any(), any()))
                 .thenReturn(new PostmanExecuteScriptResponseDto().hasNextRequest(false));
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         ArgumentCaptor<HttpUriRequest> httpRequestCaptor = ArgumentCaptor.forClass(HttpUriRequest.class);
         CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
         when(httpClientService.get().getHttpClient(any(), any(), any(), any())).thenReturn(httpClient);
@@ -1729,10 +1735,10 @@ public class RequestServiceTest {
         cookie1.setValue("Cookie_1=value; Path=/;");
         request.setCookies(Collections.singletonList(cookie1));
 
-        ArgumentCaptor<HttpEntityEnclosingRequestBase> requestCaptor = ArgumentCaptor.forClass(HttpEntityEnclosingRequestBase.class);
+        ArgumentCaptor<HttpUriRequestBase> requestCaptor = ArgumentCaptor.forClass(HttpUriRequestBase.class);
 
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
         when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
         when(httpClientService.get().getHttpClient(any(), any(), any(), any())).thenReturn(httpClient);
@@ -1745,9 +1751,9 @@ public class RequestServiceTest {
                 request.getEnvironmentId(), null);
         // then
         verify(httpClient).execute(requestCaptor.capture());
-        final HttpEntityEnclosingRequestBase capturedRequest = requestCaptor.getValue();
-        assertNotNull(capturedRequest.getURI(), "Captured URL shouldn't be null");
-        String url = capturedRequest.getURI().toString();
+        final HttpUriRequestBase capturedRequest = requestCaptor.getValue();
+        assertNotNull(capturedRequest.getUri(), "Captured URL shouldn't be null");
+        String url = capturedRequest.getUri().toString();
         assertTrue(url.contains(nonDisabledParam.getKey()), "Captured URL should contain non disabled param key");
         assertTrue(url.contains(nonDisabledParam.getValue()), "Captured URL should contain non disabled param value");
         assertFalse(url.contains(disabledParam.getKey()), "Captured URL shouldn't contain disabled param key");
@@ -1796,7 +1802,7 @@ public class RequestServiceTest {
         Header[] headers = new Header[]{
                 new BasicHeader("Content-Type", "application/json")
         };
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(response.getAllHeaders()).thenReturn(headers);
         when(response.getEntity()).thenReturn(entity);
 
@@ -1848,7 +1854,7 @@ public class RequestServiceTest {
         String errorMessage = "{\"message\":\"403 Forbidden - Not authorized to access /api/v4/entities\"}";
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
         HttpEntity entity = new ByteArrayEntity(errorMessage.getBytes());
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 403, "FORBIDDEN"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 403, "FORBIDDEN"));
         when(response.getEntity()).thenReturn(entity);
         HttpRequestEntitySaveRequest httpSaveRequest = generateRandomHttpRequestEntitySaveRequest();
 
@@ -1899,7 +1905,7 @@ public class RequestServiceTest {
         request.setRequestHeaders(new ArrayList<>());
 
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
         when(httpClientService.get().getHttpClient(any(), any(), any(), any())).thenReturn(httpClient);
         when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
@@ -2052,7 +2058,7 @@ public class RequestServiceTest {
         mockTimer(metricService.get());
 
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
         when(httpClientService.get().getHttpClient(any())).thenReturn(httpClient);
         when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
@@ -2092,7 +2098,7 @@ public class RequestServiceTest {
         when(scriptService.get().evaluateRequestPostScript(any(), any(), any()))
                 .thenReturn(new PostmanExecuteScriptResponseDto().hasNextRequest(false));
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         ArgumentCaptor<HttpUriRequest> httpRequestCaptor = ArgumentCaptor.forClass(HttpUriRequest.class);
         CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
         when(httpClientService.get().getHttpClient(any(), any(), any(), any())).thenReturn(httpClient);
@@ -2203,7 +2209,7 @@ public class RequestServiceTest {
         Header[] headers = new Header[]{
                 new BasicHeader("Content-Type", "application/json")
         };
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(response.getAllHeaders()).thenReturn(headers);
         when(response.getEntity()).thenReturn(entity);
 
@@ -2262,7 +2268,7 @@ public class RequestServiceTest {
         when(scriptService.get().evaluateRequestPreScript(any(), any()))
                 .thenReturn(new PostmanExecuteScriptResponseDto().hasNextRequest(false));
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         HttpEntity responseEntity = mock(HttpEntity.class);
         when(response.getEntity()).thenReturn(responseEntity);
         when(response.getEntity().getContent()).thenReturn(new ByteArrayInputStream(new byte[11534336]));
@@ -2293,7 +2299,7 @@ public class RequestServiceTest {
 
         // when
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(response.getAllHeaders()).thenReturn(headers);
         when(response.getEntity()).thenReturn(entity);
         mockTimer(metricService.get());
@@ -2335,10 +2341,10 @@ public class RequestServiceTest {
                 .testsPassed(true)
                 .build();
         assertEquals(expectedResponse, actualResponse);
-        ArgumentCaptor<HttpEntityEnclosingRequestBase> requestCapture =
-                ArgumentCaptor.forClass(HttpEntityEnclosingRequestBase.class);
+        ArgumentCaptor<HttpUriRequestBase> requestCapture =
+                ArgumentCaptor.forClass(HttpUriRequestBase.class);
         verify(httpClient, times(1)).execute(requestCapture.capture());
-        HttpEntityEnclosingRequestBase httpRequest = requestCapture.getValue();
+        HttpUriRequestBase httpRequest = requestCapture.getValue();
         assertTrue(httpRequest.getHeaders("Content-Type")[0].getValue().contains("boundary"));
     }
 
@@ -2359,7 +2365,7 @@ public class RequestServiceTest {
 
         // when
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(response.getAllHeaders()).thenReturn(headers);
         when(response.getEntity()).thenReturn(entity);
         mockTimer(metricService.get());
@@ -2401,10 +2407,10 @@ public class RequestServiceTest {
                 .testsPassed(true)
                 .build();
         assertEquals(expectedResponse, actualResponse);
-        ArgumentCaptor<HttpEntityEnclosingRequestBase> requestCapture =
-                ArgumentCaptor.forClass(HttpEntityEnclosingRequestBase.class);
+        ArgumentCaptor<HttpUriRequestBase> requestCapture =
+                ArgumentCaptor.forClass(HttpUriRequestBase.class);
         verify(httpClient, times(1)).execute(requestCapture.capture());
-        HttpEntityEnclosingRequestBase httpRequest = requestCapture.getValue();
+        HttpUriRequestBase httpRequest = requestCapture.getValue();
         assertTrue(httpRequest.getHeaders("Content-Type")[0].getValue().contains("boundary=test"));
     }
 
@@ -2427,7 +2433,7 @@ public class RequestServiceTest {
         // when
         mockTimer(metricService.get());
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
         when(httpClientService.get().getHttpClient(any(), any(), any(), any())).thenReturn(httpClient);
         when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
@@ -2470,7 +2476,7 @@ public class RequestServiceTest {
         httpSaveRequest.setContextVariables(singletonList(contextVariable));
 
         // when
-        when(response.getStatusLine()).thenReturn(statusLine);
+        when(new StatusLine(response)).thenReturn(statusLine);
         when(response.getAllHeaders()).thenReturn(headers);
         when(response.getEntity()).thenReturn(entity);
         mockTimer(metricService.get());
@@ -2526,7 +2532,7 @@ public class RequestServiceTest {
         httpSaveRequest.setContextVariables(contextVariables);
 
         // when
-        when(response.getStatusLine()).thenReturn(basicStatusLine);
+        when(new StatusLine(response)).thenReturn(basicStatusLine);
         when(response.getAllHeaders()).thenReturn(headers);
         when(response.getEntity()).thenReturn(entity);
         mockTimer(metricService.get());
@@ -2552,7 +2558,7 @@ public class RequestServiceTest {
         HttpRequestEntitySaveRequest httpSaveRequest = generateRandomHttpRequestEntitySaveRequest();
 
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(response.getAllHeaders()).thenReturn(new Header[]{
                 new BasicHeader("Content-Type", "application/json")
         });
@@ -2570,12 +2576,12 @@ public class RequestServiceTest {
     public void testExecuteHttpRequest_responseContentTypeTextXML_shouldSendResponseWithXMLBodyType() throws Exception {
         // given
         CloseableHttpResponse responseWithCharset = mock(CloseableHttpResponse.class);
-        when(responseWithCharset.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(responseWithCharset)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(responseWithCharset.getAllHeaders()).thenReturn(new Header[]{
                 new BasicHeader("Content-Type", "text/xml;charset=utf-8")
         });
         CloseableHttpResponse responseWithoutCharset = mock(CloseableHttpResponse.class);
-        when(responseWithoutCharset.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(responseWithoutCharset)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(responseWithoutCharset.getAllHeaders()).thenReturn(new Header[]{
                 new BasicHeader("Content-Type", "text/xml")
         });
@@ -2613,7 +2619,7 @@ public class RequestServiceTest {
         CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
         when(httpClientService.get().getHttpClient(any(), any(), any(), any())).thenReturn(httpClient);
         when(httpClient.execute(any())).thenReturn(response);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(response.getAllHeaders()).thenReturn(new Header[]{
                 new BasicHeader("Content-Type", "application/json")
         });
@@ -2621,13 +2627,13 @@ public class RequestServiceTest {
                 RequestTestUtils.generateContext(), null, requestRuntimeOptions);
 
         // then
-        ArgumentCaptor<HttpEntityEnclosingRequestBase> requestCaptor =
-                ArgumentCaptor.forClass(HttpEntityEnclosingRequestBase.class);
+        ArgumentCaptor<HttpUriRequestBase> requestCaptor =
+                ArgumentCaptor.forClass(HttpUriRequestBase.class);
         verify(httpClient, times(1)).execute(requestCaptor.capture());
-        HttpEntityEnclosingRequestBase request = requestCaptor.getValue();
+        HttpUriRequestBase request = requestCaptor.getValue();
 
         assertEquals(httpSaveRequest.getUrl() + "?" + keyWithEncodedCharacters + "=" + valueWithEncodedCharacters,
-                request.getRequestLine().getUri());
+                new RequestLine(request).getUri());
     }
 
     @Test
@@ -2645,7 +2651,7 @@ public class RequestServiceTest {
         CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
         when(httpClientService.get().getHttpClient(any())).thenReturn(httpClient);
         when(httpClient.execute(any())).thenReturn(response);
-        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
+        when(new StatusLine(response)).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_0, 200, "OK"));
         when(response.getAllHeaders()).thenReturn(new Header[]{
                 new BasicHeader("Content-Type", "application/json")
         });
@@ -2814,7 +2820,7 @@ public class RequestServiceTest {
         requestExecution.setExecutedWhen(new Date(timeStamp));
         HttpRequestExecutionDetails details = new HttpRequestExecutionDetails(
                 requestExecution, request, response, null, null);
-        String expectedHeaderValue = String.format("attachment; filename=\"%s\"", "Request_with_spaces_" + timeStamp + ".json");
+        String expectedHeaderValue = "attachment; filename=\"%s\"".formatted("Request_with_spaces_" + timeStamp + ".json");
         // when
         when(detailsRepository.get().findByRequestExecutionByExecutionId(any())).thenReturn(Optional.of(details));
         requestService.get().writeResponseAsFile(UUID.randomUUID(), UUID.randomUUID(), responseMock);
@@ -2843,7 +2849,7 @@ public class RequestServiceTest {
         requestExecution.setExecutedWhen(new Date(timeStamp));
         HttpRequestExecutionDetails details = new HttpRequestExecutionDetails(
                 requestExecution, request, response, null, null);
-        String expectedHeaderValue = String.format("attachment; filename=\"%s\"", "Request_with_spaces_" + timeStamp + ".xlsx");
+        String expectedHeaderValue = "attachment; filename=\"%s\"".formatted("Request_with_spaces_" + timeStamp + ".xlsx");
         // when
         when(detailsRepository.get().findByRequestExecutionByExecutionId(any())).thenReturn(Optional.of(details));
         requestService.get().writeResponseAsFile(UUID.randomUUID(), UUID.randomUUID(), responseMock);

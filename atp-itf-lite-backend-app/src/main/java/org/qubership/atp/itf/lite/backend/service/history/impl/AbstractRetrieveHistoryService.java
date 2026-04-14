@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -29,8 +29,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.javers.core.Changes;
 import org.javers.core.ChangesByCommit;
 import org.javers.core.Javers;
@@ -57,6 +55,7 @@ import org.qubership.atp.itf.lite.backend.model.entities.AbstractNamedEntity;
 import org.qubership.atp.itf.lite.backend.model.entities.ObjectOperation;
 import org.qubership.atp.itf.lite.backend.service.history.iface.RetrieveHistoryService;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -83,16 +82,16 @@ public abstract class AbstractRetrieveHistoryService<S extends AbstractNamedEnti
      */
     public HistoryItemResponseDto getAllHistory(UUID id, Integer offset, Integer limit) {
 
-        log.debug(String.format("Get All History for entity = %s, offset = %s, limit = %s", id, offset, limit));
+        log.debug("Get All History for entity = %s, offset = %s, limit = %s".formatted(id, offset, limit));
 
         List<CdoSnapshot> snapshots = javers.findSnapshots(getSnapshotsByLimit(id, offset, limit));
-        log.debug(String.format("Snapshots found for entity = %s, snapshots = %s", id, snapshots));
+        log.debug("Snapshots found for entity = %s, snapshots = %s".formatted(id, snapshots));
 
         JqlQuery query = getChangesByIdPaginationQuery(id, snapshots.stream()
                 .map(snapshot -> snapshot.getCommitId().valueAsNumber()).collect(Collectors.toList()));
 
         Changes changes = javers.findChanges(query);
-        log.debug(String.format("Changes found for entity = %s,  changes = %s", id, changes.prettyPrint()));
+        log.debug("Changes found for entity = %s,  changes = %s".formatted(id, changes.prettyPrint()));
 
         List<ChangesByCommit> changesByCommits = changes.groupByCommit();
 
@@ -193,8 +192,8 @@ public abstract class AbstractRetrieveHistoryService<S extends AbstractNamedEnti
                 .stream()
                 .map(change -> {
                     if (!getEntityClass().getTypeName().equals(change.getAffectedGlobalId().getTypeName())
-                            && change instanceof ValueChange) {
-                        String propertyNameWithPath = ((ValueChange) change).getPropertyNameWithPath();
+                            && change instanceof ValueChange valueChange) {
+                        String propertyNameWithPath = valueChange.getPropertyNameWithPath();
                         return propertyNameWithPath.split("/")[0].split("\\.")[0];
                     } else {
                         return ((PropertyChange) change).getPropertyName();

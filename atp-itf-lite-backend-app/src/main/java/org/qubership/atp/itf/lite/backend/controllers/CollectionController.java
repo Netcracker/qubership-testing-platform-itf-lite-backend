@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ import static org.qubership.atp.itf.lite.backend.model.api.ApiPath.SERVICE_API_V
 import java.util.List;
 import java.util.UUID;
 
-import javax.validation.Valid;
-
 import org.qubership.atp.integration.configuration.configuration.AuditAction;
 import org.qubership.atp.itf.lite.backend.model.api.request.CollectionExecuteRequest;
 import org.qubership.atp.itf.lite.backend.model.api.request.ImportCollectionsRequest;
@@ -42,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController

@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package org.qubership.atp.itf.lite.backend.service.context;
 
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang3.StringUtils;
 import org.qubership.atp.auth.springbootstarter.entities.UserInfo;
 import org.qubership.atp.auth.springbootstarter.ssl.Provider;
@@ -27,6 +25,7 @@ import org.qubership.atp.itf.lite.backend.service.UserService;
 import org.qubership.atp.itf.lite.backend.utils.Constants;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 
 @Service

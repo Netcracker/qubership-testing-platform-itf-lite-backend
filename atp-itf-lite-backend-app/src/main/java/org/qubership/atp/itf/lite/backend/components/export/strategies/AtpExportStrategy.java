@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -67,8 +66,8 @@ public class AtpExportStrategy implements ExportStrategy {
 
     @Override
     public void export(ExportImportData exportData, Path path) {
-        exportFolders(exportData, Paths.get(path.toString(), Constants.FOLDERS));
-        exportRequests(exportData, Paths.get(path.toString(), Constants.REQUESTS));
+        exportFolders(exportData, Path.of(path.toString(), Constants.FOLDERS));
+        exportRequests(exportData, Path.of(path.toString(), Constants.REQUESTS));
     }
 
     @Override

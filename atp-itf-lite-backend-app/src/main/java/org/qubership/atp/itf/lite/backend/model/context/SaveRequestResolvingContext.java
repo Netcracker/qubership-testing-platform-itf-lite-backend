@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class SaveRequestResolvingContext {
                         .filter(c -> !CollectionUtils.isEmpty(c.getParameters()))
                         .forEach(c -> c.getParameters()
                                 .forEach((k, v) -> environmentVariables.put(
-                                        String.format("%s.%s.%s", s.getName(), c.getName(), k).toLowerCase(), v))));
+                                        "%s.%s.%s".formatted(s.getName(), c.getName(), k).toLowerCase(), v))));
         return environmentVariables;
     }
 

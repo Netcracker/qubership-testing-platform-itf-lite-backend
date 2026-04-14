@@ -154,7 +154,7 @@ public class RequestExecutionHistoryServiceTest {
                 () -> service.get().getExecutionHistoryDetailsByHistoryItemId(restHistoryItemId)
         );
         String requestExecutionEntityName = RequestExecution.class.getSimpleName();
-        String expectedErrorMessage = String.format(AtpEntityNotFoundException.DEFAULT_ID_MESSAGE, requestExecutionEntityName, restHistoryItemId);
+        String expectedErrorMessage = AtpEntityNotFoundException.DEFAULT_ID_MESSAGE.formatted(requestExecutionEntityName, restHistoryItemId);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 

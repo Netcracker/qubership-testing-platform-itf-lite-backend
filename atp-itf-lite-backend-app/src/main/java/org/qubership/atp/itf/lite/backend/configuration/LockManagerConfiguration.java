@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.qubership.atp.itf.lite.backend.configuration;
 
 import javax.sql.DataSource;
 
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -38,6 +39,7 @@ public class LockManagerConfiguration {
      * @return LockProvider
      */
     @Bean
+    @DependsOnDatabaseInitialization
     @Primary
     public JdbcTemplateLockProvider lockProvider() {
         JdbcTemplateLockProvider.Configuration configuration = JdbcTemplateLockProvider.Configuration.builder()

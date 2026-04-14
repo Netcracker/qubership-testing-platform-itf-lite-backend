@@ -137,7 +137,7 @@ public class FolderServiceTest {
 
         // then
         String folderEntityName = Folder.class.getSimpleName();
-        String expectedErrorMessage = String.format(AtpEntityNotFoundException.DEFAULT_ID_MESSAGE, folderEntityName, folderId);
+        String expectedErrorMessage = AtpEntityNotFoundException.DEFAULT_ID_MESSAGE.formatted(folderEntityName, folderId);
         assertEquals(expectedErrorMessage, exception.getMessage());
 
         verify(folderRepository.get()).findById(folderId);
@@ -326,7 +326,7 @@ public class FolderServiceTest {
                 () -> folderService.get().editFolder(folderId, request)
         );
         String folderEntityName = Folder.class.getSimpleName();
-        String expectedErrorMessage = String.format(AtpEntityNotFoundException.DEFAULT_ID_MESSAGE, folderEntityName, folderId);
+        String expectedErrorMessage = AtpEntityNotFoundException.DEFAULT_ID_MESSAGE.formatted(folderEntityName, folderId);
         assertEquals(expectedErrorMessage, exception.getMessage());
     }
 

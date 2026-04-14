@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-
 import org.qubership.atp.itf.lite.backend.dataaccess.repository.RequestSnapshotRepository;
 import org.qubership.atp.itf.lite.backend.enums.TransportType;
 import org.qubership.atp.itf.lite.backend.model.api.request.BulkDeleteSnapshotsRequest;
@@ -45,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -122,7 +121,7 @@ public class RequestSnapshotService {
     public RequestSnapshotResponse getSnapshot(UUID sessionId, UUID requestId) {
         Optional<RequestSnapshot> requestSnapshotOpt = repository.findById(new RequestSnapshotKey(sessionId,
                 requestId));
-        if (!requestSnapshotOpt.isPresent()) {
+        if (requestSnapshotOpt.isEmpty()) {
             return null;
         }
         RequestSnapshot requestSnapshot = requestSnapshotOpt.get();

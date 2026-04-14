@@ -61,7 +61,7 @@ public class RestoreHistoryServiceTest {
                 validateReferenceExistsServiceMock, modelMapper));
         folderRestoreHistoryService.set(new FolderRestoreHistoryService(javersMock, folderServiceMock,
                 validateReferenceExistsServiceMock, modelMapper));
-        hibernate.set(mockStatic(Hibernate.class));
+        hibernate.set();
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -28,6 +28,6 @@ public class AuthActionDuplicateSseException extends ItfLiteException {
     public static final String DEFAULT_MESSAGE = "Duplicate SSE ID #%s for 'Get access token'";
 
     public AuthActionDuplicateSseException(UUID sseId) {
-        super(String.format(DEFAULT_MESSAGE, sseId));
+        super(DEFAULT_MESSAGE.formatted(sseId));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.validation.Valid;
-
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.itf.lite.backend.exceptions.history.ItfLiteRevisionHistoryIncorrectTypeException;
 import org.qubership.atp.itf.lite.backend.feign.dto.history.CompareEntityResponseDto;
@@ -32,9 +30,9 @@ import org.qubership.atp.itf.lite.backend.service.history.impl.HistoryServiceFac
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,8 +48,7 @@ public class HistoryChangeController {
     /**
      * Get all history.
      */
-    @RequestMapping(
-            method = RequestMethod.GET,
+    @GetMapping(
             value = "/atp-itf-lite/api/v1/history/{projectId}/{itemType}/{id}",
             produces = { "application/json" }
     )
@@ -78,8 +75,7 @@ public class HistoryChangeController {
     /**
      * Get entities by version.
      */
-    @RequestMapping(
-            method = RequestMethod.GET,
+    @GetMapping(
             value = "/atp-itf-lite/api/v1/entityversioning/{projectId}/{itemType}/{id}",
             produces = { "application/json" }
     )
@@ -101,10 +97,7 @@ public class HistoryChangeController {
     /**
      * Restore to revision.
      */
-    @RequestMapping(
-            method = RequestMethod.POST,
-            value = "/atp-itf-lite/api/v1/history/restore/{projectId}/{itemType}/{id}/revision/{revisionId}"
-    )
+    @PostMapping("/atp-itf-lite/api/v1/history/restore/{projectId}/{itemType}/{id}/revision/{revisionId}")
     @PreAuthorize("@entityAccess.checkAccess(#itemType,#projectId,'UPDATE')")
     public ResponseEntity<Void> restoreToRevision(@PathVariable UUID projectId,
                                                   @PathVariable String itemType,

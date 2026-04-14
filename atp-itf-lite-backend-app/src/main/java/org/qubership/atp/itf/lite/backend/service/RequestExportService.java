@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -207,7 +207,7 @@ public class RequestExportService extends CrudService<RequestExportEntity> {
         sseEmitterService.sendEventWithExportResult(requestExportEntity.getSseId(),
                 sseEmitter, importToolType, exportResult);
         if (isExportFinished(requestExportEntity)) {
-            String message = String.format(ATP_EXPORT_FINISHED_TEMPLATE, importToolType.name(),
+            String message = ATP_EXPORT_FINISHED_TEMPLATE.formatted(importToolType.name(),
                     requestExportEntity.getDestination());
             Notification notification = new Notification(
                     message, Notification.Type.INFO, requestExportEntity.getUserId());

@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
@@ -29,14 +29,14 @@ public class ProjectEventKafkaListenerTest {
     private static ProjectEventKafkaListener eventListener = new ProjectEventKafkaListener();
     private UUID projectId;
 
-    @Before
+    @BeforeEach
     public void set() {
         projectId = UUID.randomUUID();
     }
 
     @AfterEach
     public void after() throws IOException {
-        File folder = new File(String.format(CertificateService.CERTIFICATE_FOLDER, projectId));
+        File folder = new File(CertificateService.CERTIFICATE_FOLDER.formatted(projectId));
         FileUtils.deleteDirectoryRecursively(folder.toPath());
     }
 
@@ -68,7 +68,7 @@ public class ProjectEventKafkaListenerTest {
     }
 
     private File createFolderAndCopyFile(UUID projectId) throws IOException{
-        File folder = new File(String.format(CertificateService.CERTIFICATE_FOLDER, projectId));
+        File folder = new File(CertificateService.CERTIFICATE_FOLDER.formatted(projectId));
         folder.mkdirs();
         File sourceFile = new File("./src/test/resources/identity.jks");
         File destinationFile = new File(folder.getAbsolutePath() + File.separator + "identity.jks");

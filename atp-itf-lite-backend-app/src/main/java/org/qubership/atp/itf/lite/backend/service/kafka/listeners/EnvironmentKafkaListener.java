@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.UUID;
 
 import org.qubership.atp.itf.lite.backend.configuration.KafkaConfiguration;
 import org.qubership.atp.itf.lite.backend.feign.service.EnvironmentFeignService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -37,7 +36,6 @@ public class EnvironmentKafkaListener {
 
     private final EnvironmentFeignService environmentFeignService;
 
-    @Autowired
     public EnvironmentKafkaListener(EnvironmentFeignService environmentFeignService) {
         this.environmentFeignService = environmentFeignService;
     }
@@ -48,7 +46,7 @@ public class EnvironmentKafkaListener {
             topics = "${kafka.environment.notification.topic}",
             containerFactory = KafkaConfiguration.ENVIRONMENT_KAFKA_CONTAINER_FACTORY_BEAN_NAME
     )
-    public void listenEnvironmentNotificationEvent(@Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) UUID environmentId) {
+    public void listenEnvironmentNotificationEvent(@Header(KafkaHeaders.RECEIVED_KEY) UUID environmentId) {
         environmentFeignService.evictEnvironmentSystemsCacheByEnvironmentId(environmentId);
     }
 }
