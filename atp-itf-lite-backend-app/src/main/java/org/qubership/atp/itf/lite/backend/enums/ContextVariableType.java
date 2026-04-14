@@ -16,7 +16,7 @@
 
 package org.qubership.atp.itf.lite.backend.enums;
 
-import org.springframework.util.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -62,10 +62,10 @@ public enum ContextVariableType {
      * @return ContextVariableType
      */
     public static ContextVariableType fromContextVariableKey(String key) {
-        if (!ObjectUtils.isEmpty(key)) {
+        if (!StringUtils.isEmpty(key)) {
             for (ContextVariableType contextVariableType : values()) {
                 String prefix = contextVariableType.getContextScope().getPrefix();
-                if (!ObjectUtils.isEmpty(prefix) && key.contains(prefix)) {
+                if (!StringUtils.isEmpty(prefix) && key.contains(prefix)) {
                     return contextVariableType;
                 }
             }

@@ -31,6 +31,7 @@ import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.itf.lite.backend.exceptions.cookie.IllegalCookieException;
@@ -39,7 +40,6 @@ import org.qubership.atp.itf.lite.backend.model.api.dto.CookieDto;
 import org.qubership.atp.itf.lite.backend.model.api.dto.CookiesDto;
 import org.qubership.atp.itf.lite.backend.model.api.dto.ResponseCookie;
 import org.qubership.atp.itf.lite.backend.model.entities.Cookie;
-import org.springframework.util.ObjectUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -118,7 +118,7 @@ public class CookieUtils {
         String valueCookie = cookie.getValue();
         if (cookie.getValue().toLowerCase().contains("domain")) {
             return valueCookie;
-        } else if (!ObjectUtils.isEmpty(cookie.getDomain())) {
+        } else if (!StringUtils.isEmpty(cookie.getDomain())) {
             return valueCookie + " Domain=" + cookie.getDomain() + ";";
         }
         return valueCookie;
@@ -129,12 +129,10 @@ public class CookieUtils {
      */
     public static List<Cookie> convertResponseCookieListToCookieList(List<ResponseCookie> responseCookieList) {
         List<Cookie> cookies = new ArrayList<>();
-        responseCookieList.forEach(responseCookie -> {
-            cookies.add(convertResponseCookieToCookie(responseCookie));
-        });
+        responseCookieList.forEach(responseCookie ->
+                cookies.add(convertResponseCookieToCookie(responseCookie)));
         return cookies;
     }
-
 
     /**
      * Converts {@link ResponseCookie} to {@link Cookie}.
@@ -154,7 +152,7 @@ public class CookieUtils {
      * @return list of parsed cookies
      */
     public static List<Cookie> parseCookieHeader(String domain, String headerValue) {
-        if (ObjectUtils.isEmpty(domain)) {
+        if (StringUtils.isEmpty(domain)) {
             log.error("Domain is null");
             throw new IllegalCookieException("Domain can not be null or empty");
         }
@@ -165,7 +163,7 @@ public class CookieUtils {
             Cookie newCookie = new Cookie();
             newCookie.setKey(parsedCookie.getName());
             newCookie.setValue(httpCookieToString(parsedCookie));
-            newCookie.setDomain(ObjectUtils.isEmpty(parsedCookie.getDomain()) ? domain : parsedCookie.getDomain());
+            newCookie.setDomain(StringUtils.isEmpty(parsedCookie.getDomain()) ? domain : parsedCookie.getDomain());
             cookies.add(newCookie);
         });
         return cookies;
@@ -205,13 +203,13 @@ public class CookieUtils {
         StringBuilder sb = new StringBuilder();
         sb.append(responseCookie.getName()).append('=').append(responseCookie.getValue());
 
-        if (!ObjectUtils.isEmpty(responseCookie.getDomain())) {
+        if (!StringUtils.isEmpty(responseCookie.getDomain())) {
             sb.append("; Domain=").append(responseCookie.getDomain());
         }
-        if (!ObjectUtils.isEmpty(responseCookie.getPath())) {
+        if (!StringUtils.isEmpty(responseCookie.getPath())) {
             sb.append("; Path=").append(responseCookie.getPath());
         }
-        if (!ObjectUtils.isEmpty(responseCookie.getExpires())) {
+        if (!StringUtils.isEmpty(responseCookie.getExpires())) {
             sb.append("; Expires=").append(responseCookie.getExpires());
         }
         if (responseCookie.isHttpOnly()) {
@@ -220,7 +218,6 @@ public class CookieUtils {
         if (responseCookie.isSecure()) {
             sb.append("; Secure");
         }
-
         return sb.toString();
     }
 
@@ -252,17 +249,17 @@ public class CookieUtils {
 
     private static String httpCookieToString(HttpCookie httpCookie) {
         StringJoiner sj = new StringJoiner("; ");
-        if (ObjectUtils.isEmpty(httpCookie.getName())) {
+        if (StringUtils.isEmpty(httpCookie.getName())) {
             log.error("Cookie name is empty");
             throw new IllegalCookieException("Cookie name can not be empty");
         }
         String value = httpCookie.getValue();
         sj.add("%s=%s".formatted(httpCookie.getName(), isNull(value) ? "" : value));
 
-        if (!ObjectUtils.isEmpty(httpCookie.getDomain())) {
+        if (!StringUtils.isEmpty(httpCookie.getDomain())) {
             sj.add("%s=%s".formatted(Constants.DOMAIN_KEY, httpCookie.getDomain()));
         }
-        if (!ObjectUtils.isEmpty(httpCookie.getPath())) {
+        if (!StringUtils.isEmpty(httpCookie.getPath())) {
             sj.add("%s=%s".formatted(Constants.PATH_KEY, httpCookie.getPath()));
         }
         if (httpCookie.getMaxAge() > -1) {
@@ -291,7 +288,7 @@ public class CookieUtils {
             ResponseCookie c = new ResponseCookie();
             c.setName(respCookie.getName());
             c.setValue(respCookie.getValue());
-            if (ObjectUtils.isEmpty(respCookie.getDomain())) {
+            if (StringUtils.isEmpty(respCookie.getDomain())) {
                 c.setDomain(requestDomain);
             } else {
                 c.setDomain(respCookie.getDomain());
@@ -323,10 +320,10 @@ public class CookieUtils {
         Map<String, Cookie> cookieMap = requestCookies
                 .stream()
                 .collect(Collectors.toMap(CookieUtils::getNameWithDomain, Function.identity()));
-        responseCookies.forEach(respCookie -> {
-            cookieMap.put(CookieUtils.getNameWithDomain(respCookie),
-                    CookieUtils.convertResponseCookieToCookie(respCookie));
-        });
+        responseCookies.forEach(respCookie ->
+                cookieMap.put(
+                        CookieUtils.getNameWithDomain(respCookie),
+                        CookieUtils.convertResponseCookieToCookie(respCookie)));
         return new ArrayList<>(cookieMap.values());
     }
 

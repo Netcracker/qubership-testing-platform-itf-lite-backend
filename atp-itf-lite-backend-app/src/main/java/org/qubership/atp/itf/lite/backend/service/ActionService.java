@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.qubership.atp.adapter.common.entities.Message;
 import org.qubership.atp.adapter.executor.executor.AtpRamWriter;
 import org.qubership.atp.itf.lite.backend.catalog.models.ActionEntity;
@@ -51,7 +52,6 @@ import org.qubership.atp.ram.enums.TestingStatuses;
 import org.qubership.atp.ram.enums.TypeAction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -271,7 +271,7 @@ public class ActionService {
         ContextEntity context = response.getContext();
         if (nonNull(context)) {
             String contextStr = context.getJsonString();
-            if (!ObjectUtils.isEmpty(contextStr)) {
+            if (!StringUtils.isEmpty(contextStr)) {
                 try {
                     return objectMapper.readValue(contextStr, new TypeReference<HashMap<String, Object>>() {});
                 } catch (JsonProcessingException ex) {

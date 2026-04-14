@@ -18,10 +18,10 @@ package org.qubership.atp.itf.lite.backend.model.api.request;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.qubership.atp.itf.lite.backend.annotations.SerializableCheckable;
 import org.qubership.atp.itf.lite.backend.enums.ContextVariableType;
 import org.qubership.atp.itf.lite.backend.feign.dto.ContextVariableDto;
-import org.springframework.util.ObjectUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,7 +44,7 @@ public class ContextVariable implements Serializable {
      */
     public ContextVariable(ContextVariableDto contextVariableDto) {
         this.key = contextVariableDto.getName();
-        this.value = ObjectUtils.isEmpty(contextVariableDto.getAfterValue())
+        this.value = StringUtils.isEmpty(contextVariableDto.getAfterValue())
                 ? contextVariableDto.getBeforeValue()
                 : contextVariableDto.getAfterValue();
         this.contextVariableType = ContextVariableType.fromContextVariableKey(contextVariableDto.getName());

@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.qubership.atp.itf.lite.backend.feign.dto.HeaderDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.PostmanPostmanRequestDto;
@@ -37,7 +38,6 @@ import org.qubership.atp.itf.lite.backend.model.entities.gridfs.FileData;
 import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
 import org.qubership.atp.itf.lite.backend.utils.RequestUtils;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -83,7 +83,7 @@ public class HttpRequestEntitySaveRequest extends RequestEntitySaveRequest {
                 h.setValue(evaluateFunction.apply(h.getValue()));
             });
         }
-        if (!Objects.isNull(body) && !ObjectUtils.isEmpty(body.getContent())) {
+        if (!Objects.isNull(body) && !StringUtils.isEmpty(body.getContent())) {
             body.setContent(evaluateFunction.apply(body.getContent()));
         }
     }
@@ -110,7 +110,7 @@ public class HttpRequestEntitySaveRequest extends RequestEntitySaveRequest {
 
     @Override
     public void normalize() {
-        this.url = ObjectUtils.isEmpty(this.url) ? this.url : this.url.trim();
+        this.url = StringUtils.isEmpty(this.url) ? this.url : this.url.trim();
     }
 
     /**
