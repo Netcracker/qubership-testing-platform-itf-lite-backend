@@ -24,18 +24,12 @@ public class HttpHead extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "HEAD";
 
-    public HttpHead() {
-    }
-
     public HttpHead(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpHead(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }

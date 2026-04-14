@@ -24,18 +24,12 @@ public class HttpLink extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "LINK";
 
-    public HttpLink() {
-    }
-
     public HttpLink(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpLink(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }

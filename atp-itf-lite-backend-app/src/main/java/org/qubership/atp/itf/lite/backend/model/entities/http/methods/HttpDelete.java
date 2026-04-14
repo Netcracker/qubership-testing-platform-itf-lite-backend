@@ -24,18 +24,12 @@ public class HttpDelete extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "DELETE";
 
-    public HttpDelete() {
-    }
-
     public HttpDelete(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpDelete(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }

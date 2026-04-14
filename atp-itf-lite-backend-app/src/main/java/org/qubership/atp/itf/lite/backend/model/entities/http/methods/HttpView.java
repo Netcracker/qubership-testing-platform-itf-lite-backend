@@ -24,18 +24,12 @@ public class HttpView extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "VIEW";
 
-    public HttpView() {
-    }
-
     public HttpView(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpView(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }

@@ -24,18 +24,12 @@ public class HttpUnlock extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "UNLOCK";
 
-    public HttpUnlock() {
-    }
-
     public HttpUnlock(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpUnlock(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }

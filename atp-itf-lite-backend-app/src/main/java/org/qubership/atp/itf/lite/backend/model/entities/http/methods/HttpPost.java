@@ -24,18 +24,12 @@ public class HttpPost extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "POST";
 
-    public HttpPost() {
-    }
-
     public HttpPost(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpPost(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }

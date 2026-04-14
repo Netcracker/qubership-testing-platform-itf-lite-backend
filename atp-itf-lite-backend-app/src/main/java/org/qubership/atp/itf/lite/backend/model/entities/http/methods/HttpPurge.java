@@ -24,18 +24,12 @@ public class HttpPurge extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "PURGE";
 
-    public HttpPurge() {
-    }
-
     public HttpPurge(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpPurge(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }

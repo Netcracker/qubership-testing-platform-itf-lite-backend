@@ -24,18 +24,12 @@ public class HttpGet extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "GET";
 
-    public HttpGet() {
-    }
-
     public HttpGet(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpGet(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }

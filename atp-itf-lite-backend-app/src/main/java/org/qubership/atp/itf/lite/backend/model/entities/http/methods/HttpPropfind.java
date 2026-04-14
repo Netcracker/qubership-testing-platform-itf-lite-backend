@@ -24,18 +24,12 @@ public class HttpPropfind extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "PROPFIND";
 
-    public HttpPropfind() {
-    }
-
     public HttpPropfind(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpPropfind(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }
