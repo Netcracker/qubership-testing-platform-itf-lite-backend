@@ -18,10 +18,13 @@ import jakarta.persistence.criteria.Root;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.qubership.atp.itf.lite.backend.model.entities.Request;
 import org.springframework.data.jpa.domain.Specification;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class RequestSpecificationServiceTest {
 
     private static final RequestSpecificationService requestSpecificationService = new RequestSpecificationService();
@@ -40,6 +43,7 @@ public class RequestSpecificationServiceTest {
         when(criteriaBuilder.equal(any(), any(Object.class))).thenReturn(mock(Predicate.class));
         when(criteriaBuilder.or(any())).thenReturn(mock(Predicate.class));
         when(criteriaBuilder.and(any())).thenReturn(expectedPredicateAnd);
+        when(criteriaBuilder.and(any(), any(), any())).thenReturn(expectedPredicateAnd);
         Specification<Request> expectedSpecification =
                 requestSpecificationService.generateSpecificationToFilterRequestsByProjectIdFolderIdsRequestIds(
                         projectId, folderIds, requestIds);
