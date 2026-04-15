@@ -17,7 +17,6 @@
 package org.qubership.atp.itf.lite.backend.model.api.request;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -169,7 +168,7 @@ public class HttpRequestEntitySaveRequest extends RequestEntitySaveRequest {
     private PostmanUrlDto generatePostmanUrlDto(String url, List<HttpParamSaveRequest> queryParams) {
         PostmanUrlDto postmanUrlDto = new PostmanUrlDto();
         try {
-            URL tmpUrl = URI.create(url).toURL();
+            URL tmpUrl = new URL(url);
             postmanUrlDto
                     .protocol(tmpUrl.getProtocol())
                     .host(Collections.singletonList(tmpUrl.getHost()))
