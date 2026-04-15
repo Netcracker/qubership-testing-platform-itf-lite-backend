@@ -49,7 +49,7 @@ public abstract class AbstractRequestRetrieveHistoryService<S extends Request, D
         if (folderId != null) {
             Folder parentFolder = null;
             try {
-                parentFolder = folderRepository.getReferenceById(folderId);
+                parentFolder = folderRepository.getOne(folderId);
             } catch (Exception e) {
                 log.error("Cannot get folder by folder id {}", folderId, e);
             }

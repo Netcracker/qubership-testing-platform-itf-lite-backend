@@ -68,7 +68,7 @@ public class FolderRetrieveHistoryService extends AbstractRetrieveHistoryService
         if (folder.getParentId() != null) {
             Folder parentFolder = null;
             try {
-                parentFolder = folderRepository.getReferenceById(folder.getParentId());
+                parentFolder = folderRepository.getOne(folder.getParentId());
             } finally {
                 resolvedEntity.setParentFolder(parentFolder == null
                         ? "Parent folder with ID #" + folder.getParentId() + " has been deleted"
