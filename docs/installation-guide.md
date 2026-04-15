@@ -1,6 +1,6 @@
 # Qubership ITF Lite Installation Guide
 
-## 3rd party dependencies
+## Third-party dependencies
 
 | Name       | Version | Mandatory/Optional | Comment                |
 |------------|---------|--------------------|------------------------|
@@ -66,11 +66,11 @@
 | `ATP_NOTIFICATION_MODE`                        | No        | kafka                                                                            | Type of notification mode                            |
 | `AUDIT_LOGGING_ENABLE`                         | No        | false                                                                            | Enable or Disable audit logging                      |
 | `AUDIT_LOGGING_TOPIC_NAME`                     | No        | dev04_audit_logging_topic                                                        | Audit logging Kafka topic name                       |
-| `AUDIT_LOGGING_TOPIC_PARTITIONS`               | No        | 1                                                                                | Audit logging Kafka topic partitions number         |
+| `AUDIT_LOGGING_TOPIC_PARTITIONS`               | No        | 1                                                                                | Audit logging Kafka topic partitions number          |
 | `AUDIT_LOGGING_TOPIC_REPLICAS`                 | No        | 3                                                                                | Audit logging Kafka replicas number                  |
-| `CLEANUP_COLLECTION_RUNS_CRON_EXPRESSION`      | No        | 0 0 0 * * ?                                                                      | CRON expression for collection runs cleanup job      |
-| `CLEANUP_COOKIES_CRON_EXPRESSION`              | No        | 0 0 * * * *                                                                      | CRON expression for cookies cleanup job              |
-| `CLEANUP_SNAPSHOTS_CRON_EXPRESSION`            | No        | 0 0 0 * * ?                                                                      | CRON expression for snapshots cleanup job            |
+| `CLEANUP_COLLECTION_RUNS_CRON_EXPRESSION`      | No        | `0 0 0 * * ?`                                                                    | CRON expression for collection runs cleanup job      |
+| `CLEANUP_COOKIES_CRON_EXPRESSION`              | No        | `0 0 * * * *`                                                                    | CRON expression for cookies cleanup job              |
+| `CLEANUP_SNAPSHOTS_CRON_EXPRESSION`            | No        | `0 0 0 * * ?`                                                                    | CRON expression for snapshots cleanup job            |
 | `CLEANUP_SNAPSHOTS_EXPIRATION_PERIOD_SECONDS`  | No        | 86400                                                                            | Cleanup job configuration                            |
 | `COLLECTION_RUNS_REMOVE_DAYS`                  | No        | 1                                                                                | Cleanup period in days for collection runs           |
 | `CONNECTIONS_PER_HOST`                         | No        | 100                                                                              | Limit of connection per host                         |
@@ -78,7 +78,7 @@
 | `CONSUL_HEALTH_CHECK_ENABLED`                  | No        | false                                                                            | Enable or disable Consul healthcheck                 |
 | `CONSUL_PORT`                                  | No        | 8500                                                                             | Consul port number                                   |
 | `CONSUL_PREFIX`                                | No        | devci                                                                            | Consul prefix value                                  |
-| `CONTENT_SECURITY_POLICY`                      | No        | default-src 'self                                                                | Security policy settings for frontend                |
+| `CONTENT_SECURITY_POLICY`                      | No        | `default-src 'self'`                                                             | Security policy settings for frontend                |
 | `EI_CLEAN_JOB_ENABLED`                         | No        | true                                                                             | Enable or disable export and import job              |
 | `EI_CLEAN_JOB_FILE_DELETE_AFTER_MS`            | No        | 172800000                                                                        | Export and import file delete period in milliseconds |
 | `EI_CLEAN_JOB_WORKDIR`                         | No        | exportimport/node                                                                | Export and import cleanup job work directory         |
@@ -108,7 +108,7 @@
 | `FEIGN_ATP_RAM_ROUTE`                          | No        | api/atp-ram/v1                                                                   | Feign RAM client route                               |
 | `FEIGN_ATP_USERS_NAME`                         | No        | ATP-USERS-BACKEND                                                                | Feign Users client name                              |
 | `FEIGN_ATP_USERS_ROUTE`                        | No        | api/atp-users-backend/v1                                                         | Feign Users client route                             |
-| `GET_ACCESS_TOKEN_RETENTION_CRON_EXPRESSION`   | No        | 0 30 2 ? * *                                                                     | CRON expression for access token retention           |
+| `GET_ACCESS_TOKEN_RETENTION_CRON_EXPRESSION`   | No        | `0 30 2 ? * *`                                                                   | CRON expression for access token retention           |
 | `GRAYLOG_HOST`                                 | No        | tcp:graylog01cn.com                                                              | Graylog log host address                             |
 | `GRAYLOG_ON`                                   | No        | true                                                                             | Enable or disable Graylog integration                |
 | `GRAYLOG_PORT`                                 | No        | 12204                                                                            | Graylog port value                                   |
@@ -121,13 +121,13 @@
 | `HAZELCAST_CLIENT_ENABLED`                     | No        | false                                                                            | Enable or disable Hazelcast client integration       |
 | `HAZELCAST_CLUSTER_NAME`                       | No        | atp-hc                                                                           | Hazelcast cluster name                               |
 | `HAZELCAST_SERVER_ENABLED`                     | No        | false                                                                            | Enable or disable Hazelcast server integration       |
-| `HISTORY_CLEAN_JOB_EXPRESSION`                 | No        | 0 10 0 * * ?                                                                     | Cleanup job expression fo History                    |
+| `HISTORY_CLEAN_JOB_EXPRESSION`                 | No        | `0 10 0 * * ?`                                                                   | Cleanup job expression fo History                    |
 | `HISTORY_CLEAN_JOB_PAGE_SIZE`                  | No        | 100                                                                              | History cleanup job page size                        |
 | `HISTORY_CLEAN_JOB_REVISION_MAX_COUNT`         | No        | 100                                                                              | History cleanup job revision max count               |
-| `HISTORY_RETENTION_CRON_EXPRESSION`            | No        | 0 0 2 ? * *                                                                      | History retention CRON expression                    |
+| `HISTORY_RETENTION_CRON_EXPRESSION`            | No        | `0 0 2 ? * *`                                                                    | History retention CRON expression                    |
 | `HISTORY_RETENTION_IN_DAYS`                    | No        | 14                                                                               | History retention period in days                     |
 | `ITF_LITE_CLEAN_CACHED_FILES`                  | No        | 3600                                                                             | Cleanup job period for cached files in seconds       |
-| `JAVA_OPTIONS`                                 | No        | -Dcom.sun.management.jmxremote=true ...                                          | Java command line options                            |
+| `JAVA_OPTIONS`                                 | No        | `-Dcom.sun.management.jmxremote=true ...`                                        | Java command line options                            |
 | `JAVERS_ENABLED`                               | No        | false                                                                            | Enable or disable Javers integration                 |
 | `KAFKA_CATALOG_GROUP`                          | No        | dev04_catalog_notification_group                                                 | Kafka catalog group name                             |
 | `KAFKA_CATALOG_TOPIC`                          | No        | dev04_catalog_notification_topic                                                 | Kafka catalog topic name                             |
@@ -143,7 +143,7 @@
 | `MAX_CONNECTION_IDLE_TIME`                     | No        | 0                                                                                | Service max connection idle time                     |
 | `MAX_RAM`                                      | No        | 1024m                                                                            | Memory usage limit                                   |
 | `MICROSERVICE_NAME`                            | No        | atp-itf-lite-backend                                                             | Service system name                                  |
-| `MIN_CONNECTIONS_PER_HOST`                     | No        | 40                                                                               | Minimum connections per host name                    |
+| `MIN_CONNECTIONS_PER_HOST`                     | No        | 40                                                                               | Minimum connections per hostname                     |
 | `PG_DB_ADDR`                                   | Yes       | pg-patroni.postgrescluster.svc                                                   | Postgres database host address                       |
 | `PG_DB_PORT`                                   | Yes       | 5432                                                                             | Postgres database port number                        |
 | `PROFILER_ENABLED`                             | No        | false                                                                            | Enable or disable profiler                           |
@@ -168,7 +168,7 @@
 
 ## How to deploy tool
 
-1. Build snapshot (artifacts and docker image) of https://github.com/Netcracker/qubership-testing-platform-itf-lite-backend in GitHub
+1. Build snapshot (artifacts and Docker image) of [Itf-lite-backend repository](https://github.com/Netcracker/qubership-testing-platform-itf-lite-backend) in GitHub
 2. Clone repository to a place, available from your openshift/kubernetes where you need to deploy the tool to
 3. Navigate to <repository-root>/deployments/charts/atp-itf-lite-backend folder
 4. Check/change configuration parameters in the ./values.yaml file according to your services installed
