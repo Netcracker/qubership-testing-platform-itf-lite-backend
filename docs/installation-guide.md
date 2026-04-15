@@ -153,7 +153,7 @@
 | `SERVICE_ENTITIES_MIGRATION_ENABLED`           | No        | true                                                                             | Enable or disable entities migration                 |
 | `SERVICE_NAME`                                 | No        | atp-itf-lite-backend                                                             | Service system name                                  |
 | `SERVICE_REGISTRY_URL`                         | No        | url-to-registry-service/eureka                                                   | Service registry endpoint URL                        |
-| `SPRING_PROFILES`                              | No        | default                                                                          | Spring active profiles                               |
+| `ACTIVE_PROFILES_SPRING`                       | No        | default                                                                          | Spring active profiles                               |
 | `SWAGGER_ENABLED`                              | No        | false                                                                            | Enable or disable Swagger integration                |
 | `ZIPKIN_ENABLE`                                | No        | true                                                                             | Enable or disable Zipkin distributed tracing         |
 | `ZIPKIN_PROBABILITY`                           | No        | 1.0                                                                              | Zipkin probability level                             |
