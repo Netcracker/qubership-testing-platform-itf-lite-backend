@@ -20,7 +20,6 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
 
         <spring.boot.version>3.3.13</spring.boot.version>
         <spring.cloud.version>2023.0.6</spring.cloud.version>
@@ -33,24 +32,26 @@
         <atp.crypt.version>1.0.0-SNAPSHOT</atp.crypt.version>
         <atp.integration.version>1.0.0-SNAPSHOT</atp.integration.version>
 
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <javers.version>7.9.0</javers.version>
+        <lombok.version>1.18.44</lombok.version>
+        <logback.version>1.5.32</logback.version>
+        <undertow.version>2.3.21.Final</undertow.version>
+
         <atp.catalog.version>1.4.192</atp.catalog.version> <!-- To remember catalog specification version-->
         <atp.ram.version>2.2.205</atp.ram.version> <!-- To remember ram specification version-->
 
         <logstash.gelf.version>1.14.1</logstash.gelf.version>
         <google.guava.version>32.0.1-jre</google.guava.version>
         <gson.version>2.10.1</gson.version>
-        <javers.version>6.6.4</javers.version>
         <apache.tika.core.version>3.2.2</apache.tika.core.version>
         <byte-buddy.version>1.17.8</byte-buddy.version>
         <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
         <spotbugs.maven.plugin.version>4.7.3.0</spotbugs.maven.plugin.version>
-        <lombok.version>1.18.30</lombok.version>
-        <logback.version>1.2.13</logback.version>
         <jboss.xnio.version>3.8.14.Final</jboss.xnio.version>
         <hazelcast.version>5.3.5</hazelcast.version>
         <apache.poi.version>3.17</apache.poi.version>
-        <tomcat.embed.version>9.0.110</tomcat.embed.version>
-        <undertow.version>2.3.21.Final</undertow.version>
+        <!--<tomcat.embed.version>10.0.52</tomcat.embed.version>-->
     </properties>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -246,7 +247,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
-                <version>2.15.0</version>
+                <version>2.18.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -263,12 +264,12 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-codec-http2</artifactId>
-                <version>4.1.124.Final</version>
+                <version>4.1.125.Final</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-handler</artifactId>
-                <version>4.1.118.Final</version>
+                <version>4.1.125.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -567,7 +568,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.44</version>
+                <version>${lombok.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
@@ -577,7 +578,7 @@
             <dependency>
                 <groupId>io.github.openfeign</groupId>
                 <artifactId>feign-okhttp</artifactId>
-                <version>11.10</version>
+                <version>13.5</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
@@ -592,12 +593,12 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
-                <version>1.2.13</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.13</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>
@@ -615,7 +616,7 @@
                 <artifactId>lz4-java</artifactId>
                 <version>1.10.1</version>
             </dependency>
-            <dependency>
+            <!--<dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-el</artifactId>
                 <version>${tomcat.embed.version}</version>
@@ -624,7 +625,7 @@
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-websocket</artifactId>
                 <version>${tomcat.embed.version}</version>
-            </dependency>
+            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
