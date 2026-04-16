@@ -55,6 +55,7 @@
 
         <httpclient5.version>5.4.4</httpclient5.version>
         <httpcore5.version>5.3.4</httpcore5.version>
+        <hibernate.version>6.5.3.Final</hibernate.version>
     </properties>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -649,6 +650,11 @@
                 <groupId>org.apache.httpcomponents.core5</groupId>
                 <artifactId>httpcore5-h2</artifactId>
                 <version>${httpcore5.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
