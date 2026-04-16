@@ -89,7 +89,12 @@ spec:
             cp -rv /atp/* /shared/
             mkdir -pv /shared/lib
             # Full runtime lib/ for KeyPairGenerator (atp-crypt + transitives). A narrow jar whitelist breaks after dependency upgrades.
-            find /atp-itf-lite/lib -maxdepth 1 -type f -name '*.jar' -exec cp -v {} /shared/lib/ \;
+            # Omit legacy bcprov-jdk15on when jdk18on is present — two bcprov jars on one classpath often breaks BouncyCastle provider init.
+            if ls /atp-itf-lite/lib/bcprov-jdk18on-*.jar >/dev/null 2>&1; then
+              find /atp-itf-lite/lib -maxdepth 1 -type f -name '*.jar' ! -name 'bcprov-jdk15on-*.jar' -exec cp -v {} /shared/lib/ \;
+            else
+              find /atp-itf-lite/lib -maxdepth 1 -type f -name '*.jar' -exec cp -v {} /shared/lib/ \;
+            fi
         resources:
           requests:
             memory: '{{ .Values.PRE_POST_MEMORY_REQUEST }}'

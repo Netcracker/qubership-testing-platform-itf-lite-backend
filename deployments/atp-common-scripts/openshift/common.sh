@@ -110,7 +110,16 @@ check_aes_secret() {
     AES_KEY="$(${cloud_client} get secret atp-crypto-secrets -o json | jq -r '.data.AES_KEY | @base64d')"
   else
     echo "* AES key is absent, generating a new one"
-    AES_KEY="$(extract_key "key")"
+    if ! command -v java >/dev/null 2>&1; then
+      panic "java is not on PATH. ENCRYPT=secrets requires a JVM in the pre-deploy job image (HELPER_IMAGE)."
+    fi
+    _crypt_raw="$(atp_crypt)"
+    AES_KEY="$(extract_key "key" "${_crypt_raw}")"
+    [ -z "${AES_KEY}" ] && AES_KEY="$(extract_key "aesKey" "${_crypt_raw}")"
+    [ -z "${AES_KEY}" ] && AES_KEY="$(extract_key "AES_KEY" "${_crypt_raw}")"
+    if [ -z "${AES_KEY}" ]; then
+      panic "KeyPairGenerator did not print key=/aesKey=/AES_KEY= line. java: $(command -v java). Raw output (first 80 lines):" "$(echo "${_crypt_raw}" | head -n 80)"
+    fi
     recreate "secret" "atp-crypto-secrets" "--from-literal=AES_KEY=${AES_KEY:?}"
   fi
 }
@@ -124,7 +133,16 @@ check_vault_secret() {
   _key="$(get_vault "${_ep}" | jq -r ".data.aes_key")"
   if is_null "${_key}"; then
     echo "* AES key is absent, generating a new one"
-    AES_KEY="$(extract_key "key")"
+    if ! command -v java >/dev/null 2>&1; then
+      panic "java is not on PATH. ENCRYPT=vault requires a JVM in the pre-deploy job image (HELPER_IMAGE)."
+    fi
+    _crypt_raw="$(atp_crypt)"
+    AES_KEY="$(extract_key "key" "${_crypt_raw}")"
+    [ -z "${AES_KEY}" ] && AES_KEY="$(extract_key "aesKey" "${_crypt_raw}")"
+    [ -z "${AES_KEY}" ] && AES_KEY="$(extract_key "AES_KEY" "${_crypt_raw}")"
+    if [ -z "${AES_KEY}" ]; then
+      panic "KeyPairGenerator did not print key=/aesKey=/AES_KEY= line. java: $(command -v java). Raw output (first 80 lines):" "$(echo "${_crypt_raw}" | head -n 80)"
+    fi
     post_vault "${_ep}" "{\"aes_key\":\"${AES_KEY:?}\"}"
   else
     echo "* AES key exists, using current"
@@ -142,7 +160,16 @@ check_aes_file() {
     AES_KEY="$(cat "${_kp}")"
   else
     echo "* Key is absent, creating a new one"
-    AES_KEY="$(extract_key "key")"
+    if ! command -v java >/dev/null 2>&1; then
+      panic "java is not on PATH. ENCRYPT=compose requires a JVM where this script runs."
+    fi
+    _crypt_raw="$(atp_crypt)"
+    AES_KEY="$(extract_key "key" "${_crypt_raw}")"
+    [ -z "${AES_KEY}" ] && AES_KEY="$(extract_key "aesKey" "${_crypt_raw}")"
+    [ -z "${AES_KEY}" ] && AES_KEY="$(extract_key "AES_KEY" "${_crypt_raw}")"
+    if [ -z "${AES_KEY}" ]; then
+      panic "KeyPairGenerator did not print key=/aesKey=/AES_KEY= line. java: $(command -v java). Raw output (first 80 lines):" "$(echo "${_crypt_raw}" | head -n 80)"
+    fi
     echo "${AES_KEY:?Empty Key}" >"${_kp}"
     chmod 600 "${_kp}"
   fi
