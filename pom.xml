@@ -52,6 +52,9 @@
         <hazelcast.version>5.3.5</hazelcast.version>
         <apache.poi.version>3.17</apache.poi.version>
         <!--<tomcat.embed.version>10.0.52</tomcat.embed.version>-->
+
+        <httpclient5.version>5.4.4</httpclient5.version>
+        <httpcore5.version>5.3.4</httpcore5.version>
     </properties>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -626,6 +629,27 @@
                 <artifactId>tomcat-embed-websocket</artifactId>
                 <version>${tomcat.embed.version}</version>
             </dependency>-->
+
+            <dependency>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>${httpclient5.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpclient5-fluent</artifactId>
+                <version>${httpclient5.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpcore5</artifactId>
+                <version>${httpcore5.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpcore5-h2</artifactId>
+                <version>${httpcore5.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
