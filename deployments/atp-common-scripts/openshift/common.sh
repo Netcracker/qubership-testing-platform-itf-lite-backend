@@ -58,7 +58,9 @@ atp_crypt() {
     _img="$(docker-compose config --images 2>/dev/null | head -n1)"
     _cmd="docker run --rm --entrypoint=/bin/sh ${_img}"
   fi
-  ${_cmd:-sh} -c "java -cp \"./lib/*\" org.qubership.atp.crypt.KeyPairGenerator ${1} 2>/dev/null"
+  # Merge stderr into stdout: newer atp-crypt / SLF4J may print key material or errors on stderr;
+  # extract_key only greps the combined stream (2>/dev/null would drop key= on stderr).
+  ${_cmd:-sh} -c "java -cp \"./lib/*\" org.qubership.atp.crypt.KeyPairGenerator ${1} 2>&1"
 }
 
 # Extract value by given key from atp_crypt output
