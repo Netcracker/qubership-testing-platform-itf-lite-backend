@@ -88,7 +88,8 @@ spec:
             echo "=> Copying scripts to shared folder ..."
             cp -rv /atp/* /shared/
             mkdir -pv /shared/lib
-            find . -type f -regex '.*/lib/\(atp-crypt\|slf4j-api\|bcprov\|commons-lang\|commons-lang3\)-.*\.jar$' -exec cp -v "{}" /shared/lib/ \;
+            # Full runtime lib/ for KeyPairGenerator (atp-crypt + transitives). A narrow jar whitelist breaks after dependency upgrades.
+            find /atp-itf-lite/lib -maxdepth 1 -type f -name '*.jar' -exec cp -v {} /shared/lib/ \;
         resources:
           requests:
             memory: '{{ .Values.PRE_POST_MEMORY_REQUEST }}'
