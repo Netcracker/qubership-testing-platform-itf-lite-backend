@@ -10,7 +10,8 @@ PG_DB_ADDR: "my-postgres-postgresql"
 # Spring profile for security
 ACTIVE_PROFILES_SPRING: "disable-security"
 keepHookLogs: true
-HELPER_IMAGE: "ghcr.io/netcracker/qubership-testing-platform-helm-hook-helper:main_latest"
+# HELPER_IMAGE: "ghcr.io/netcracker/qubership-testing-platform-helm-hook-helper:main_latest"
+HELPER_IMAGE: "ghcr.io/netcracker/qubership-testing-platform-helm-hook-helper:test-2-20260416062140"
 CONTENT_SECURITY_POLICY: "*"
 pg_pass: "postgrestest"
 pg_user: "postgres"
@@ -21,4 +22,5 @@ EI_GRIDFS_ENABLED: "false"
 SERVICE_ENTITIES_MIGRATION_ENABLED: "false"
 GRIDFS_DB_ADDR: "my-mongodb"
 KAFKA_SERVERS: "kafka.lite.svc.cluster.local:9092"
-ENCRYPT: "dev"
+# ENCRYPT: "dev" to avoid crypt during pre-deploy
+ENCRYPT: "secrets"
