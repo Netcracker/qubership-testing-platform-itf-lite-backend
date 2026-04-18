@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -32,14 +32,8 @@ public class HttpRequestConfiguration {
      */
     @Bean
     public ItfLiteHttpRequestInterceptor itfLiteHttpRequestInterceptor(Oauth2FeignClientInterceptor oauthInterceptor) {
-
         ItfLiteHttpRequestInterceptor httpRequestInterceptor = new ItfLiteHttpRequestInterceptor(oauthInterceptor);
-
-        // Commented temporarily,
-        // because qubership-atp-adapter-common library should be migrated to httpclient5 too
-        /*
         RequestUtils.registerHttpInterceptor(httpRequestInterceptor);
-         */
         return httpRequestInterceptor;
     }
 }

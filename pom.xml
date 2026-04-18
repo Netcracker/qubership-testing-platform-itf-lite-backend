@@ -27,7 +27,7 @@
         <atp.auth.version>2.0.2-SNAPSHOT</atp.auth.version>
         <atp.ei.lib.node>1.0.0-SNAPSHOT</atp.ei.lib.node>
         <atp.macros.core.version>2.0.0-SNAPSHOT</atp.macros.core.version>
-        <atp.adapter.robot.version>4.5.71</atp.adapter.robot.version>
+        <atp.adapter.robot.version>5.0.0-SNAPSHOT</atp.adapter.robot.version>
         <atp.common.version>1.0.0-SNAPSHOT</atp.common.version>
         <atp.crypt.version>1.0.0-SNAPSHOT</atp.crypt.version>
         <atp.integration.version>1.0.0-SNAPSHOT</atp.integration.version>
