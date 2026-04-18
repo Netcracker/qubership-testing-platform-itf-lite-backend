@@ -637,7 +637,7 @@
                 <version>${httpclient5.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.httpcomponents.core5</groupId>
+                <groupId>org.apache.httpcomponents.client5</groupId>
                 <artifactId>httpclient5-fluent</artifactId>
                 <version>${httpclient5.version}</version>
             </dependency>
