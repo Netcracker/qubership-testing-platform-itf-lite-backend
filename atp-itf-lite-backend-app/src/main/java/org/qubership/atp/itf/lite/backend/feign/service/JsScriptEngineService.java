@@ -216,7 +216,8 @@ public class JsScriptEngineService {
         return errorMessageFromJson;
     }
 
-    private Map<String, Object> generateContext(ContextType type, Map<String, Object> originContext) {
+    private Map<String, Object> generateContext(ContextType type,
+                                                Map<String, Object> originContext) throws AtpDecryptException {
         Map<String, Object> targetContext = new HashMap<>();
         for (Map.Entry<String, Object> c: originContext.entrySet()) {
             if (Objects.nonNull(c.getValue()) && encryptionService.isEncrypted(c.getValue().toString())) {

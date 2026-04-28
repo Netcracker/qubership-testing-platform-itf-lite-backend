@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +55,8 @@ public class JsScriptEngineServiceTest {
     @InjectMocks
     JsScriptEngineService scriptService;
 
+    private final static String LOCAL_URL = "http://localhost:8080/path";
+
     @Test
     public void evaluatePreScriptTest() throws IOException, AtpDecryptException, AtpEncryptException {
         setupMockBooksResponse("JsScriptEngine/preResponse.json");
@@ -84,34 +85,33 @@ public class JsScriptEngineServiceTest {
         request.setName("test");
         request.setHttpMethod(HttpMethod.GET);
         request.setBody(new RequestBody("test", RequestBodyType.JSON));
-        request.setUrl("http://localohst:8080/path?query_1=q_value_1");
-        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setUrl(LOCAL_URL + "?query_1=q_value_1");
+        request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
         request.setRequestParams(Collections.singletonList(new HttpParamSaveRequest("query_2", "q_value_2", "")));
         request.setRequestHeaders(new ArrayList<HttpHeaderSaveRequest>(){{
             add(new HttpHeaderSaveRequest("header_1", "h_value_1", ""));
         }});
 
         SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder()
-                .globals(new HashMap<String, Object>(){{
+                .globals(new HashMap<>() {{
                     put("ITF_LITE_GLOBALS_TEST", "globals");
                 }})
-                .collectionVariables(new HashMap<String, Object>(){{
+                .collectionVariables(new HashMap<>() {{
                     put("ITF_LITE_COLLECTIONVARIABLES_TEST", "collection");
                 }})
-                .environment(new HashMap<String, Object>(){{
+                .environment(new HashMap<>() {{
                     put("ITF_LITE_ENVIRONMENT_TEST", "environment");
                 }})
-                .iterationData(new HashMap<String, Object>(){{
+                .iterationData(new HashMap<>() {{
                     put("ITF_LITE_ITERATIONDATA_TEST", "data");
                 }})
-                .variables(new HashMap<String, Object>(){{
+                .variables(new HashMap<>() {{
                     put("TEST", "local");
                 }}).build();
 
-
-        request.setPreScripts(""
+        request.setPreScripts(
                 // change method
-                + "pm.request.method=\"POST\";\n"
+                "pm.request.method=\"POST\";\n"
                 // change request body
                 + "pm.request.body.raw=\"new body\";\n"
                 // add header
@@ -159,8 +159,8 @@ public class JsScriptEngineServiceTest {
         request.setId(UUID.randomUUID());
         request.setName("test");
         request.setHttpMethod(HttpMethod.GET);
-        request.setUrl("http://localohst:8080/path");
-        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setUrl(LOCAL_URL);
+        request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
         request.setPostScripts("pm.response.headers.append({key: \"key2\", value: \"value2\"})\n");
 
         RequestExecutionResponse response = new RequestExecutionResponse();
@@ -188,8 +188,8 @@ public class JsScriptEngineServiceTest {
         request.setId(UUID.randomUUID());
         request.setName("test");
         request.setHttpMethod(HttpMethod.GET);
-        request.setUrl("http://localohst:8080/path");
-        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setUrl(LOCAL_URL);
+        request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
 
         SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder().build();
 
@@ -202,8 +202,8 @@ public class JsScriptEngineServiceTest {
         request.setId(UUID.randomUUID());
         request.setName("test");
         request.setHttpMethod(HttpMethod.GET);
-        request.setUrl("http://localohst:8080/path");
-        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setUrl(LOCAL_URL);
+        request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
 
         SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder().build();
 
@@ -220,8 +220,8 @@ public class JsScriptEngineServiceTest {
         request.setId(UUID.randomUUID());
         request.setName("test");
         request.setHttpMethod(HttpMethod.GET);
-        request.setUrl("http://localohst:8080/path");
-        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setUrl(LOCAL_URL);
+        request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
         request.setPreScripts("pm.response.headers.append({key: \"key2\", value: \"value2\"})\n");
 
         SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder().build();
@@ -230,8 +230,8 @@ public class JsScriptEngineServiceTest {
                 scriptService.evaluateRequestPreScript(request, resolvingContext);
         List<PostmanExecuteScriptResponseTestResultsInnerDto> testResults = executionResults.getTestResults();
         Assertions.assertEquals(1, testResults.size());
-        Assertions.assertEquals("JS SCRIPT NOT AVAILABLE", testResults.get(0).getName());
-        Assertions.assertEquals("JS NOT FOUND", testResults.get(0).getError().getMessage());
+        Assertions.assertEquals("JS SCRIPT NOT AVAILABLE", testResults.getFirst().getName());
+        Assertions.assertEquals("JS NOT FOUND", testResults.getFirst().getError().getMessage());
     }
 
     @Test
@@ -249,8 +249,8 @@ public class JsScriptEngineServiceTest {
         request.setId(UUID.randomUUID());
         request.setName("test");
         request.setHttpMethod(HttpMethod.GET);
-        request.setUrl("http://localohst:8080/path");
-        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setUrl(LOCAL_URL);
+        request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
         request.setPreScripts("pm.response.headers.append({key: \"key2\", value: \"value2\"})\n");
 
         SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder().build();
@@ -259,9 +259,9 @@ public class JsScriptEngineServiceTest {
                 scriptService.evaluateRequestPreScript(request, resolvingContext);
         List<PostmanExecuteScriptResponseTestResultsInnerDto> testResults = executionResults.getTestResults();
         Assertions.assertEquals(1, testResults.size());
-        Assertions.assertEquals("[FEIGN] EXECUTE JS SCRIPT", testResults.get(0).getName());
+        Assertions.assertEquals("[FEIGN] EXECUTE JS SCRIPT", testResults.getFirst().getName());
         Assertions.assertEquals("500 pm.request.addHeaders is not a function",
-                testResults.get(0).getError().getMessage());
+                testResults.getFirst().getError().getMessage());
     }
 
     @Test
@@ -279,8 +279,8 @@ public class JsScriptEngineServiceTest {
         request.setId(UUID.randomUUID());
         request.setName("test");
         request.setHttpMethod(HttpMethod.GET);
-        request.setUrl("http://localohst:8080/path");
-        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setUrl(LOCAL_URL);
+        request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
         request.setPreScripts("pm.response.headers.append({key: \"key2\", value: \"value2\"})\n");
 
         SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder().build();
@@ -289,11 +289,11 @@ public class JsScriptEngineServiceTest {
                 scriptService.evaluateRequestPreScript(request, resolvingContext);
         List<PostmanExecuteScriptResponseTestResultsInnerDto> testResults = executionResults.getTestResults();
         Assertions.assertEquals(1, testResults.size());
-        Assertions.assertEquals("[FEIGN] EXECUTE JS SCRIPT", testResults.get(0).getName());
+        Assertions.assertEquals("[FEIGN] EXECUTE JS SCRIPT", testResults.getFirst().getName());
         Assertions.assertEquals("503 unavailable",
-                testResults.get(0).getError().getMessage());
+                testResults.getFirst().getError().getMessage());
         Assertions.assertEquals(HttpResponseExceptionTypeEnum.UNAVAILABLE_EXCEPTION,
-                testResults.get(0).getError().getHttpResponseExceptionType());
+                testResults.getFirst().getError().getHttpResponseExceptionType());
     }
 
     @Test
@@ -311,8 +311,8 @@ public class JsScriptEngineServiceTest {
         request.setId(UUID.randomUUID());
         request.setName("test");
         request.setHttpMethod(HttpMethod.GET);
-        request.setUrl("http://localohst:8080/path");
-        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setUrl(LOCAL_URL);
+        request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
         request.setPreScripts("pm.response.headers.append({key: \"key2\", value: \"value2\"})\n");
 
         SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder().build();
@@ -321,11 +321,11 @@ public class JsScriptEngineServiceTest {
                 scriptService.evaluateRequestPreScript(request, resolvingContext);
         List<PostmanExecuteScriptResponseTestResultsInnerDto> testResults = executionResults.getTestResults();
         Assertions.assertEquals(1, testResults.size());
-        Assertions.assertEquals("[FEIGN] EXECUTE JS SCRIPT", testResults.get(0).getName());
+        Assertions.assertEquals("[FEIGN] EXECUTE JS SCRIPT", testResults.getFirst().getName());
         Assertions.assertEquals("Failed to create postman sandbox context",
-                testResults.get(0).getError().getMessage());
+                testResults.getFirst().getError().getMessage());
         Assertions.assertEquals(HttpResponseExceptionTypeEnum.POSTMAN_SANDBOX_CONTEXT_EXCEPTION,
-                testResults.get(0).getError().getHttpResponseExceptionType());
+                testResults.getFirst().getError().getHttpResponseExceptionType());
     }
 
     @Test
@@ -337,8 +337,8 @@ public class JsScriptEngineServiceTest {
         request.setId(UUID.randomUUID());
         request.setName("test");
         request.setHttpMethod(HttpMethod.GET);
-        request.setUrl("http://localohst:8080/path");
-        request.setRequestHeaders(Arrays.asList(new HttpHeaderSaveRequest("header1", "value1", "", false)));
+        request.setUrl(LOCAL_URL);
+        request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
         request.setPreScripts("pm.response.headers.append({key: \"key2\", value: \"value2\"})\n");
 
         SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder().build();
@@ -347,8 +347,8 @@ public class JsScriptEngineServiceTest {
                 scriptService.evaluateRequestPreScript(request, resolvingContext);
         List<PostmanExecuteScriptResponseTestResultsInnerDto> testResults = executionResults.getTestResults();
         Assertions.assertEquals(1, testResults.size());
-        Assertions.assertEquals("[OTHER] EXECUTE JS SCRIPT", testResults.get(0).getName());
-        Assertions.assertEquals("request entity too large", testResults.get(0).getError().getMessage());
+        Assertions.assertEquals("[OTHER] EXECUTE JS SCRIPT", testResults.getFirst().getName());
+        Assertions.assertEquals("request entity too large", testResults.getFirst().getError().getMessage());
     }
 
     @Test
