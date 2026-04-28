@@ -163,7 +163,7 @@ public class HttpClientService {
                     In that case, request details are determined later than HttpClient is initialized.
                 */
                 if (StringUtils.isNotEmpty(requestUrl)) {
-                    String host = UriComponentsBuilder.fromHttpUrl(requestUrl).build().getHost();
+                    String host = UriComponentsBuilder.fromUriString(requestUrl).build().getHost();
                     if (enableSslCertificateVerification && !CollectionUtils.isEmpty(cert.getTrustStoreDomainNames())
                             && !matchesAnyOfDomainsArray(cert.getTrustStoreDomainNames(), host)) {
                         enableSslCertificateVerification = false;

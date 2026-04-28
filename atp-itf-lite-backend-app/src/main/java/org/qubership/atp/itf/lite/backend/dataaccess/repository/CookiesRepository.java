@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import org.qubership.atp.itf.lite.backend.model.entities.Cookie;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.NativeQuery;
 
 public interface CookiesRepository extends JpaRepository<Cookie, UUID> {
 
@@ -36,9 +36,8 @@ public interface CookiesRepository extends JpaRepository<Cookie, UUID> {
 
     List<Cookie> findAllByUserIdAndProjectId(UUID userId, UUID projectId);
 
-    @Query(value = "select * from cookies "
-            + "where execution_request_id = ?1 and (test_run_id = ?2 or test_run_id is null)",
-            nativeQuery = true)
+    @NativeQuery("select * from cookies "
+            + "where execution_request_id = ?1 and (test_run_id = ?2 or test_run_id is null)")
     List<Cookie> findAllByExecutionRequestIdAndTestRunIdOrTestRunIdIsNull(UUID executionRequestId,
                                                                           UUID testRunId);
 }

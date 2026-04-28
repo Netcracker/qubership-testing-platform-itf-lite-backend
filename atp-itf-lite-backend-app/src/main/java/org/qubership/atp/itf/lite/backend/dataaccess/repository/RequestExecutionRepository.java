@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -23,21 +23,22 @@ import java.util.UUID;
 import org.qubership.atp.itf.lite.backend.model.entities.history.RequestExecution;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface RequestExecutionRepository extends JpaRepository<RequestExecution, UUID> {
 
-    String GET_EXECUTORS_IN_HISTORY_BY_PROJECT_ID = ""
-            + "SELECT DISTINCT(executor) FROM request_executions WHERE project_id=:projectId";
+    String GET_EXECUTORS_IN_HISTORY_BY_PROJECT_ID =
+            "SELECT DISTINCT(executor) FROM request_executions WHERE project_id=:projectId";
 
     @Modifying
     @Transactional
     @Query("DELETE FROM RequestExecution re WHERE re.executedWhen < :executedWhen")
     int deleteByExecutedWhenBefore(@Param("executedWhen") Timestamp executedWhen);
 
-    @Query(value = GET_EXECUTORS_IN_HISTORY_BY_PROJECT_ID, nativeQuery = true)
+    @NativeQuery(GET_EXECUTORS_IN_HISTORY_BY_PROJECT_ID)
     List<String> findByProjectId(@Param("projectId") UUID projectId);
 
     RequestExecution findBySseId(UUID sseId);

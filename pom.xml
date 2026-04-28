@@ -21,8 +21,8 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring.boot.version>3.3.13</spring.boot.version>
-        <spring.cloud.version>2023.0.6</spring.cloud.version>
+        <spring.boot.version>3.5.14</spring.boot.version>
+        <spring.cloud.version>2025.0.2</spring.cloud.version>
 
         <atp.auth.version>2.0.2-SNAPSHOT</atp.auth.version>
         <atp.ei.lib.node>1.0.0-SNAPSHOT</atp.ei.lib.node>
@@ -34,7 +34,7 @@
 
         <mapstruct.version>1.6.3</mapstruct.version>
         <javers.version>7.9.0</javers.version>
-        <lombok.version>1.18.44</lombok.version>
+        <lombok.version>1.18.46</lombok.version>
         <logback.version>1.5.32</logback.version>
         <undertow.version>2.3.21.Final</undertow.version>
 
@@ -411,17 +411,17 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
-                <version>6.3.10</version>
+                <version>6.5.10</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
-                <version>6.3.10</version>
+                <version>6.5.10</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>6.1.21</version>
+                <version>6.2.18</version>
             </dependency>
 
             <!--ATP dependencies-->

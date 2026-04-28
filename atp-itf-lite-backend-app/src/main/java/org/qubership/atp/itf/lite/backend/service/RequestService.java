@@ -2379,7 +2379,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             return url;
         }
 
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url);
         requestParams.forEach(parameter -> {
             if (!parameter.isDisabled()) {
                 final String key = parameter.getKey();

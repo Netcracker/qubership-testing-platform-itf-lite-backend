@@ -122,7 +122,7 @@ public class RequestUtils {
      * @return uri components builder
      */
     public static UriComponentsBuilder buildRequestWithParameters(String url, List<? extends Parameter> requestParams) {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url);
         if (!CollectionUtils.isEmpty(requestParams)) {
             requestParams.forEach(parameter -> {
                 if (!parameter.isDisabled()) {

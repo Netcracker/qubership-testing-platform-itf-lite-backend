@@ -10,8 +10,6 @@
     <name>atp-itf-lite-contract-test-pacts</name>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
         <tests.argLine>
             -Djunit.jupiter.execution.parallel.enabled=true
             -Djunit.jupiter.execution.parallel.mode.default=concurrent
