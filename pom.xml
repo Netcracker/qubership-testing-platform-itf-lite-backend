@@ -56,6 +56,7 @@
         <httpclient5.version>5.4.4</httpclient5.version>
         <httpcore5.version>5.3.4</httpcore5.version>
         <hibernate.version>6.5.3.Final</hibernate.version>
+        <kotlin.version>1.9.25</kotlin.version>
     </properties>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -208,6 +209,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>1.9.25</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.xmlbeans</groupId>
                 <artifactId>xmlbeans</artifactId>
