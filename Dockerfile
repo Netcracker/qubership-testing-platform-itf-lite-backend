@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjdk-alpine-musl:21.0.10
+FROM bellsoft/liberica-openjdk-alpine-musl:21.0.11
 
 LABEL maintainer="opensourcegroup@netcracker.com" \
       qubership.atp.service="atp-itf-lite-backend"
@@ -36,7 +36,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.23/community/" >/etc/apk/repo
             sysstat=12.7.8-r0 \
             tcpdump=4.99.5-r1 \
             wget=1.25.0-r2 \
-            xz-libs=5.8.2-r0 \
+            xz-libs=5.8.3-r0 \
             zip=3.0-r13 \
             zlib=1.3.2-r0 && \
         rm -rf /var/cache/apk/*
