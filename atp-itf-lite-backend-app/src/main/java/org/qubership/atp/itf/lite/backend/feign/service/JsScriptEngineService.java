@@ -20,9 +20,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +33,7 @@ import org.qubership.atp.crypt.exception.AtpDecryptException;
 import org.qubership.atp.crypt.exception.AtpEncryptException;
 import org.qubership.atp.itf.lite.backend.enums.ContextType;
 import org.qubership.atp.itf.lite.backend.feign.clients.JsScriptEngineFeignClient;
+import org.qubership.atp.itf.lite.backend.feign.dto.ConsoleLogDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.HeaderDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.HttpResponseExceptionTypeEnum;
 import org.qubership.atp.itf.lite.backend.feign.dto.PostmanDto;
@@ -123,6 +126,7 @@ public class JsScriptEngineService {
             if (!isPreScript) {
                 response.updateFromPostmanResponse(postmanDto.getPostmanResponse());
             }
+            redactSensitiveValuesInConsoleLogs(jsScriptEngineResponse.getConsoleLogs(), resolvingContext);
             resolvingContext.setGlobals(updateContext(ContextType.GLOBALS, postmanDto.getGlobals()));
             resolvingContext.setCollectionVariables(updateContext(ContextType.COLLECTION_VARIABLES,
                     postmanDto.getCollectionVariables()));
@@ -249,7 +253,7 @@ public class JsScriptEngineService {
                         break;
                     default:
                 }
-                targetContext.put(c.getKey(), c.getValue().toString());
+                targetContext.put(c.getKey(), encryptionService.decrypt(c.getValue().toString()));
             } else {
                 targetContext.put(c.getKey(), c.getValue());
             }
@@ -331,6 +335,46 @@ public class JsScriptEngineService {
                 .projectId(request.getProjectId())
                 .postman(postman)
                 .script(isPreScript ? request.getPreScripts() : request.getPostScripts());
+    }
+
+    private void redactSensitiveValuesInConsoleLogs(List<ConsoleLogDto> consoleLogs,
+                                                    SaveRequestResolvingContext resolvingContext)
+            throws AtpDecryptException {
+        if (consoleLogs == null || consoleLogs.isEmpty()) {
+            return;
+        }
+        Set<String> sensitiveValues = new HashSet<>();
+        collectSensitiveValues(sensitiveValues, globalsEncrypted.get(), resolvingContext.getGlobals());
+        collectSensitiveValues(sensitiveValues, collectionVariablesEncrypted.get(),
+                resolvingContext.getCollectionVariables());
+        collectSensitiveValues(sensitiveValues, environmentEncrypted.get(), resolvingContext.getEnvironment());
+        collectSensitiveValues(sensitiveValues, iterationDataEncrypted.get(), resolvingContext.getIterationData());
+        collectSensitiveValues(sensitiveValues, variablesEncrypted.get(), resolvingContext.getVariables());
+        if (sensitiveValues.isEmpty()) {
+            return;
+        }
+        for (ConsoleLogDto logEntry : consoleLogs) {
+            String message = logEntry.getMessage();
+            if (message != null) {
+                for (String sensitiveValue : sensitiveValues) {
+                    message = message.replace(sensitiveValue, "***");
+                }
+                logEntry.setMessage(message);
+            }
+        }
+    }
+
+    private void collectSensitiveValues(Set<String> sensitiveValues, List<String> encryptedKeys,
+                                        Map<String, Object> contextScope) throws AtpDecryptException {
+        if (encryptedKeys == null || contextScope == null) {
+            return;
+        }
+        for (String key : encryptedKeys) {
+            Object encryptedValue = contextScope.get(key);
+            if (encryptedValue != null) {
+                sensitiveValues.add(encryptionService.decrypt(encryptedValue.toString()));
+            }
+        }
     }
 
     private PostmanExecuteScriptResponseDto generateExecuteScriptErrorResponse(

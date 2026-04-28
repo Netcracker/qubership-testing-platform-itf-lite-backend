@@ -76,6 +76,35 @@ public class TemplateResolverService {
     }
 
     /**
+     * Resolves templates in the history copy of a request, masking encrypted values as {@code ***}.
+     * Plain-text variables are resolved normally; macros are evaluated with a plain {@link SimpleContext}
+     * (no argument decryption). Any {@code {ENC}…} tokens left by the environment replacer are masked
+     * by a final {@link CryptoTools#maskEncryptedData} pass.
+     *
+     * @param request  history copy of the request
+     * @param context  resolving context with merged variable scopes
+     * @param evaluator macros evaluator
+     */
+    public void resolveTemplatesWithOrderMasked(ResolvableRequest request,
+                                                SaveRequestResolvingContext context,
+                                                Evaluator evaluator) {
+        List<Function<String, String>> replacers = new ArrayList<>();
+        Map<String, Object> mergedScopes = context.mergeScopes();
+        if (Objects.nonNull(mergedScopes) && !mergedScopes.isEmpty()) {
+            replacers.add(value -> contextVariablesReplacer.replaceMasked(value, mergedScopes));
+        }
+        Map<String, Object> environmentContext = context.getEnvironmentVariables();
+        replacers.add(value -> environmentReplacer.replace(value, environmentContext));
+
+        SimpleContext macrosContext = new SimpleContext();
+        macrosContext.setContextParameters(mergedScopes);
+        replacers.add(value -> evaluator.evaluate(value, macrosContext));
+
+        replacers.add(CryptoTools::maskEncryptedData);
+        request.resolveTemplates(value -> resolveVariables(value, replacers, 0));
+    }
+
+    /**
      * Resolves templates in request.
      *
      * @param request request in which need to resolve templates

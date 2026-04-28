@@ -72,4 +72,30 @@ public class ContextVariablesReplacer {
         }
         return cryptService.decryptIfEncrypted(foundValue.toString());
     }
+
+    /**
+     * Same as {@link #replace(String, Map)} but returns {@code ***} for encrypted values
+     * instead of decrypting them, so that history records never contain secrets.
+     *
+     * @param value   serialized object
+     * @param context context variables
+     */
+    public String replaceMasked(String value, Map<String, Object> context) {
+        Matcher matcher = pattern.matcher(value);
+        while (matcher.find()) {
+            String match = matcher.group(1) != null ? matcher.group(1) : matcher.group(2);
+            String foundParameter = findParameterByNameMasked(match.replace("\\\"", ""), context);
+            value = foundParameter == null ? value : value.replace(matcher.group(0), foundParameter);
+        }
+        return value;
+    }
+
+    private String findParameterByNameMasked(String parameterName, Map<String, Object> context) {
+        Object foundValue = context.get(parameterName);
+        if (foundValue == null) {
+            return null;
+        }
+        String strValue = foundValue.toString();
+        return cryptService.isEncrypted(strValue) ? "***" : strValue;
+    }
 }
