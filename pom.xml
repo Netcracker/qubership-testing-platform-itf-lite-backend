@@ -43,10 +43,10 @@
 
         <logstash.gelf.version>1.14.1</logstash.gelf.version>
         <google.guava.version>32.0.1-jre</google.guava.version>
-        <gson.version>2.10.1</gson.version>
+        <gson.version>2.13.2</gson.version>
         <apache.tika.core.version>3.2.2</apache.tika.core.version>
         <byte-buddy.version>1.17.8</byte-buddy.version>
-        <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
+        <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
         <spotbugs.maven.plugin.version>4.7.3.0</spotbugs.maven.plugin.version>
         <jboss.xnio.version>3.8.14.Final</jboss.xnio.version>
         <hazelcast.version>5.3.5</hazelcast.version>
@@ -222,7 +222,7 @@
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk18on</artifactId>
-                <version>1.81</version>
+                <version>1.84</version>
             </dependency>
             <dependency>
                 <groupId>com.github.jknack</groupId>
@@ -264,22 +264,22 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-codec</artifactId>
-                <version>4.1.125.Final</version>
+                <version>4.1.132.Final</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-codec-http</artifactId>
-                <version>4.1.125.Final</version>
+                <version>4.1.132.Final</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-codec-http2</artifactId>
-                <version>4.1.125.Final</version>
+                <version>4.1.132.Final</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-handler</artifactId>
-                <version>4.1.125.Final</version>
+                <version>4.1.132.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -375,7 +375,7 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-codec-smtp</artifactId>
-                <version>4.1.128.Final</version>
+                <version>4.1.132.Final</version>
             </dependency>
 
             <dependency>
