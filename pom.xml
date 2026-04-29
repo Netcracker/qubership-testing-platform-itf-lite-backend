@@ -47,11 +47,9 @@
         <apache.tika.core.version>3.2.2</apache.tika.core.version>
         <byte-buddy.version>1.17.8</byte-buddy.version>
         <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
-        <spotbugs.maven.plugin.version>4.7.3.0</spotbugs.maven.plugin.version>
         <jboss.xnio.version>3.8.14.Final</jboss.xnio.version>
         <hazelcast.version>5.3.5</hazelcast.version>
         <apache.poi.version>3.17</apache.poi.version>
-        <!--<tomcat.embed.version>10.0.52</tomcat.embed.version>-->
 
         <httpclient5.version>5.4.4</httpclient5.version>
         <httpcore5.version>5.3.4</httpcore5.version>
@@ -673,7 +671,7 @@
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
-                <version>0.9.12</version>
+                <version>0.9.9</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
