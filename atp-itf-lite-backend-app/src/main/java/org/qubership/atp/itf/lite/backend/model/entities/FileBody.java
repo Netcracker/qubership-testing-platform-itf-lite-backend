@@ -18,6 +18,9 @@ package org.qubership.atp.itf.lite.backend.model.entities;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -32,5 +35,6 @@ public class FileBody {
     @Column(name = "file_name")
     private String fileName;
     @Column(name = "file_id")
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID fileId;
 }
