@@ -24,13 +24,13 @@
         <spring.boot.version>3.5.14</spring.boot.version>
         <spring.cloud.version>2025.0.2</spring.cloud.version>
 
-        <atp.auth.version>2.0.3-SNAPSHOT</atp.auth.version>
+        <atp.auth.version>2.0.0</atp.auth.version>
         <atp.ei.lib.node>1.0.1-SNAPSHOT</atp.ei.lib.node>
         <atp.macros.core.version>2.0.1-SNAPSHOT</atp.macros.core.version>
         <atp.adapter.robot.version>5.0.1-SNAPSHOT</atp.adapter.robot.version>
-        <atp.common.version>1.0.1-SNAPSHOT</atp.common.version>
-        <atp.crypt.version>1.0.1-SNAPSHOT</atp.crypt.version>
-        <atp.integration.version>1.0.1-SNAPSHOT</atp.integration.version>
+        <atp.common.version>1.0.0</atp.common.version>
+        <atp.crypt.version>1.0.0</atp.crypt.version>
+        <atp.integration.version>1.0.0</atp.integration.version>
 
         <mapstruct.version>1.6.3</mapstruct.version>
         <javers.version>7.9.0</javers.version>
@@ -632,16 +632,6 @@
                 <artifactId>lz4-java</artifactId>
                 <version>1.10.1</version>
             </dependency>
-            <!--<dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-el</artifactId>
-                <version>${tomcat.embed.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-websocket</artifactId>
-                <version>${tomcat.embed.version}</version>
-            </dependency>-->
 
             <dependency>
                 <groupId>org.apache.httpcomponents.client5</groupId>
