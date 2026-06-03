@@ -24,9 +24,9 @@
         <spring.boot.version>3.5.14</spring.boot.version>
         <spring.cloud.version>2025.0.2</spring.cloud.version>
 
-        <atp.auth.version>2.0.0</atp.auth.version>
-        <atp.ei.lib.node>1.0.1-SNAPSHOT</atp.ei.lib.node>
-        <atp.macros.core.version>2.0.1-SNAPSHOT</atp.macros.core.version>
+        <atp.auth.version>2.0.1-SNAPSHOT</atp.auth.version>
+        <atp.ei.lib.node>1.0.0</atp.ei.lib.node>
+        <atp.macros.core.version>2.0.0</atp.macros.core.version>
         <atp.adapter.robot.version>5.0.1-SNAPSHOT</atp.adapter.robot.version>
         <atp.common.version>1.0.0</atp.common.version>
         <atp.crypt.version>1.0.0</atp.crypt.version>
@@ -55,6 +55,7 @@
         <httpcore5.version>5.3.4</httpcore5.version>
         <hibernate.version>6.5.3.Final</hibernate.version>
         <kotlin.version>1.9.25</kotlin.version>
+        <liquibase.version>4.27.0</liquibase.version>
     </properties>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -521,6 +522,10 @@
                         <groupId>org.bouncycastle</groupId>
                         <artifactId>bcprov-jdk15on</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -662,6 +667,23 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>0.9.9</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>5.23.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>5.23.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
