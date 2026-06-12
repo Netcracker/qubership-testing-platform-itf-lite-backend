@@ -352,7 +352,7 @@ public class CollectionServiceTest {
         CollectionExecuteRequest request = new CollectionExecuteRequest();
         request.setName("Test Collection");
         request.setEnvironmentIds(Collections.singletonList(UUID.randomUUID()));
-        request.setEmailRecipients(Collections.singletonList("test@example.com"));
+        request.setEmailRecipients(Collections.singletonList("example@example.com"));
         request.setEmailTemplateId(UUID.randomUUID());
         request.setEmailSubject("Test Subject");
         request.setTaToolIds(Collections.singletonList(UUID.randomUUID()));
@@ -391,7 +391,7 @@ public class CollectionServiceTest {
         Assertions.assertEquals(capturedExecuteRequestDto.getLogCollectorTemplateId(), request.getLogCollectorTemplateId());
         Assertions.assertEquals(capturedExecuteRequestDto.getProjectId(), request.getProjectId());
         Assertions.assertEquals(capturedExecuteRequestDto.getTestPlanId(), defaultTestPlanId);
-        Assertions.assertEquals(capturedExecuteRequestDto.getThreadCount(), 1);
+        Assertions.assertEquals(1, capturedExecuteRequestDto.getThreadCount());
         Assertions.assertEquals(capturedExecuteRequestDto.getIsMandatoryCheck(), request.isMandatoryCheck());
         Assertions.assertEquals(capturedExecuteRequestDto.getIsSsmCheck(), request.isSsmCheck());
         Assertions.assertEquals(capturedExecuteRequestDto.getIsIgnoreFailedChecks(), request.isIgnoreFailedChecks());
@@ -423,7 +423,7 @@ public class CollectionServiceTest {
 
         collectionsService.get().processContentTypeHeader(requestHeaders, requestBody);
 
-        assertEquals(requestHeaders, requestHeaders, "Headers list shouldn't be changed");
+        assertEquals(0, requestHeaders.size(), "Headers list shouldn't be changed");
     }
 
     @Test
