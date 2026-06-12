@@ -88,7 +88,7 @@ public class JsScriptEngineServiceTest {
         request.setUrl(LOCAL_URL + "?query_1=q_value_1");
         request.setRequestHeaders(List.of(new HttpHeaderSaveRequest("header1", "value1", "", false)));
         request.setRequestParams(Collections.singletonList(new HttpParamSaveRequest("query_2", "q_value_2", "")));
-        request.setRequestHeaders(new ArrayList<HttpHeaderSaveRequest>(){{
+        request.setRequestHeaders(new ArrayList<>() {{
             add(new HttpHeaderSaveRequest("header_1", "h_value_1", ""));
         }});
 
@@ -168,7 +168,7 @@ public class JsScriptEngineServiceTest {
         response.setStatusCode("200");
         response.setStatusText("OK");
         response.setDuration(new BigInteger(String.valueOf(0)));
-        response.setResponseHeaders(new ArrayList<RequestExecutionHeaderResponse>(){{
+        response.setResponseHeaders(new ArrayList<>() {{
             add(new RequestExecutionHeaderResponse("key1", "val1"));
         }});
 
@@ -352,7 +352,7 @@ public class JsScriptEngineServiceTest {
     }
 
     @Test
-    public void evaluatePreScript_whenConsoleLogContainsDecryptedValue_thenRedactToStars() throws IOException, AtpDecryptException, AtpEncryptException {
+    public void evaluatePreScript_whenConsoleLogContainsDecryptedValue_thenRedactToStars() throws IOException, AtpDecryptException {
         setupMockBooksResponse("JsScriptEngine/preResponseWithConsoleLog.json");
         when(encryptionService.isEncrypted(eq("{ENC}{abc...}"))).thenReturn(true);
         when(encryptionService.decrypt(eq("{ENC}{abc...}"))).thenReturn("secretValue");
