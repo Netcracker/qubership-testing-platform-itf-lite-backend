@@ -42,7 +42,10 @@ public class SwaggerConfiguration {
                         .addSecuritySchemes("Bearer Authentication", createApiKeyScheme()))
                 .info(new Info()
                         .title("ATP-ITF-Lite")
-                        .license(new License().name("(C) Copyright")));
+                        .license(new License()
+                                .name("Apache-2.0")
+                                .url("https://www.apache.org/licenses/LICENSE-2.0")
+                        ));
     }
 
     /**
