@@ -110,9 +110,10 @@ public class CustomRequestExecutionRepositoryImpl implements CustomRequestExecut
         }
 
         CriteriaQuery<Long> criteriaQueryTotal = criteriaBuilder.createQuery(Long.class);
-        criteriaQueryTotal.select(criteriaBuilder.count(criteriaQueryTotal.from(RequestExecution.class)));
+        Root<RequestExecution> requestExecutionTotal = criteriaQueryTotal.from(RequestExecution.class);
+        criteriaQueryTotal.select(criteriaBuilder.count(requestExecutionTotal));
         List<Predicate> criteriaQueryPredicates = new ArrayList<>();
-        criteriaQueryPredicates.add(criteriaBuilder.equal(requestExecution
+        criteriaQueryPredicates.add(criteriaBuilder.equal(requestExecutionTotal
                 .get(REQUEST_EXECUTION_FILTER_COLUMN_PROJECT_ID), request.getProjectId()));
         TypedQuery<Long> query = entityManager.createQuery(criteriaQueryTotal
                 .where(criteriaQueryPredicates.toArray(new Predicate[0])));
