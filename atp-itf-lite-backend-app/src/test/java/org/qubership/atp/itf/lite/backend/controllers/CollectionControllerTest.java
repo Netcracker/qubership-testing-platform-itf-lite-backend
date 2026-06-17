@@ -77,7 +77,7 @@ public class CollectionControllerTest extends AbstractControllerTest {
         CollectionExecuteRequest request = new CollectionExecuteRequest();
         request.setName("Test Collection");
         request.setEnvironmentIds(Collections.singletonList(UUID.randomUUID()));
-        request.setEmailRecipients(Collections.singletonList("test@example.com"));
+        request.setEmailRecipients(Collections.singletonList("example@example.com"));
         request.setEmailTemplateId(UUID.randomUUID());
         request.setEmailSubject("Test Subject");
         request.setTaToolIds(Collections.singletonList(UUID.randomUUID()));
