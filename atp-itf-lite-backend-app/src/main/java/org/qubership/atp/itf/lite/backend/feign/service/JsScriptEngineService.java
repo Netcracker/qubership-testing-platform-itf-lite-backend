@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.qubership.atp.auth.springbootstarter.feign.exception.FeignClientException;
@@ -57,6 +55,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import feign.FeignException;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -217,8 +216,8 @@ public class JsScriptEngineService {
         return errorMessageFromJson;
     }
 
-    private Map<String, Object> generateContext(ContextType type, Map<String, Object> originContext)
-            throws AtpDecryptException {
+    private Map<String, Object> generateContext(ContextType type,
+                                                Map<String, Object> originContext) throws AtpDecryptException {
         Map<String, Object> targetContext = new HashMap<>();
         for (Map.Entry<String, Object> c: originContext.entrySet()) {
             if (Objects.nonNull(c.getValue()) && encryptionService.isEncrypted(c.getValue().toString())) {

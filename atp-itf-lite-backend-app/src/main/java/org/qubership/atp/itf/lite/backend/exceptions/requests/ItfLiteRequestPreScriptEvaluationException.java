@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -35,6 +35,6 @@ public class ItfLiteRequestPreScriptEvaluationException extends ItfLiteException
     }
 
     public ItfLiteRequestPreScriptEvaluationException(String message, int line) {
-        super(String.format("%s: %s. Line: %d", DEFAULT_MESSAGE, message, line));
+        super("%s: %s. Line: %d".formatted(DEFAULT_MESSAGE, message, line));
     }
 }

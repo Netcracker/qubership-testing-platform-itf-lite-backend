@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import org.modelmapper.ModelMapper;
 import org.qubership.atp.itf.lite.backend.feign.dto.history.HistoryItemTypeDto;
 import org.qubership.atp.itf.lite.backend.model.entities.Folder;
 import org.qubership.atp.itf.lite.backend.service.FolderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class FolderRestoreHistoryService extends AbstractRestoreHistoryService<Folder> {
 
-    @Autowired
     public FolderRestoreHistoryService(Javers javers, FolderService folderService,
                                        ValidateReferenceExistsService validateReferenceExistsService,
                                        ModelMapper modelMapper) {

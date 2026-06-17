@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.Set;
 import org.qubership.atp.itf.lite.backend.model.entities.javers.history.JvGlobalIdEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -34,10 +35,10 @@ public interface JaversGlobalIdRepository extends JpaRepository<JvGlobalIdEntity
     @Query("DELETE FROM JvGlobalIdEntity e WHERE e.id IN (:ids)")
     void deleteByIdIn(@Param("ids") Collection<Long> ids);
 
-    @Query(value = "SELECT globalIdTable.* FROM "
+    @NativeQuery("SELECT globalIdTable.* FROM "
             + "(SELECT global_id_pk FROM jv_global_id WHERE local_id in :entityIds) globalIdTableByEntity, "
             + "jv_global_id globalIdTable "
             + "WHERE globalIdTableByEntity.global_id_pk = globalIdTable.owner_id_fk "
-            + "OR globalIdTableByEntity.global_id_pk = globalIdTable.global_id_pk", nativeQuery = true)
+            + "OR globalIdTableByEntity.global_id_pk = globalIdTable.global_id_pk")
     List<JvGlobalIdEntity> findAllByEntityIds(@Param("entityIds") Set<String> entityIds);
 }

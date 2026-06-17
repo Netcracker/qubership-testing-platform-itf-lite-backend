@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -21,14 +21,13 @@ import static java.util.Objects.nonNull;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.qubership.atp.itf.lite.backend.model.entities.auth.BasicRequestAuthorization;
 import org.qubership.atp.itf.lite.backend.model.entities.auth.BearerRequestAuthorization;
 import org.qubership.atp.itf.lite.backend.model.entities.auth.OAuth2RequestAuthorization;
 import org.qubership.atp.itf.lite.backend.model.entities.auth.RequestAuthorization;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 
 @Getter
@@ -66,14 +65,14 @@ public class ToPostmanAuth {
                     break;
                 case BEARER:
                     this.type = ToPostmanAuthType.BEARER;
-                    this.bearer = Arrays.asList(
+                    this.bearer = List.of(
                             ToPostmanMapType.token(
                                     ((BearerRequestAuthorization) requestAuthorization).getToken()));
                     break;
                 case BASIC:
                     this.type = ToPostmanAuthType.BASIC;
                     BasicRequestAuthorization basicAuth = (BasicRequestAuthorization) requestAuthorization;
-                    this.basic = Arrays.asList(
+                    this.basic = List.of(
                             ToPostmanMapType.userName(basicAuth.getUsername())
                     );
                     break;

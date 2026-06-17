@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ import static org.qubership.atp.itf.lite.backend.utils.Constants.EMPTY_STRING;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -53,6 +51,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -120,7 +119,7 @@ public class OAuth2RequestAuthorizationStrategy extends AbstractAuthorizationStr
                     return null;
                 }
                 if (StringUtils.isNotEmpty(headerPrefix)) {
-                    authHeader = String.format(AUTH_HEADER_PREFIX_PATTERN, headerPrefix, authHeader);
+                    authHeader = AUTH_HEADER_PREFIX_PATTERN.formatted(headerPrefix, authHeader);
                 }
                 log.debug("Result Authorization header: {}", authHeader);
                 return new AuthorizationStrategyResponse(authHeader, authHeader);
@@ -131,7 +130,7 @@ public class OAuth2RequestAuthorizationStrategy extends AbstractAuthorizationStr
                 url, params);
         String authHeader = response.getAccessToken();
         if (StringUtils.isNotEmpty(headerPrefix)) {
-            authHeader = String.format(AUTH_HEADER_PREFIX_PATTERN, headerPrefix, authHeader);
+            authHeader = AUTH_HEADER_PREFIX_PATTERN.formatted(headerPrefix, authHeader);
         }
         log.debug("Result Authorization header: {}", authHeader);
         return new AuthorizationStrategyResponse(authHeader, authHeader);
@@ -253,7 +252,7 @@ public class OAuth2RequestAuthorizationStrategy extends AbstractAuthorizationStr
                     String headerPrefix = oauthAuthorization.getHeaderPrefix();
                     String token = oauthAuthorization.getToken();
                     headerValue = StringUtils.isNotEmpty(headerPrefix)
-                            ? String.format(AUTH_HEADER_PREFIX_PATTERN, headerPrefix, token)
+                            ? AUTH_HEADER_PREFIX_PATTERN.formatted(headerPrefix, token)
                             : token;
                     break;
                 default:

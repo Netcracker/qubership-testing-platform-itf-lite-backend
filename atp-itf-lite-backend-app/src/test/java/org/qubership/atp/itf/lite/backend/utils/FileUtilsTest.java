@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,11 +32,11 @@ public class FileUtilsTest {
     public void deleteDirectoryRecursively_whenDirectoryWithFilesExists_shouldDeleteWholeDirectory()
             throws IOException {
         // given
-        Path testDirectory = Paths.get("testDirectory");
-        Path testSubdirectory = Paths.get(testDirectory.toString(), "testSubdirectory");
+        Path testDirectory = Path.of("testDirectory");
+        Path testSubdirectory = Path.of(testDirectory.toString(), "testSubdirectory");
         Files.createDirectories(testSubdirectory);
-        Path testFile1 = Paths.get(testDirectory.toString(), "testFile1.txt");
-        Path testFile2 = Paths.get(testSubdirectory.toString(), "testFile2.txt");
+        Path testFile1 = Path.of(testDirectory.toString(), "testFile1.txt");
+        Path testFile2 = Path.of(testSubdirectory.toString(), "testFile2.txt");
         Files.createFile(testFile1);
         Files.createFile(testFile2);
         // when
@@ -51,7 +50,7 @@ public class FileUtilsTest {
             throws IOException {
         // given
         UUID requestId = UUID.randomUUID();
-        Path testDirectory = Paths.get("target/testDirectory");
+        Path testDirectory = Path.of("target/testDirectory");
         MultipartFile dictionary = mock(MultipartFile.class);
         // when
         when(dictionary.getOriginalFilename()).thenReturn("test.txt");
@@ -68,12 +67,12 @@ public class FileUtilsTest {
             throws IOException {
         // given
         UUID requestId = UUID.randomUUID();
-        Path testDirectory = Paths.get("target/testDirectory");
+        Path testDirectory = Path.of("target/testDirectory");
         FileData dictionaryFileData = new FileData(new byte[]{}, "test.txt");
         // when
         FileUtils.saveFileDataDictionaryToFileSystem(testDirectory, requestId, dictionaryFileData);
         // then
-        assertTrue(Files.exists(Paths.get(
+        assertTrue(Files.exists(Path.of(
                 testDirectory.toString(), requestId.toString(), dictionaryFileData.getFileName())));
         // cleanup
         FileUtils.deleteDirectoryRecursively(testDirectory);

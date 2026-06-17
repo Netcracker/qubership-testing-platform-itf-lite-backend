@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -26,6 +26,6 @@ public class AuthActionGetTokenByCodeException extends ItfLiteException {
     public static final String DEFAULT_MESSAGE = "Get access token by code failed due to %s";
 
     public AuthActionGetTokenByCodeException(String reason) {
-        super(String.format(DEFAULT_MESSAGE, reason));
+        super(DEFAULT_MESSAGE.formatted(reason));
     }
 }

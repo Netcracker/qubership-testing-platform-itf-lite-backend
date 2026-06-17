@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package org.qubership.atp.itf.lite.backend.model.documentation;
 
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
-
 import org.qubership.atp.itf.lite.backend.enums.EntityType;
 import org.qubership.atp.itf.lite.backend.enums.TransportType;
 import org.qubership.atp.itf.lite.backend.model.entities.RequestBody;
@@ -27,6 +25,7 @@ import org.qubership.atp.itf.lite.backend.model.entities.http.RequestHeader;
 import org.qubership.atp.itf.lite.backend.model.entities.http.RequestParam;
 import org.qubership.atp.itf.lite.backend.model.entities.http.methods.HttpMethod;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data

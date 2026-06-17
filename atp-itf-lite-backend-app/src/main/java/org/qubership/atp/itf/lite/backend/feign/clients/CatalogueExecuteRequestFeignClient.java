@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -23,17 +23,15 @@ import org.qubership.atp.auth.springbootstarter.config.FeignConfiguration;
 import org.qubership.atp.itf.lite.backend.feign.dto.ExecuteRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "${feign.atp.catalogue.name}", url = "${feign.atp.catalogue.url}",
         path = "${feign.atp.catalogue.route}", configuration = FeignConfiguration.class)
 public interface CatalogueExecuteRequestFeignClient {
 
-    @RequestMapping(
-            method = RequestMethod.POST,
+    @PostMapping(
             value = "/catalog/api/v1/executionrequests/execute/testcases",
             produces = { "application/json" },
             consumes = { "application/json" }

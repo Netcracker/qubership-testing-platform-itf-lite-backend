@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.qubership.atp.itf.lite.backend.exceptions.requests;
 
-import static java.lang.String.format;
-
 import org.qubership.atp.itf.lite.backend.enums.auth.OAuth2GrantType;
 import org.qubership.atp.itf.lite.backend.exceptions.ItfLiteException;
 import org.springframework.http.HttpStatus;
@@ -29,6 +27,6 @@ public class ItfLiteRequestIllegalAuthorizationGrantTypeException extends ItfLit
     public static final String DEFAULT_MESSAGE = "Found unsupported OAuth2 grant type: %s";
 
     public ItfLiteRequestIllegalAuthorizationGrantTypeException(OAuth2GrantType illegalGrantType) {
-        super(format(DEFAULT_MESSAGE, illegalGrantType.name()));
+        super(DEFAULT_MESSAGE.formatted(illegalGrantType.name()));
     }
 }

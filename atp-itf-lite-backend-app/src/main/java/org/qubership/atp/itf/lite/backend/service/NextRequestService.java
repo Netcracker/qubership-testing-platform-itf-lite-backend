@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-import javax.persistence.EntityNotFoundException;
-
 import org.qubership.atp.itf.lite.backend.dataaccess.repository.CollectionRunNextRequestRepository;
 import org.qubership.atp.itf.lite.backend.dataaccess.repository.CollectionRunRequestsCountRepository;
 import org.qubership.atp.itf.lite.backend.dataaccess.repository.CollectionRunRequestsRepository;
@@ -37,6 +34,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -85,7 +85,9 @@ public class ActionServiceTest {
         UUID projectId = UUID.randomUUID();
         executionRequest.setActionEntity(requestExecuteAction);
         executionRequest.setProjectId(projectId);
-        executionRequest.setContext(new HashMap<String, Object>(){{ put("requestId", requestId);}});
+        executionRequest.setContext(new HashMap<>() {{
+            put("requestId", requestId);
+        }});
 
         Request request = EntitiesGenerator.generateHttpRequest("test", projectId);
 

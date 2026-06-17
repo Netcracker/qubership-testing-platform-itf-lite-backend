@@ -147,28 +147,30 @@ public class RequestToCurlFormatConverterTest {
         httpRequest.getRequestHeaders().add(new HttpHeaderSaveRequest("Authorization", "Bearer {{authToken}}", "", false));
         RequestBody body = new RequestBody();
         body.setContent("{\"query\":\"query searchBillingAccount($filter: [String!]) {\\r\\n    searchBillingAccount @ filter(filters: $filter) {\\r\\n        id\\r\\n        name\\r\\n        billingMethod{\\r\\n            id\\r\\n            name\\r\\n        }\\r\\n        accountNumber\\r\\n        status\\r\\n        customer{\\r\\n            id\\r\\n            name\\r\\n            }\\r\\n        relatedProducts{\\r\\n            id\\r\\n            name\\r\\n            status\\r\\n            }\\r\\n\\r\\n    }\\r\\n}\\r\\n\",\"variables\":{\"filter\":[\"msisdn=590110865\"]}}");
-        body.setQuery("query searchBillingAccount($filter: [String!]) {\n"
-                + "    searchBillingAccount @ filter(filters: $filter) {\n"
-                + "        id\n"
-                + "        name\n"
-                + "        billingMethod{\n"
-                + "            id\n"
-                + "            name\n"
-                + "        }\n"
-                + "        accountNumber\n"
-                + "        status\n"
-                + "        customer{\n"
-                + "            id\n"
-                + "            name\n"
-                + "            }\n"
-                + "        relatedProducts{\n"
-                + "            id\n"
-                + "            name\n"
-                + "            status\n"
-                + "            }\n"
-                + "\n"
-                + "    }\n"
-                + "}\n");
+        body.setQuery("""
+                query searchBillingAccount($filter: [String!]) {
+                    searchBillingAccount @ filter(filters: $filter) {
+                        id
+                        name
+                        billingMethod{
+                            id
+                            name
+                        }
+                        accountNumber
+                        status
+                        customer{
+                            id
+                            name
+                            }
+                        relatedProducts{
+                            id
+                            name
+                            status
+                            }
+                
+                    }
+                }
+                """);
         body.setVariables("{\"filter\":[\"msisdn=590110865\"]}");
         body.setType(RequestBodyType.GraphQL);
         httpRequest.setBody(body);

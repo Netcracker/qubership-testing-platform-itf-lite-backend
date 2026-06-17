@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -17,14 +17,13 @@
 package org.qubership.atp.itf.lite.backend.utils;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public interface Constants {
     String COPY_POSTFIX = " Copy";
     String TEMPORARY_LINE_SEPARATOR = "<tls>";
-    Path DEFAULT_DICTIONARIES_FOLDER = Paths.get("dictionaries");
-    Path DEFAULT_BINARY_FILES_FOLDER = Paths.get("binary");
-    Path DEFAULT_FORM_DATA_FOLDER = Paths.get("formData");
+    Path DEFAULT_DICTIONARIES_FOLDER = Path.of("dictionaries");
+    Path DEFAULT_BINARY_FILES_FOLDER = Path.of("binary");
+    Path DEFAULT_FORM_DATA_FOLDER = Path.of("formData");
 
     String CONTENT_TYPE_HEADER_NAME = "Content-Type";
     String URL_ENCODED_HEADER_VALUE = "application/x-www-form-urlencoded";

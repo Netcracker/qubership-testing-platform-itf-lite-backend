@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.io.IOException;
 import org.qubership.atp.common.lock.LockManager;
 import org.qubership.atp.itf.lite.backend.service.GridFsService;
 import org.qubership.atp.itf.lite.backend.utils.Constants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -40,7 +39,6 @@ public class DictionariesCleaner {
     private final LockManager lockManager;
     private final GridFsService gridFsService;
 
-    @Autowired
     public DictionariesCleaner(LockManager lockManager, GridFsService gridFsService) {
             this.lockManager = lockManager;
             this.gridFsService = gridFsService;

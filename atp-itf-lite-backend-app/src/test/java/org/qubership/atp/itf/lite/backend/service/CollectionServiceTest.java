@@ -198,9 +198,9 @@ public class CollectionServiceTest {
         List<Map<String, String>> authParametersMaps = oAuth2AuthorizationParametersMapCaptor.getAllValues();
         // password_credentials verify
         Map<String, String> passwordCredentialsMap = generateOAuth2AuthMap(OAuth2GrantType.PASSWORD_CREDENTIALS);
-        Assertions.assertEquals(passwordCredentialsMap.size(), authParametersMaps.get(0).size());
+        Assertions.assertEquals(passwordCredentialsMap.size(), authParametersMaps.getFirst().size());
         Assertions.assertTrue(passwordCredentialsMap.entrySet().stream().allMatch(expectedValue ->
-                expectedValue.getValue().equals(authParametersMaps.get(0).get(expectedValue.getKey()))));
+                expectedValue.getValue().equals(authParametersMaps.getFirst().get(expectedValue.getKey()))));
         // client_credentials verify
         Map<String, String> clientCredentialsMap = generateOAuth2AuthMap(OAuth2GrantType.CLIENT_CREDENTIALS);
         Assertions.assertEquals(clientCredentialsMap.size(), authParametersMaps.get(1).size());
@@ -255,22 +255,26 @@ public class CollectionServiceTest {
 
     @Test
     public void importCollections_CollectionsWithPreAndPostScripts_ScriptsShouldBeParsed() throws Exception {
-        String expectedPostScript1 = "tests[\"response code is 401\"] = responseCode.code === 401;\n" +
-                "tests[\"response has WWW-Authenticate header\"] = (postman.getResponseHeader('WWW-Authenticate'));\n" +
-                "\n" +
-                "var authenticateHeader = postman.getResponseHeader('WWW-Authenticate'),\n" +
-                "realmStart = authenticateHeader.indexOf('\"',authenticateHeader.indexOf(\"realm\")) + 1 ,\n" +
-                "realmEnd = authenticateHeader.indexOf('\"',realmStart),\n" +
-                "realm = authenticateHeader.slice(realmStart,realmEnd),\n" +
-                "nonceStart = authenticateHeader.indexOf('\"',authenticateHeader.indexOf(\"nonce\")) + 1,\n" +
-                "nonceEnd = authenticateHeader.indexOf('\"',nonceStart),\n" +
-                "nonce = authenticateHeader.slice(nonceStart,nonceEnd);\n" +
-                "\n" +
-                "postman.setGlobalVariable('echo_digest_realm', realm);\n" +
-                "postman.setGlobalVariable('echo_digest_nonce', nonce);";
-        String expectedPostScript2 = "pm.test(\"test\", function() {\n" +
-                "console.log(pm.collectionVariables.get(\"name\"));\n" +
-                "});";
+        String expectedPostScript1 = """
+                tests["response code is 401"] = responseCode.code === 401;
+                tests["response has WWW-Authenticate header"] = (postman.getResponseHeader('WWW-Authenticate'));
+                
+                var authenticateHeader = postman.getResponseHeader('WWW-Authenticate'),
+                realmStart = authenticateHeader.indexOf('"',authenticateHeader.indexOf("realm")) + 1 ,
+                realmEnd = authenticateHeader.indexOf('"',realmStart),
+                realm = authenticateHeader.slice(realmStart,realmEnd),
+                nonceStart = authenticateHeader.indexOf('"',authenticateHeader.indexOf("nonce")) + 1,
+                nonceEnd = authenticateHeader.indexOf('"',nonceStart),
+                nonce = authenticateHeader.slice(nonceStart,nonceEnd);
+                
+                postman.setGlobalVariable('echo_digest_realm', realm);
+                postman.setGlobalVariable('echo_digest_nonce', nonce);\
+                """;
+        String expectedPostScript2 = """
+                pm.test("test", function() {
+                console.log(pm.collectionVariables.get("name"));
+                });\
+                """;
         String expectedPreScript = "pm.collectionVariables.set(\"name\", pm.collectionVariables.get(\"name\") + \"_newValue\");";
         File jsonFile = new File(PATH_TO_JSON_WITH_EVENT);
         FileInputStream input = new FileInputStream(jsonFile);
@@ -327,9 +331,9 @@ public class CollectionServiceTest {
         // then
         Assertions.assertAll(
                 () -> Assertions.assertEquals(expectedPreScript, actualPreScripts, "Not correctly create pre scripts with new variables"),
-        () -> Assertions.assertEquals(expectedParamsFirst, httpRequest.getRequestParams().get(0).toString(), "Not correctly collect headers"),
+        () -> Assertions.assertEquals(expectedParamsFirst, httpRequest.getRequestParams().getFirst().toString(), "Not correctly collect headers"),
         () -> Assertions.assertEquals(expectedParamsSecond, httpRequest.getRequestParams().get(1).toString(), "Not correctly collect headers"),
-        () -> Assertions.assertEquals(expectedRequestHeader, httpRequest.getRequestHeaders().get(0).toString(), "Not correctly collect headers"),
+        () -> Assertions.assertEquals(expectedRequestHeader, httpRequest.getRequestHeaders().getFirst().toString(), "Not correctly collect headers"),
         () -> Assertions.assertEquals(expectedBody, httpRequest.getBody().getContent(), "Not correctly collect content body"),
         () -> Assertions.assertEquals(RequestBodyType.JSON, httpRequest.getBody().getType(), "Not correctly body type"),
         () -> Assertions.assertEquals(HttpMethod.GET, httpRequest.getHttpMethod(), "Not correctly http method")
@@ -341,7 +345,7 @@ public class CollectionServiceTest {
     public void executeCollection_CollectionRequestHasContextVariables_ExecutionRequestDtoShoudContainContextVariablesMap() {
         // given
         String authToken = "authToken";
-        List<ContextVariable> contextVariables = new ArrayList<ContextVariable>(){{
+        List<ContextVariable> contextVariables = new ArrayList<>() {{
             add(new ContextVariable("key_1", "value_1", ContextVariableType.GLOBAL));
             add(new ContextVariable("key_2", "value_2", ContextVariableType.COLLECTION));
             add(new ContextVariable("key_3", "value_3", ContextVariableType.DATA));
@@ -395,7 +399,7 @@ public class CollectionServiceTest {
         Assertions.assertEquals(capturedExecuteRequestDto.getIsMandatoryCheck(), request.isMandatoryCheck());
         Assertions.assertEquals(capturedExecuteRequestDto.getIsSsmCheck(), request.isSsmCheck());
         Assertions.assertEquals(capturedExecuteRequestDto.getIsIgnoreFailedChecks(), request.isIgnoreFailedChecks());
-        Assertions.assertEquals(capturedExecuteRequestDto.getTestScenarios().get(0).getTestScenarioName(), request.getName());
+        Assertions.assertEquals(capturedExecuteRequestDto.getTestScenarios().getFirst().getTestScenarioName(), request.getName());
         Assertions.assertEquals(capturedExecuteRequestDto.getDataSetStorageId(), request.getDataSetStorageId());
         Assertions.assertEquals(capturedExecuteRequestDto.getDatasetId(), request.getDataSetId());
         Assertions.assertEquals(capturedExecuteRequestDto.getContextVariables(), request.convertContextVariablesToMap());
@@ -403,7 +407,7 @@ public class CollectionServiceTest {
 
     @Test
     public void executeCollection_ConvertConbtextVariables_ContextVariablesHasCorrectPrefix() {
-        List<ContextVariable> contextVariables = new ArrayList<ContextVariable>(){{
+        List<ContextVariable> contextVariables = new ArrayList<>() {{
             add(new ContextVariable("key_1", "value_1", ContextVariableType.GLOBAL));
             add(new ContextVariable("key_2", "value_2", ContextVariableType.COLLECTION));
             add(new ContextVariable("key_3", "value_3", ContextVariableType.DATA));

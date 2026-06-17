@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -23,14 +23,13 @@ import java.util.UUID;
 import org.qubership.atp.itf.lite.backend.model.entities.RequestSnapshot;
 import org.qubership.atp.itf.lite.backend.model.entities.key.RequestSnapshotKey;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.repository.query.Param;
 
 public interface RequestSnapshotRepository extends JpaRepository<RequestSnapshot, RequestSnapshotKey> {
 
-    @Query(value = "SELECT session_id FROM request_snapshots e WHERE ABS(EXTRACT(EPOCH FROM "
-            + ":referenceDate - e.created_when)) > :expirationPeriod",
-            nativeQuery = true)
+    @NativeQuery("SELECT session_id FROM request_snapshots e WHERE ABS(EXTRACT(EPOCH FROM "
+            + ":referenceDate - e.created_when)) > :expirationPeriod")
     List<RequestSnapshotKey> findAllByCreatedWhenDifferenceGreaterThanReferenceDate(
             @Param("referenceDate") Date referenceDate,
             @Param("expirationPeriod") Long expirationPeriod

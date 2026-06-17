@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.qubership.atp.itf.lite.backend.model.entities.http.methods;
 
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.springframework.lang.Nullable;
 
 public enum HttpMethod {
@@ -38,13 +38,13 @@ public enum HttpMethod {
     UNLINK(HttpUnlink.class),
     VIEW(HttpView.class);
 
-    private final Class<? extends HttpRequestBase> methodClass;
+    private final Class<? extends HttpUriRequestBase> methodClass;
 
-    HttpMethod(Class<? extends HttpRequestBase> httpMethodClass) {
+    HttpMethod(Class<? extends HttpUriRequestBase> httpMethodClass) {
         this.methodClass = httpMethodClass;
     }
 
-    public HttpRequestBase getHttpRequest(String url) throws Exception {
+    public HttpUriRequestBase getHttpRequest(String url) throws Exception {
         return this.methodClass.getConstructor(String.class).newInstance(url);
     }
 

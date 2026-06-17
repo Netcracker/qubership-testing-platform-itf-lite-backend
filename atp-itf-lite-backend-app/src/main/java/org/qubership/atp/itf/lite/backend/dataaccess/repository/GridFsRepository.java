@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ import org.qubership.atp.itf.lite.backend.configuration.GridFsProperties;
 import org.qubership.atp.itf.lite.backend.model.entities.FileBody;
 import org.qubership.atp.itf.lite.backend.model.entities.gridfs.FileData;
 import org.qubership.atp.itf.lite.backend.model.entities.gridfs.FileInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -84,7 +83,6 @@ public class GridFsRepository {
     /**
      * Constructor GridFsRepository.
      */
-    @Autowired
     public GridFsRepository(GridFSBucket gridFsBucket, MongoDatabase gridFsMongoDatabase,
                             GridFsProperties gridFsProperties,
                             ObjectMapper objectMapper) {

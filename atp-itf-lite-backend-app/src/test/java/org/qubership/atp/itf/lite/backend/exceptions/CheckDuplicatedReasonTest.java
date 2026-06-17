@@ -25,7 +25,7 @@ public class CheckDuplicatedReasonTest {
                 .collect(Collectors.groupingBy(clazz -> clazz.getAnnotation(ResponseStatus.class).reason()));
         for (Map.Entry<String, List<Class<?>>> entry : groupedByReasonExceptions.entrySet()) {
             Assertions.assertEquals(1, entry.getValue().size(),
-                    String.format("Found duplicated reason for %s in classes %s", entry.getKey(), entry.getValue()));
+                    "Found duplicated reason for %s in classes %s".formatted(entry.getKey(), entry.getValue()));
         }
     }
 

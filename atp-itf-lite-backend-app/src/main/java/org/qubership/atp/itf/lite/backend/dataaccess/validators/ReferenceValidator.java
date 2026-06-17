@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -19,18 +19,16 @@ package org.qubership.atp.itf.lite.backend.dataaccess.validators;
 import java.util.List;
 import java.util.UUID;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 import org.qubership.atp.itf.lite.backend.service.IdentifiedService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class ReferenceValidator implements ConstraintValidator<ReferenceExists, Object> {
     private final ApplicationContext applicationContext;
     public Class<? extends IdentifiedService> serviceClass;
 
-    @Autowired
     public ReferenceValidator(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
@@ -47,8 +45,8 @@ public class ReferenceValidator implements ConstraintValidator<ReferenceExists, 
 
         IdentifiedService service = applicationContext.getBean(serviceClass);
 
-        if (value instanceof List) {
-            return ((List)value)
+        if (value instanceof List list) {
+            return list
                     .stream()
                     .allMatch(service::isEntityExists);
         } else if (value instanceof UUID) {

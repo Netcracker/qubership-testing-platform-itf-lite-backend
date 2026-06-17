@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -92,7 +91,7 @@ public class CertificateService {
             throw new ItfLiteIllegalFileInfoDownloadArgumentsException();
         }
 
-        Path rootDir = Paths.get(String.format(CERTIFICATE_FOLDER, projectId)).toAbsolutePath().normalize();
+        Path rootDir = Path.of(CERTIFICATE_FOLDER.formatted(projectId)).toAbsolutePath().normalize();
         try {
             Files.createDirectories(rootDir);
         } catch (IOException e) {
@@ -100,7 +99,7 @@ public class CertificateService {
             throw new ItfLiteFileCreationException("Cannot create certificate folder");
         }
 
-        String sanitizedFileName = Paths.get(fileInfo.getName()).getFileName().toString();
+        String sanitizedFileName = Path.of(fileInfo.getName()).getFileName().toString();
         sanitizedFileName = org.qubership.atp.itf.lite.backend.utils.FileUtils.sanitizeFileName(sanitizedFileName);
 
         Path certPath = rootDir.resolve(sanitizedFileName).normalize();

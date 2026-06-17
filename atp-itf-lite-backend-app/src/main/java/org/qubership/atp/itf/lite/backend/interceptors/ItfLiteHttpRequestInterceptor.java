@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -19,15 +19,14 @@ package org.qubership.atp.itf.lite.backend.interceptors;
 import static org.qubership.atp.auth.springbootstarter.Constants.AUTHORIZATION_HEADER_NAME;
 import static org.qubership.atp.auth.springbootstarter.Constants.BEARER_TOKEN_TYPE;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.core5.http.EntityDetails;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpRequestInterceptor;
+import org.apache.hc.core5.http.protocol.HttpContext;
 import org.qubership.atp.auth.springbootstarter.security.oauth2.client.config.Oauth2FeignClientInterceptor;
 
 import feign.RequestTemplate;
@@ -43,7 +42,7 @@ public class ItfLiteHttpRequestInterceptor implements HttpRequestInterceptor {
     private final Oauth2FeignClientInterceptor oauth2FeignClientInterceptor;
 
     @Override
-    public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+    public void process(HttpRequest request, EntityDetails entityDetails, HttpContext context) {
         log.info("process [request={}, context={}]", request, context);
         Optional<String> token = getAuthorizationToken();
         if (token.isPresent()) {

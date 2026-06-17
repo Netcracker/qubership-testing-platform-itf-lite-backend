@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -16,22 +16,23 @@
 
 package org.qubership.atp.itf.lite.backend.configuration;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 @Order(1)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfiguration {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable().requestMatchers().antMatchers("/atp-itf-lite/api/v1/authAction/saveCode/**")
-                .and().authorizeRequests().antMatchers("/atp-itf-lite/api/v1/authAction/saveCode/**").permitAll()
-                .anyRequest().authenticated();
+                .csrf(csrf -> csrf.disable()).securityMatcher("/atp-itf-lite/api/v1/authAction/saveCode/**").authorizeHttpRequests(requests -> requests.requestMatchers("/atp-itf-lite/api/v1/authAction/saveCode/**").permitAll()
+                .anyRequest().authenticated());
+        return http.build();
     }
 }

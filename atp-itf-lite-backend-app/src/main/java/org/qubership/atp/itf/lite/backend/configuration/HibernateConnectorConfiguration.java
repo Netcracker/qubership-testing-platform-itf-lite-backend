@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.qubership.atp.itf.lite.backend.configuration;
 
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
@@ -30,6 +29,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -47,7 +47,7 @@ public class HibernateConnectorConfiguration {
     @Bean
     public Properties hibernateProperties() {
         Properties hibernateProp = new Properties();
-        hibernateProp.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL9Dialect");
+        hibernateProp.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         hibernateProp.put("hibernate.hbm2ddl.auto", "none");
         hibernateProp.put("hibernate.connection.CharSet", "utf8");
         hibernateProp.put("hibernate.connection.characterEncoding", "utf8");

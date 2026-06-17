@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -21,16 +21,14 @@ import org.qubership.atp.itf.lite.backend.feign.dto.PostmanExecuteScriptRequestD
 import org.qubership.atp.itf.lite.backend.feign.dto.PostmanExecuteScriptResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "${feign.atp.itf.lite.script.engine.name}", url = "${feign.atp.itf.lite.script.engine.url}",
         path = "${feign.atp.itf.lite.script.engine.route}", configuration = FeignConfiguration.class)
 public interface JsScriptEngineFeignClient {
 
-    @RequestMapping(
-            method = RequestMethod.POST,
+    @PostMapping(
             value = "/api/v1/script/execute",
             produces = { "application/json" },
             consumes = { "application/json" }

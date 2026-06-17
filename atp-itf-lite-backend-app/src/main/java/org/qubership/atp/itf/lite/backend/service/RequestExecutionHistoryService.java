@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -31,9 +31,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.auth.springbootstarter.entities.UserInfo;
@@ -68,6 +65,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -102,8 +101,8 @@ public class RequestExecutionHistoryService extends CrudService<RequestExecution
     public void logRequestExecution(String token, UUID sseId, RequestEntitySaveRequest request,
                                     RequestExecutionResponse response, Exception errorMessage,
                                     List<FileData> formDataFiles) {
-        if (request instanceof HttpRequestEntitySaveRequest) {
-            logHttpRequestExecution(token, sseId, (HttpRequestEntitySaveRequest) request, response, errorMessage,
+        if (request instanceof HttpRequestEntitySaveRequest saveRequest) {
+            logHttpRequestExecution(token, sseId, saveRequest, response, errorMessage,
                     formDataFiles);
         }
     }
@@ -118,11 +117,11 @@ public class RequestExecutionHistoryService extends CrudService<RequestExecution
         Optional<RequestExecutionDetails> detailsOptional = detailsRepository.findByRequestExecutionSseId(sseId);
         RequestExecutionDetails details = detailsOptional
                 .orElseGet(() -> generateAndConfigureRequestExecutionDetails(request, token, sseId));
-        if (request instanceof HttpRequestEntitySaveRequest) {
-            if (((HttpRequestEntitySaveRequest) request).getBody() != null
-                    && RequestBodyType.GraphQL.equals(((HttpRequestEntitySaveRequest) request).getBody().getType())) {
+        if (request instanceof HttpRequestEntitySaveRequest saveRequest) {
+            if (saveRequest.getBody() != null
+                    && RequestBodyType.GraphQL.equals(saveRequest.getBody().getType())) {
                 HistoryRequestBody requestBody = new HistoryRequestBody();
-                requestBody.setContent(((HttpRequestEntitySaveRequest) request).getBody().computeAndGetContent());
+                requestBody.setContent(saveRequest.getBody().computeAndGetContent());
                 requestBody.setType(RequestBodyType.GraphQL);
                 details.setRequestBody(requestBody);
             }
@@ -320,14 +319,14 @@ public class RequestExecutionHistoryService extends CrudService<RequestExecution
     public void getBinaryFileHistory(UUID fileId, HttpServletResponse response) throws IOException {
         log.debug("Start download file by id {}", fileId);
         Optional<FileData> requestBinaryFile = gridFsService.downloadFileByFileId(fileId);
-        if (!requestBinaryFile.isPresent()) {
+        if (requestBinaryFile.isEmpty()) {
             log.warn("File with id {} not found", fileId);
             response.setStatus(HttpStatus.NOT_FOUND.value());
             return;
         }
         ServletOutputStream responseOutputStream = response.getOutputStream();
         responseOutputStream.write(requestBinaryFile.get().getContent());
-        response.setHeader(CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"",
+        response.setHeader(CONTENT_DISPOSITION, "attachment; filename=\"%s\"".formatted(
                 requestBinaryFile.get().getFileName()));
         response.setHeader(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION);
         response.flushBuffer();

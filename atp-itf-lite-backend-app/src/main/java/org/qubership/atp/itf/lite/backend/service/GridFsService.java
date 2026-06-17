@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -23,15 +23,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import org.qubership.atp.itf.lite.backend.dataaccess.repository.GridFsRepository;
 import org.qubership.atp.itf.lite.backend.model.entities.FileBody;
 import org.qubership.atp.itf.lite.backend.model.entities.gridfs.FileData;
 import org.qubership.atp.itf.lite.backend.model.entities.gridfs.FileInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -40,7 +38,6 @@ public class GridFsService {
 
     private final GridFsRepository repository;
 
-    @Autowired
     public GridFsService(GridFsRepository repository) {
         this.repository = repository;
     }

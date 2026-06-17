@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -25,8 +25,6 @@ import static org.qubership.atp.itf.lite.backend.enums.auth.RequestAuthorization
 import java.io.Serializable;
 import java.util.function.Function;
 
-import javax.validation.constraints.NotNull;
-
 import org.qubership.atp.itf.lite.backend.annotations.SerializableCheckable;
 import org.qubership.atp.itf.lite.backend.enums.auth.RequestAuthorizationType;
 import org.qubership.atp.itf.lite.backend.model.api.request.ResolvableRequest;
@@ -35,6 +33,7 @@ import org.qubership.atp.itf.lite.backend.model.entities.auth.RequestAuthorizati
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data

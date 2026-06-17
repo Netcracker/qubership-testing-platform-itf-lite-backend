@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.qubership.atp.adapter.common.entities.Message;
 import org.qubership.atp.adapter.executor.executor.AtpRamWriter;
 import org.qubership.atp.itf.lite.backend.catalog.models.ActionEntity;
@@ -51,7 +52,6 @@ import org.qubership.atp.ram.enums.TestingStatuses;
 import org.qubership.atp.ram.enums.TypeAction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -116,26 +116,26 @@ public class ActionService {
 
         String actionName = action.getName();
         if (actionName.matches(ActionName.EXECUTE_REQUEST_BY_ID.getRegexp())) {
-            String requestIdStr = resolveActionParameter(action.getParameters().get(0).getValue(), context);
+            String requestIdStr = resolveActionParameter(action.getParameters().getFirst().getValue(), context);
             try {
                 UUID requestId = UUID.fromString(requestIdStr);
                 return getExecuteRequestActionStrategy(requestId, environmentId);
             } catch (IllegalArgumentException ex) {
                 log.error("Failed to parse requestId from action parameter: {}", requestIdStr, ex);
-                throw new ItfLiteException(String.format("Failed to get requestId - bad uuid format: %s",
+                throw new ItfLiteException("Failed to get requestId - bad uuid format: %s".formatted(
                         requestIdStr));
             }
         } else if (actionName.matches(ActionName.EXECUTE_FOLDER_BY_ID.getRegexp())) {
-            String folderIdStr = resolveActionParameter(action.getParameters().get(0).getValue(), context);
+            String folderIdStr = resolveActionParameter(action.getParameters().getFirst().getValue(), context);
             try {
                 UUID folderId = UUID.fromString(folderIdStr);
                 return getExecuteFolderStrategy(folderId, environmentId);
             } catch (IllegalArgumentException ex) {
                 log.error("Failed to parse folderId from action parameter: {}", folderIdStr, ex);
-                throw new ItfLiteException(String.format("Failed to get folderId - bad uuid format: %s", folderIdStr));
+                throw new ItfLiteException("Failed to get folderId - bad uuid format: %s".formatted(folderIdStr));
             }
         } else if (actionName.matches(ActionName.EXECUTE_FOLDER_BY_PATH.getRegexp())) {
-            ComplexActionParameter complexParam = action.getParameters().get(0).getComplexParam();
+            ComplexActionParameter complexParam = action.getParameters().getFirst().getComplexParam();
             if (Objects.isNull(complexParam)) {
                 log.error("ComplexActionParameters are null");
                 throw new ItfLiteException("ComplexActionParameters are null");
@@ -248,7 +248,7 @@ public class ActionService {
 
         // open itf section
         Message itfMessage = new Message();
-        itfMessage.setName(String.format("%s \"%s\"", ActionName.EXECUTE_REQUEST_BY_ID.getName(), request.getName()));
+        itfMessage.setName("%s \"%s\"".formatted(ActionName.EXECUTE_REQUEST_BY_ID.getName(), request.getName()));
         itfMessage.setExecutionStatus(ExecutionStatuses.IN_PROGRESS.name());
         itfMessage.setType(TypeAction.ITF.toString());
         AtpRamWriter writer = AtpRamWriter.getAtpRamWriter();

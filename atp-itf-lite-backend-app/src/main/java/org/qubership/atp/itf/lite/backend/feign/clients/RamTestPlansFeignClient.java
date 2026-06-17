@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -23,24 +23,21 @@ import org.qubership.atp.itf.lite.backend.feign.dto.TestPlanDto;
 import org.qubership.atp.itf.lite.backend.feign.dto.TestPlansSearchRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "${feign.atp.ram.name}", url = "${feign.atp.ram.url}",
         path = "${feign.atp.ram.route}", configuration = FeignConfiguration.class)
 public interface RamTestPlansFeignClient {
 
-    @RequestMapping(
-            method = RequestMethod.POST,
+    @PostMapping(
             value = "/api/testplans/search",
             produces = { "application/json" },
             consumes = { "application/json" }
     )
     ResponseEntity<List<TestPlanDto>> search(@RequestBody(required = false) TestPlansSearchRequestDto requestDto);
 
-    @RequestMapping(
-            method = RequestMethod.POST,
+    @PostMapping(
             value = "/api/testplans/create",
             produces = { "application/json" },
             consumes = { "application/json" }

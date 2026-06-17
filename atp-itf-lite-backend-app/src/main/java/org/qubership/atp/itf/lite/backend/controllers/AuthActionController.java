@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import org.qubership.atp.itf.lite.backend.service.GetAccessTokenByCodeService;
 import org.qubership.atp.itf.lite.backend.utils.Constants;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,10 +38,7 @@ public class AuthActionController {
 
     private final GetAccessTokenByCodeService getAccessTokenByCodeService;
 
-    @RequestMapping(
-            method = RequestMethod.GET,
-            value = "/atp-itf-lite/api/v1/authAction/saveCode/{sseId}"
-    )
+    @GetMapping("/atp-itf-lite/api/v1/authAction/saveCode/{sseId}")
     @PreAuthorize("@entityAccess.checkAccess(#projectId,'READ')")
     public ResponseEntity<Void> saveCode(@PathVariable("sseId") UUID sseId,
                                          @RequestParam(value = "code") String code,
@@ -51,8 +48,7 @@ public class AuthActionController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(
-            method = RequestMethod.POST,
+    @PostMapping(
             value = "/atp-itf-lite/api/v1/authAction/saveParamsForGetAccessCode",
             consumes = { "application/json" }
     )

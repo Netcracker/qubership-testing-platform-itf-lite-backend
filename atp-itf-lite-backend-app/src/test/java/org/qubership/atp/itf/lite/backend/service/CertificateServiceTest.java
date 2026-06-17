@@ -51,7 +51,7 @@ public class CertificateServiceTest {
         catalogueFeignService = new CatalogueService(catalogueProjectFeignClient, catalogueExecuteRequestFeignClient);
         certificateService = new CertificateService(catalogueFeignService);
 
-        folder = new File(String.format(CertificateService.CERTIFICATE_FOLDER, projectId));
+        folder = new File(CertificateService.CERTIFICATE_FOLDER.formatted(projectId));
     }
 
     @AfterEach

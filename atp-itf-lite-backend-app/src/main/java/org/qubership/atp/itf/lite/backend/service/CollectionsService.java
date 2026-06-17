@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -313,7 +313,7 @@ public class CollectionsService {
         HttpMethod httpMethod = HttpMethod.resolve(method);
         if (!availableHTTPMethods.contains(httpMethod)) {
             log.info("Parse postman request \"{}\" failed: Unsupported method is used: {}", requestName, method);
-            return Arrays.asList(new ImportCollectionsResponse(
+            return List.of(new ImportCollectionsResponse(
                     requestName, null, collectionName, "Unsupported method is used: " + method,
                     ImportCollectionStatus.ERROR, null, null));
         }
@@ -445,7 +445,7 @@ public class CollectionsService {
             if (result.getLeft() != null) {
                 results.add(result.getLeft());
                 if (result.getRight() == null) {
-                    return Arrays.asList(result.getLeft());
+                    return singletonList(result.getLeft());
                 }
             }
             parseRequestBodyType(requestBody, result.getRight(), body);
@@ -617,7 +617,7 @@ public class CollectionsService {
                 }
                 newFdp.setValue(fileName);
                 ImportCollectionsResponse result = new ImportCollectionsResponse();
-                result.setComment(String.format(REQUEST_WITHOUT_FILE_MESSAGE_FORMAT, fileName));
+                result.setComment(REQUEST_WITHOUT_FILE_MESSAGE_FORMAT.formatted(fileName));
                 result.setImportStatus(ImportCollectionStatus.WARNING);
                 result.setErrorType(ImportCollectionError.FORMDATA_FILE_REQUIRED);
                 result.setFormDataPartId(newFdp.getId());
@@ -637,7 +637,7 @@ public class CollectionsService {
                                 .filter(authType -> authType.getName()
                                         .equals(auth.getAsJsonPrimitive(Constants.TYPE).getAsString().toUpperCase()))
                                 .findFirst();
-                if (!optionalRequestAuthorizationType.isPresent()
+                if (optionalRequestAuthorizationType.isEmpty()
                         || !auth.has(auth.getAsJsonPrimitive(Constants.TYPE).getAsString())) {
                     return null;
                 }
@@ -731,7 +731,7 @@ public class CollectionsService {
 
         if (request.isPropagateCookies() && !isEmpty(listExecutedId)) {
             log.info("Propagating cookies in collection execution enabled. ErId: {}", listExecutedId);
-            copyCookiesForCollectionExecution(projectId, listExecutedId.get(0));
+            copyCookiesForCollectionExecution(projectId, listExecutedId.getFirst());
         }
 
         metricService.registerCountRunCollections(projectId);
@@ -832,7 +832,7 @@ public class CollectionsService {
     void processContentTypeHeader(List<RequestHeader> requestHeaders, RequestBody requestBody) {
         List<RequestHeader> contentTypeHeaders = requestHeaders.stream()
                 .filter(header -> HttpHeaders.CONTENT_TYPE.equals(header.getKey()))
-                .collect(Collectors.toList());
+                .toList();
 
         if (isEmpty(contentTypeHeaders)) {
             RequestBodyType bodyType = requestBody.getType();
@@ -840,7 +840,7 @@ public class CollectionsService {
                 String bodyContentTypeValue = null;
                 if (nonNull(bodyType.getContentTypes())) {
                     // get first content type from list of content types if not null
-                    bodyContentTypeValue = bodyType.getContentTypes().get(0);
+                    bodyContentTypeValue = bodyType.getContentTypes().getFirst();
                 }
                 RequestHeader contentTypeHeader =
                         new RequestHeader(HttpHeaders.CONTENT_TYPE, bodyContentTypeValue, "", false, true);

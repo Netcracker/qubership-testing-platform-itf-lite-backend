@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -59,32 +59,30 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.camel.util.function.TriConsumer;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.entity.EntityBuilder;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.CookieStore;
+import org.apache.hc.client5.http.entity.EntityBuilder;
+import org.apache.hc.client5.http.entity.mime.ByteArrayBody;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.entity.mime.StringBody;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HeaderElement;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.BasicHeader;
+import org.apache.hc.core5.http.message.BasicHeaderValueParser;
+import org.apache.hc.core5.http.message.ParserCursor;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.modelmapper.ModelMapper;
@@ -206,6 +204,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Striped;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -313,10 +315,9 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         Request request = isNull(projectId) ? get(requestId)
                 : getByProjectIdAndId(projectId, requestId);
 
-        if (!request.isAutoCookieDisabled() && request instanceof HttpRequest) {
+        if (!request.isAutoCookieDisabled() && request instanceof HttpRequest httpRequest) {
             List<Cookie> cookies = cookieService.getNotExpiredCookiesByUserIdAndProjectId(request.getProjectId());
             if (!CollectionUtils.isEmpty(cookies)) {
-                HttpRequest httpRequest = (HttpRequest) request;
                 if (StringUtils.isNotEmpty(httpRequest.getUrl())) {
                     try {
                         URI uri = new URI(httpRequest.getUrl());
@@ -327,8 +328,8 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                         }
                         // ignore the error in the url, because it is most likely caused by the fact
                         // that the url contains env variables, macros or context variables.
-                    } catch (URISyntaxException ignore) {
-                        log.warn("Syntax exception", ignore);
+                    } catch (URISyntaxException ex) {
+                        log.warn("Syntax exception", ex);
                     }
                 }
             }
@@ -453,7 +454,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
         ServletOutputStream responseOutputStream = response.getOutputStream();
         responseOutputStream.write(requestBinaryFile.getContent());
-        response.setHeader(CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"",
+        response.setHeader(CONTENT_DISPOSITION, "attachment; filename=\"%s\"".formatted(
                 requestBinaryFile.getFileName()));
         response.setHeader(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION);
         response.setHeader(CONTENT_TYPE, requestBinaryFile.getContentType());
@@ -481,7 +482,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
         ServletOutputStream responseOutputStream = response.getOutputStream();
         responseOutputStream.write(file.getContent());
-        response.setHeader(CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"",
+        response.setHeader(CONTENT_DISPOSITION, "attachment; filename=\"%s\"".formatted(
                 file.getFileName()));
         response.setHeader(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION);
         response.flushBuffer();
@@ -500,7 +501,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
         Optional<RequestExecutionDetails> detailsOptional =
                 detailsRepository.findByRequestExecutionByExecutionId(executionId);
-        if (!detailsOptional.isPresent()) {
+        if (detailsOptional.isEmpty()) {
             log.warn("Details information for request id {} not found by EXECUTION ID {}.", requestId, executionId);
             response.setStatus(HttpStatus.NOT_FOUND.value());
             return;
@@ -528,7 +529,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         String safeFileName = rawFileName.replaceAll("[\\\\/:*?\"<>|\\r\\n]", "_");
 
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",
+        response.setHeader("Content-Disposition", "attachment; filename=\"%s\"".formatted(
                 safeFileName + extension));
         response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         response.setHeader("X-Content-Type-Options", "nosniff");
@@ -570,7 +571,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         log.info("Find request by projectId {} and request id {}", projectId, requestId);
         return requestRepository.findByProjectIdAndId(projectId, requestId).orElseThrow(() -> {
             log.error("Failed to find request by projectId = {} and id = {}", projectId, requestId);
-            return new EntityNotFoundException(String.format("Failed to find request by projectId = %s and id = %s",
+            return new EntityNotFoundException("Failed to find request by projectId = %s and id = %s".formatted(
                     projectId, requestId));
         });
     }
@@ -1214,7 +1215,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             //update final response from sub collection
             if (!responses.isEmpty()) {
                 //update context. Get from latest request in sub collection
-                response.setContext(responses.get(responses.size() - 1).getContext());
+                response.setContext(responses.getLast().getContext());
                 //update testing status. If any failed then root also failed.
                 if (responses.stream().anyMatch(r -> TestingStatuses.FAILED.equals(r.getTestingStatus()))) {
                     response.setTestingStatus(TestingStatuses.FAILED);
@@ -1427,7 +1428,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     public RequestExecutionResponse executeRequest(RequestEntitySaveRequest request, String context, String token,
                                                    UUID sseId, Optional<MultipartFile> file, UUID environmentId,
                                                    List<FileData> fileDataList,
-                                                   RequestRuntimeOptions runtimeOptions) throws Exception {
+                                                   RequestRuntimeOptions runtimeOptions) {
         SaveRequestResolvingContext resolvingContext = SaveRequestResolvingContext.builder().build();
         resolvingContext.parseAndClassifyContextVariables(request.getContextVariables());
 
@@ -1442,8 +1443,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         executorContextEnricher.enrich(resolvingContext.getVariables(), token, request.getName());
 
         UUID projectId = request.getProjectId();
-        if (request instanceof HttpRequestEntitySaveRequest) {
-            HttpRequestEntitySaveRequest httpRequest = (HttpRequestEntitySaveRequest) request;
+        if (request instanceof HttpRequestEntitySaveRequest httpRequest) {
             if (!request.isAutoCookieDisabled()) {
                 httpRequest.setCookies(cookieService.getNotExpiredCookiesByUserIdAndProjectId(projectId));
             }
@@ -1498,8 +1498,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                 });
         details.setContextVariables(response.getContextVariables());
 
-        if (request instanceof HttpRequestEntitySaveRequest) {
-            HttpRequestEntitySaveRequest httpRequest = (HttpRequestEntitySaveRequest) request;
+        if (request instanceof HttpRequestEntitySaveRequest httpRequest) {
             List<Cookie> cookies = request.getCookies();
             if (!CollectionUtils.isEmpty(cookies)) {
                 if (!request.isAutoCookieDisabled()) {
@@ -1514,8 +1513,8 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                             response.setCookieHeader(cookieHeader);
                             details.setCookieHeader(cookieHeader);
                         }
-                    } catch (URISyntaxException ignore) {
-                        log.debug("Syntax exception", ignore);
+                    } catch (URISyntaxException ex) {
+                        log.debug("Syntax exception", ex);
                     }
                 }
                 response.setCookies(CookieUtils.convertCookieListToResponseCookieList(
@@ -1602,7 +1601,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                             request.getId()).stream().filter(fileData ->
                             finalFileDataListForFiltering.stream().noneMatch(receivedFileData ->
                                     receivedFileData.getFileName().equals(fileData.getFileName())))
-                    .collect(Collectors.toList());
+                    .toList();
             fileDataList.addAll(gridFsFileDatas);
         }
 
@@ -1614,7 +1613,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         List<ConsoleLogDto> consoleLogs = null;
 
         try {
-            JsExecutionResult jsResult = null;
+            JsExecutionResult jsResult;
             try {
                 request.normalize();
                 // Execute pre-script and saving test results
@@ -1790,7 +1789,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
     private ItfLiteException getExceptionIfScriptEngineScriptResultIsNotPassed(
             PostmanExecuteScriptResponseDto scriptResponseDto, boolean isPreScript) {
-        ItfLiteException exception = null;
+        ItfLiteException exception;
         if (isPreScript) {
             exception = new ItfLiteScriptEnginePreScriptExecutionException();
         } else {
@@ -1798,7 +1797,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         }
         if (!CollectionUtils.isEmpty(scriptResponseDto.getTestResults())) {
             PostmanExecuteScriptResponseTestResultsInnerErrorDto scriptResponseErrorDto =
-                    scriptResponseDto.getTestResults().get(0).getError();
+                    scriptResponseDto.getTestResults().getFirst().getError();
 
             if (isPreScript) {
                 exception = new ItfLiteScriptEnginePreScriptExecutionException(scriptResponseErrorDto.getMessage());
@@ -1833,10 +1832,10 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                                                            UUID environmentId,
                                                            SaveRequestResolvingContext resolvingContext,
                                                            Evaluator evaluator) {
-        if (request instanceof HttpRequestEntitySaveRequest && historyRequest instanceof HttpRequestEntitySaveRequest) {
+        if (request instanceof HttpRequestEntitySaveRequest saveRequest && historyRequest instanceof HttpRequestEntitySaveRequest saveRequest1) {
             return httpRequestPreExecuteProcessing(projectId,
-                    (HttpRequestEntitySaveRequest) request,
-                    (HttpRequestEntitySaveRequest) historyRequest,
+                    saveRequest,
+                    saveRequest1,
                     environmentId,
                     resolvingContext,
                     evaluator);
@@ -1850,7 +1849,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                                                                       UUID environmentId,
                                                                       SaveRequestResolvingContext resolvingContext,
                                                                       Evaluator evaluator) {
-        String authToken = null;
+        String authToken;
         try {
             authToken = requestAuthorizationService.processRequestAuthorization(projectId,
                     request, historyRequest, environmentId, evaluator, resolvingContext);
@@ -1865,18 +1864,17 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     }
 
     private void addCookieHeader(RequestEntitySaveRequest request) {
-        if (request instanceof HttpRequestEntitySaveRequest && !request.isAutoCookieDisabled()) {
-            HttpRequestEntitySaveRequest httpRequest = (HttpRequestEntitySaveRequest) request;
+        if (request instanceof HttpRequestEntitySaveRequest httpRequest && !request.isAutoCookieDisabled()) {
             if (!CollectionUtils.isEmpty(httpRequest.getCookies())) {
                 try {
                     URI uri = new URI(httpRequest.getUrl());
                     HttpHeaderSaveRequest cookieHeader = cookieService.cookieListToRequestHeader(uri,
                             httpRequest.getCookies());
                     if (cookieHeader != null && !StringUtils.isEmpty(cookieHeader.getValue())) {
-                        httpRequest.getRequestHeaders().add(0, cookieHeader);
+                        httpRequest.getRequestHeaders().addFirst(cookieHeader);
                     }
-                } catch (URISyntaxException ignore) {
-                    log.debug("Syntax exception", ignore);
+                } catch (URISyntaxException ex) {
+                    log.debug("Syntax exception", ex);
                 }
             }
         }
@@ -1973,10 +1971,10 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     }
 
     private void updateRequestForHistory(RequestEntitySaveRequest request, RequestEntitySaveRequest historyRequest) {
-        if (request instanceof HttpRequestEntitySaveRequest) {
+        if (request instanceof HttpRequestEntitySaveRequest saveRequest) {
             if (historyRequest != null) {
                 ((HttpRequestEntitySaveRequest) historyRequest)
-                        .setFile(((HttpRequestEntitySaveRequest) request)
+                        .setFile(saveRequest
                                 .getFile());
             }
             log.debug("Copy file data for history request {}", historyRequest);
@@ -2003,8 +2001,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         CookieStore httpCookieStore = new BasicCookieStore();
         try (CloseableHttpClient client =
                      httpClientService.getHttpClient(projectId, runtimeOptions, urlWithParameters, httpCookieStore)) {
-            HttpEntityEnclosingRequestBase request =
-                    (HttpEntityEnclosingRequestBase) method.getHttpRequest(urlWithParameters);
+            HttpUriRequestBase request = method.getHttpRequest(urlWithParameters);
             request.setEntity(entity);
             request.setHeaders(headers);
 
@@ -2076,10 +2073,10 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     private HttpEntity obtainHttpEntity(HttpRequestEntitySaveRequest httpRequest, String context,
                                         Optional<MultipartFile> binaryFileOpt,
                                         SaveRequestResolvingContext resolvingContext,
-                                        List<FileData> fileDataList) throws URISyntaxException, IOException {
+                                        List<FileData> fileDataList) throws URISyntaxException {
         final RequestBody body = httpRequest.getBody();
 
-        if (isNull(body) && !binaryFileOpt.isPresent()) {
+        if (isNull(body) && binaryFileOpt.isEmpty()) {
             return null;
         } else if (binaryFileOpt.isPresent()) {
             MultipartFile binaryFile = binaryFileOpt.get();
@@ -2111,7 +2108,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                 String boundary = getFormDataBoundary(httpRequest.getRequestHeaders());
                 HttpEntity entity = prepareFormDataPart(body, fileDataList, boundary);
                 updateGeneratedHeaderContentTypeValue(httpRequest.getRequestHeaders(),
-                        entity.getContentType().getValue());
+                        entity.getContentType());
                 return entity;
             } else {
                 if (nonNull(body.getContent())) {
@@ -2281,12 +2278,14 @@ public class RequestService extends CrudService<Request> implements EntityHistor
      * @param afterExecutionDate  after execution date
      * @return RequestExecutionResponse
      */
-    private RequestExecutionResponse createResponse(HttpRequestEntitySaveRequest httpRequest, HttpResponse response,
-                                                    Date beforeExecutionDate, Date afterExecutionDate,
-                                                    CookieStore cookieStore, UUID projectId)
-            throws IOException {
+    private RequestExecutionResponse createResponse(HttpRequestEntitySaveRequest httpRequest,
+                                                    ClassicHttpResponse response,
+                                                    Date beforeExecutionDate,
+                                                    Date afterExecutionDate,
+                                                    CookieStore cookieStore,
+                                                    UUID projectId) throws IOException, ParseException {
         List<RequestExecutionHeaderResponse> headers = new ArrayList<>();
-        Header[] respHeaders = response.getAllHeaders();
+        Header[] respHeaders = response.getHeaders();
         double responseSize = 0.0;
         if (nonNull(respHeaders)) {
             for (Header header : respHeaders) {
@@ -2302,16 +2301,18 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         String body = "";
         if (nonNull(entity)) {
             body = EntityUtils.toString(entity,StandardCharsets.UTF_8);
-            ContentType contentType = ContentType.get(entity);
-            Charset charset = contentType == null ? null : ContentType.get(entity).getCharset();
+
+            //TODO: Need to check after migration to Spring Boot 3.3.13 and httpclient5
+            ContentType contentType = ContentType.parse(entity.getContentType());
+            Charset charset = contentType == null ? null : contentType.getCharset();
+
             responseSize += charset == null ? body.getBytes().length : body.getBytes(charset).length;
         }
-        metricService.incrementResponseSizePerProject(responseSize, projectId,
-                httpRequest.getTransportType());
+        metricService.incrementResponseSizePerProject(responseSize, projectId, httpRequest.getTransportType());
 
         RequestBodyType bodyType = getResponseBodyType(respHeaders);
-        String statusCode = String.valueOf(response.getStatusLine().getStatusCode());
-        String statusText = response.getStatusLine().getReasonPhrase();
+        String statusCode = String.valueOf(response.getCode());
+        String statusText = response.getReasonPhrase();
         BigInteger duration = BigInteger.valueOf(afterExecutionDate.getTime() - beforeExecutionDate.getTime());
         return RequestExecutionResponse.builder()
                 .id(httpRequest.getId())
@@ -2378,21 +2379,17 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             return url;
         }
 
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url);
         requestParams.forEach(parameter -> {
             if (!parameter.isDisabled()) {
                 final String key = parameter.getKey();
                 final String value = parameter.getValue();
-                try {
-                    if (!runtimeOptions.isDisableAutoEncoding()) {
-                        uriComponentsBuilder.queryParam(URLEncoder.encode(key, "UTF-8").replace("+", "%20"),
-                                URLEncoder.encode(value, "UTF-8").replace("+", "%20"));
-                    } else {
-                        uriComponentsBuilder.queryParam(key, value);
-                    }
-                } catch (UnsupportedEncodingException e) {
-                    log.error("Failed to encode query parameter '{}' with value: '{}'", key, value, e);
-                    throw new ItfLiteRequestQueryParamEncodingException(key, value);
+                if (!runtimeOptions.isDisableAutoEncoding()) {
+                    uriComponentsBuilder.queryParam(
+                            URLEncoder.encode(key, StandardCharsets.UTF_8).replace("+", "%20"),
+                            URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20"));
+                } else {
+                    uriComponentsBuilder.queryParam(key, value);
                 }
             }
         });
@@ -2612,7 +2609,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             final String value = parameter.getValue();
 
             try {
-                parameter.setKey(URLEncoder.encode(key, StandardCharsets.UTF_8.name()));
+                parameter.setKey(URLEncoder.encode(key, StandardCharsets.UTF_8));
                 parameter.setValue(envParamService.encodeParameterExceptEnv(value));
             } catch (UnsupportedEncodingException e) {
                 log.error("Failed to encode query parameter '{}' with value: '{}'", key, value, e);
@@ -2645,14 +2642,14 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     private UUID parseRequestPath(String requestPath) {
         String splitChar = "/";
         List<String> requestParts = Arrays.stream(requestPath.split(splitChar))
-                .map(String::trim).collect(Collectors.toList());
+                .map(String::trim).toList();
         if (isEmpty(requestParts)) {
             log.error("Request path is empty. Can't get request id");
             return null;
         }
 
         if (requestParts.size() == 1) {
-            List<Request> requests = requestRepository.findAllByName(requestParts.get(0));
+            List<Request> requests = requestRepository.findAllByName(requestParts.getFirst());
             if (!isEmpty(requests)) {
                 Request filteredRequest = requests.stream()
                         .filter(request -> request.getFolderId() == null).findAny().orElse(null);
@@ -2660,7 +2657,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             }
         }
 
-        List<Request> requests = requestRepository.findAllByName(requestParts.get(requestParts.size() - 1));
+        List<Request> requests = requestRepository.findAllByName(requestParts.getLast());
         UUID requestId = null;
         for (Request request : requests) {
             requestId = request.getId();
@@ -2679,7 +2676,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                     } else {
                         i--;
                         // folder by id and name is unique, that's why foundFolders contain only one element
-                        currentFolderId = foundFolders.get(0).getParentId();
+                        currentFolderId = foundFolders.getFirst().getParentId();
                     }
                 }
             }
@@ -2691,7 +2688,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
     private String getResponseFilenameFromResponseHeaders(Map<String, List<String>> headersMap) {
         Optional<Map. Entry<String, List<String>>> contentDispositionMapEntryOptional = headersMap.entrySet().stream()
                 .filter(entry -> CONTENT_DISPOSITION.equalsIgnoreCase(entry.getKey())).findFirst();
-        if (!contentDispositionMapEntryOptional.isPresent()) {
+        if (contentDispositionMapEntryOptional.isEmpty()) {
             return null;
         }
 
@@ -2700,8 +2697,8 @@ public class RequestService extends CrudService<Request> implements EntityHistor
             return null;
         }
 
-        BasicHeader basicHeader = new BasicHeader(CONTENT_DISPOSITION, headerValues.get(0));
-        HeaderElement[] headerElements = basicHeader.getElements();
+        BasicHeader basicHeader = new BasicHeader(CONTENT_DISPOSITION, headerValues.getFirst());
+        HeaderElement[] headerElements = parseBasicHeaderValue(basicHeader);
         if (headerElements.length > 0) {
             HeaderElement headerElement = headerElements[0];
             if (headerElement.getName().equalsIgnoreCase("attachment")) {
@@ -2714,6 +2711,22 @@ public class RequestService extends CrudService<Request> implements EntityHistor
         return null;
     }
 
+    private HeaderElement[] parseBasicHeaderValue(String headerValue) {
+        // 1. Get parser instance
+        BasicHeaderValueParser parser = BasicHeaderValueParser.INSTANCE;
+
+        // 2. Configure cursor for this parsing (from- and to- positions in the string to parse)
+        ParserCursor cursor = new ParserCursor(0, headerValue.length());
+
+        // 3. Perform the parsing itself, return HeaderElement[]
+        return parser.parseElements(headerValue, cursor);
+    }
+
+    private HeaderElement[] parseBasicHeaderValue(BasicHeader basicHeader) {
+        // Invoke overloaded method for String value of the header
+        return parseBasicHeaderValue(basicHeader.getValue());
+    }
+
     private String getExtensionByContentTypeHeader(Map<String, List<String>> headersMap) {
         Optional<Map. Entry<String, List<String>>> contentDispositionMapEntryOptional = headersMap.entrySet().stream()
                 .filter(entry -> CONTENT_DISPOSITION.equalsIgnoreCase(entry.getKey())).findFirst();
@@ -2723,13 +2736,13 @@ public class RequestService extends CrudService<Request> implements EntityHistor
 
         Optional<Map. Entry<String, List<String>>> contentTypeMapEntryOptional = headersMap.entrySet().stream()
                 .filter(entry -> CONTENT_TYPE.equalsIgnoreCase(entry.getKey())).findFirst();
-        if (!contentTypeMapEntryOptional.isPresent()) {
+        if (contentTypeMapEntryOptional.isEmpty()) {
             return null;
         }
 
         List<String> headerValues = contentTypeMapEntryOptional.get().getValue();
-        BasicHeader basicHeader = new BasicHeader(CONTENT_TYPE, headerValues.get(0));
-        HeaderElement[] headerElements = basicHeader.getElements();
+        BasicHeader basicHeader = new BasicHeader(CONTENT_TYPE, headerValues.getFirst());
+        HeaderElement[] headerElements = parseBasicHeaderValue(basicHeader);
         if (headerElements.length > 0) {
             HeaderElement headerElement = headerElements[0];
             String contentType = headerElement.getName();

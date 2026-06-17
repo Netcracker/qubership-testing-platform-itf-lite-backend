@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -19,21 +19,19 @@ package org.qubership.atp.itf.lite.backend.configuration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ResourceLoader;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SpringLiquibaseBeanAware extends SpringLiquibase {
 
-    @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     private static ResourceLoader applicationContext;
 
     /**
      * Static method for get beans in liquibase task changes.
      */
     public static <T> T getBean(Class<T> beanClass) {
-        if (ApplicationContext.class.isInstance(applicationContext)) {
+        if (applicationContext instanceof ApplicationContext) {
             return ((ApplicationContext) applicationContext).getBean(beanClass);
         } else {
             log.error("Resource loader is not an instance of ApplicationContext");

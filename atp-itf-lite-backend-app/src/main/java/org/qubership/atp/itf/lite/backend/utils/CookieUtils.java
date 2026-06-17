@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.http.cookie.ClientCookie;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.itf.lite.backend.exceptions.cookie.IllegalCookieException;
 import org.qubership.atp.itf.lite.backend.feign.dto.PostmanCookieDto;
@@ -39,7 +40,6 @@ import org.qubership.atp.itf.lite.backend.model.api.dto.CookieDto;
 import org.qubership.atp.itf.lite.backend.model.api.dto.CookiesDto;
 import org.qubership.atp.itf.lite.backend.model.api.dto.ResponseCookie;
 import org.qubership.atp.itf.lite.backend.model.entities.Cookie;
-import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -92,7 +92,7 @@ public class CookieUtils {
             List<HttpCookie> parsedCookies = HttpCookie.parse(cookieDto.getValue());
             newCookie.setKey(cookieDto.getKey());
             newCookie.setValue(cookieDto.getValue());
-            newCookie.setDomain(parsedCookies.get(0).getDomain());
+            newCookie.setDomain(parsedCookies.getFirst().getDomain());
             cookies.add(newCookie);
         });
         return cookies;
@@ -129,12 +129,10 @@ public class CookieUtils {
      */
     public static List<Cookie> convertResponseCookieListToCookieList(List<ResponseCookie> responseCookieList) {
         List<Cookie> cookies = new ArrayList<>();
-        responseCookieList.forEach(responseCookie -> {
-            cookies.add(convertResponseCookieToCookie(responseCookie));
-        });
+        responseCookieList.forEach(responseCookie ->
+                cookies.add(convertResponseCookieToCookie(responseCookie)));
         return cookies;
     }
-
 
     /**
      * Converts {@link ResponseCookie} to {@link Cookie}.
@@ -185,13 +183,14 @@ public class CookieUtils {
             newCookie.setDomain(cookie.getDomain());
 
             List<HttpCookie> parsedCookies = HttpCookie.parse(cookie.getValue());
+            HttpCookie firstCookie = parsedCookies.getFirst();
 
-            newCookie.setValue(parsedCookies.get(0).getValue());
-            newCookie.setPath(parsedCookies.get(0).getPath());
+            newCookie.setValue(firstCookie.getValue());
+            newCookie.setPath(firstCookie.getPath());
             newCookie.setExpires(
-                    timestampToCookieDate(System.currentTimeMillis() + parsedCookies.get(0).getMaxAge() * 1000));
-            newCookie.setHttpOnly(parsedCookies.get(0).isHttpOnly());
-            newCookie.setSecure(parsedCookies.get(0).getSecure());
+                    timestampToCookieDate(System.currentTimeMillis() + firstCookie.getMaxAge() * 1000));
+            newCookie.setHttpOnly(firstCookie.isHttpOnly());
+            newCookie.setSecure(firstCookie.getSecure());
             responseCookies.add(newCookie);
         });
         return responseCookies;
@@ -219,7 +218,6 @@ public class CookieUtils {
         if (responseCookie.isSecure()) {
             sb.append("; Secure");
         }
-
         return sb.toString();
     }
 
@@ -236,7 +234,6 @@ public class CookieUtils {
         df.setTimeZone(TimeZone.getTimeZone("GMT"));
         return df.format(expdate);
     }
-
 
     /**
      * Convert date to string in cookie format.
@@ -257,23 +254,23 @@ public class CookieUtils {
             throw new IllegalCookieException("Cookie name can not be empty");
         }
         String value = httpCookie.getValue();
-        sj.add(String.format("%s=%s", httpCookie.getName(), isNull(value) ? "" : value));
+        sj.add("%s=%s".formatted(httpCookie.getName(), isNull(value) ? "" : value));
 
         if (!StringUtils.isEmpty(httpCookie.getDomain())) {
-            sj.add(String.format("%s=%s", Constants.DOMAIN_KEY, httpCookie.getDomain()));
+            sj.add("%s=%s".formatted(Constants.DOMAIN_KEY, httpCookie.getDomain()));
         }
         if (!StringUtils.isEmpty(httpCookie.getPath())) {
-            sj.add(String.format("%s=%s", Constants.PATH_KEY, httpCookie.getPath()));
+            sj.add("%s=%s".formatted(Constants.PATH_KEY, httpCookie.getPath()));
         }
         if (httpCookie.getMaxAge() > -1) {
-            sj.add(String.format("%s=%s", Constants.EXPIRES_KEY, timestampToCookieDate(
+            sj.add("%s=%s".formatted(Constants.EXPIRES_KEY, timestampToCookieDate(
                     System.currentTimeMillis() + httpCookie.getMaxAge() * 1000)));
         }
         if (httpCookie.getSecure()) {
-            sj.add(String.format("%s", Constants.SECURE_KEY));
+            sj.add("%s".formatted(Constants.SECURE_KEY));
         }
         if (httpCookie.isHttpOnly()) {
-            sj.add(String.format("%s", Constants.HTTP_ONLY_KEY));
+            sj.add("%s".formatted(Constants.HTTP_ONLY_KEY));
         }
         return sj.toString();
     }
@@ -285,7 +282,7 @@ public class CookieUtils {
      * @return list of response cookies
      */
     public static List<ResponseCookie> parseResponseCookie(String requestDomain,
-                                                           List<org.apache.http.cookie.Cookie> responseCookies) {
+                                                           List<org.apache.hc.client5.http.cookie.Cookie> responseCookies) {
         List<ResponseCookie> respCookies = new ArrayList<>();
         responseCookies.forEach(respCookie -> {
             ResponseCookie c = new ResponseCookie();
@@ -301,8 +298,7 @@ public class CookieUtils {
                 c.setExpires(dateToCookieDate(respCookie.getExpiryDate()));
             }
             c.setSecure(respCookie.isSecure());
-            if (respCookie instanceof ClientCookie) {
-                ClientCookie cc = (ClientCookie) respCookie;
+            if (respCookie instanceof BasicClientCookie cc) {
                 String httpOnly = cc.getAttribute("httponly");
                 if (nonNull(httpOnly)) {
                     c.setHttpOnly(Boolean.parseBoolean(httpOnly));
@@ -324,10 +320,10 @@ public class CookieUtils {
         Map<String, Cookie> cookieMap = requestCookies
                 .stream()
                 .collect(Collectors.toMap(CookieUtils::getNameWithDomain, Function.identity()));
-        responseCookies.forEach(respCookie -> {
-            cookieMap.put(CookieUtils.getNameWithDomain(respCookie),
-                    CookieUtils.convertResponseCookieToCookie(respCookie));
-        });
+        responseCookies.forEach(respCookie ->
+                cookieMap.put(
+                        CookieUtils.getNameWithDomain(respCookie),
+                        CookieUtils.convertResponseCookieToCookie(respCookie)));
         return new ArrayList<>(cookieMap.values());
     }
 

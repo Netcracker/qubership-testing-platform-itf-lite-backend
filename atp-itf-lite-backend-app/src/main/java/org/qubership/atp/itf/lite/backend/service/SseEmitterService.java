@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -140,11 +140,11 @@ public class SseEmitterService {
         String message = e.getMessage();
         log.error("Exception occurred while sending a response throw emitter: {}", message, e);
         // sse lib on UI has own exception filters, that's why we can't see our custom exception message
-        String errorMessage = String.format(ExceptionConstants.EXECUTE_REQUEST_MESSAGE_TEMPLATE, message);
-        if (e instanceof ItfLiteException) {
+        String errorMessage = ExceptionConstants.EXECUTE_REQUEST_MESSAGE_TEMPLATE.formatted(message);
+        if (e instanceof ItfLiteException exception) {
             emitter.completeWithError(e);
             // need to throw exception in /execute
-            throw (ItfLiteException) e;
+            throw exception;
         } else {
             emitter.completeWithError(new ItfLiteException(errorMessage));
             // need to throw exception in /execute
@@ -247,7 +247,7 @@ public class SseEmitterService {
                                         UUID sseId, Optional<MultipartFile> file, List<MultipartFile> files,
                                         UUID environmentId, RequestRuntimeOptions runtimeOptions,
                                         UUID sessionId) {
-        if (!file.isPresent() && sessionId != null) {
+        if (file.isEmpty() && sessionId != null) {
             Optional<FileData> existingFileDataOpt = gridFsService.downloadFileBySessionIdAndRequestId(sessionId,
                     requestEntity.getId());
             if (existingFileDataOpt.isPresent()) {

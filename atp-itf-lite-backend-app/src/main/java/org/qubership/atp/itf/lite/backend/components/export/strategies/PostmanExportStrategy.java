@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -123,8 +123,8 @@ public class PostmanExportStrategy implements ExportStrategy {
     private void exportRequestsToPostman(List<Request> requests, List<ToPostmanItem> item, Path workDir) {
         if (requests != null && !requests.isEmpty()) {
             requests.forEach(request -> {
-                if (request instanceof HttpRequest) {
-                    ToPostmanItem requestToPostman = new ToPostmanItem((HttpRequest) request);
+                if (request instanceof HttpRequest httpRequest) {
+                    ToPostmanItem requestToPostman = new ToPostmanItem(httpRequest);
                     Path workDirForFiles = workDir.resolve(COLLECTION).resolve(Constants.FILES);
                     fileService.createDirectory(workDirForFiles);
 

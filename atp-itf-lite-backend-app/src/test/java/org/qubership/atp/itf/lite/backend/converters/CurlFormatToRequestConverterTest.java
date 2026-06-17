@@ -61,36 +61,39 @@ public class CurlFormatToRequestConverterTest {
         expectedRequest.getRequestHeaders().add(new RequestHeader("Authorization", "Bearer {{authToken}}", "", false));
         RequestBody expectedBody = new RequestBody();
         expectedBody.setContent("{\"query\":\"query searchBillingAccount($filter: [String!]) {\\r\\n    searchBillingAccount @ filter(filters: $filter) {\\r\\n        id\\r\\n        name\\r\\n        billingMethod{\\r\\n            id\\r\\n            name\\r\\n        }\\r\\n        accountNumber\\r\\n        status\\r\\n        customer{\\r\\n            id\\r\\n            name\\r\\n            }\\r\\n        relatedProducts{\\r\\n            id\\r\\n            name\\r\\n            status\\r\\n            }\\r\\n\\r\\n    }\\r\\n}\\r\\n\",\"variables\":{\"filter\":[\"msisdn=590110865\"]}}");
-        expectedBody.setQuery("query searchBillingAccount($filter: [String!]) {\n"
-                + "    searchBillingAccount @ filter(filters: $filter) {\n"
-                + "        id\n"
-                + "        name\n"
-                + "        billingMethod{\n"
-                + "            id\n"
-                + "            name\n"
-                + "        }\n"
-                + "        accountNumber\n"
-                + "        status\n"
-                + "        customer{\n"
-                + "            id\n"
-                + "            name\n"
-                + "            }\n"
-                + "        relatedProducts{\n"
-                + "            id\n"
-                + "            name\n"
-                + "            status\n"
-                + "            }\n"
-                + "\n"
-                + "    }\n"
-                + "}\n");
+        expectedBody.setQuery("""
+                query searchBillingAccount($filter: [String!]) {
+                    searchBillingAccount @ filter(filters: $filter) {
+                        id
+                        name
+                        billingMethod{
+                            id
+                            name
+                        }
+                        accountNumber
+                        status
+                        customer{
+                            id
+                            name
+                            }
+                        relatedProducts{
+                            id
+                            name
+                            status
+                            }
+                
+                    }
+                }
+                """);
         expectedBody.setVariables("{\"filter\":[\"msisdn=590110865\"]}");
         expectedBody.setType(RequestBodyType.GraphQL);
         expectedRequest.setBody(expectedBody);
         // TODO: Discuss if we should set requestMethod (if not present in curl) based on --data parameter.
-        String curlString = "curl -X POST --location --globoff 'http://test.test/api/graphql-server/graphql' \\\n"
-                + "--header 'Content-Type: application/json' \\\n"
-                + "--header 'Authorization: Bearer {{authToken}}' \\\n"
-                + "--data '{\"query\":\"query searchBillingAccount($filter: [String!]) {\\r\\n    searchBillingAccount @ filter(filters: $filter) {\\r\\n        id\\r\\n        name\\r\\n        billingMethod{\\r\\n            id\\r\\n            name\\r\\n        }\\r\\n        accountNumber\\r\\n        status\\r\\n        customer{\\r\\n            id\\r\\n            name\\r\\n            }\\r\\n        relatedProducts{\\r\\n            id\\r\\n            name\\r\\n            status\\r\\n            }\\r\\n\\r\\n    }\\r\\n}\\r\\n\",\"variables\":{\"filter\":[\"msisdn=590110865\"]}}'";
+        String curlString = """
+                curl -X POST --location --globoff 'http://test.test/api/graphql-server/graphql' \\
+                --header 'Content-Type: application/json' \\
+                --header 'Authorization: Bearer {{authToken}}' \\
+                --data '{"query":"query searchBillingAccount($filter: [String!]) {\\r\\n    searchBillingAccount @ filter(filters: $filter) {\\r\\n        id\\r\\n        name\\r\\n        billingMethod{\\r\\n            id\\r\\n            name\\r\\n        }\\r\\n        accountNumber\\r\\n        status\\r\\n        customer{\\r\\n            id\\r\\n            name\\r\\n            }\\r\\n        relatedProducts{\\r\\n            id\\r\\n            name\\r\\n            status\\r\\n            }\\r\\n\\r\\n    }\\r\\n}\\r\\n","variables":{"filter":["msisdn=590110865"]}}'""";
 
         // when
         HttpRequest actualRequest = curlConverter.convertCurlStringToRequest(httpRequest, curlString);

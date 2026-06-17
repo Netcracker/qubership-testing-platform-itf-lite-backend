@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -20,14 +20,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.apache.http.entity.ContentType;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.tika.Tika;
 import org.qubership.atp.itf.lite.backend.model.entities.gridfs.FileData;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,7 +65,7 @@ public class FileUtils {
      * @throws IOException could be problem with recording to file system
      */
     public static Path prepareDirectoriesBeforeSave(Path dictionariesFolder, UUID requestId) throws IOException {
-        Path requestFolderPath = Paths.get(dictionariesFolder.toString(),
+        Path requestFolderPath = Path.of(dictionariesFolder.toString(),
                 requestId.toString());
         if (Files.exists(requestFolderPath)) {
             deleteDirectoryRecursively(requestFolderPath);
@@ -87,7 +86,7 @@ public class FileUtils {
                                                                MultipartFile dictionary)
             throws IOException {
         Path requestFolderPath = prepareDirectoriesBeforeSave(dictionariesFolder, requestId);
-        Path dictionaryFilePath = Paths.get(requestFolderPath.toString(), dictionary.getOriginalFilename());
+        Path dictionaryFilePath = Path.of(requestFolderPath.toString(), dictionary.getOriginalFilename());
         dictionary.transferTo(dictionaryFilePath);
     }
 
@@ -102,7 +101,7 @@ public class FileUtils {
                                                                MultipartFile file)
             throws IOException {
         Path requestFolderPath = prepareDirectoriesBeforeSave(formDataFolder, requestId);
-        Path filePath = Paths.get(requestFolderPath.toString(), file.getOriginalFilename());
+        Path filePath = Path.of(requestFolderPath.toString(), file.getOriginalFilename());
         file.transferTo(filePath);
     }
 
@@ -117,7 +116,7 @@ public class FileUtils {
                                                           FileData dictionaryFileData)
             throws IOException {
         Path requestFolderPath = prepareDirectoriesBeforeSave(dictionariesFolder, requestId);
-        Path dictionaryFilePath = Paths.get(requestFolderPath.toString(), dictionaryFileData.getFileName());
+        Path dictionaryFilePath = Path.of(requestFolderPath.toString(), dictionaryFileData.getFileName());
         return Files.write(dictionaryFilePath, dictionaryFileData.getContent());
     }
 
@@ -127,7 +126,7 @@ public class FileUtils {
      * @return sanitized fileName
      */
     public static String sanitizeFileName(String fileName) {
-        Path p = Paths.get(fileName);
+        Path p = Path.of(fileName);
         return p.getFileName().toString();
     }
 

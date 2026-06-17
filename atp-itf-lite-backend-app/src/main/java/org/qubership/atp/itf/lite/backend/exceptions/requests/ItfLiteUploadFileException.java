@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.qubership.atp.itf.lite.backend.exceptions.requests;
 
-import static java.lang.String.format;
-
 import org.qubership.atp.itf.lite.backend.exceptions.ItfLiteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -27,6 +25,6 @@ public class ItfLiteUploadFileException extends ItfLiteException {
     public static final String DEFAULT_MESSAGE = "Failed to load the file with name: %s for request with id: %s";
 
     public ItfLiteUploadFileException(String name, String requestId) {
-        super(format(DEFAULT_MESSAGE, name, requestId));
+        super(DEFAULT_MESSAGE.formatted(name, requestId));
     }
 }

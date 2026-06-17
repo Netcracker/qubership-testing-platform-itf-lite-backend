@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.qubership.atp.itf.lite.backend.exceptions.requests;
 
-import static java.lang.String.format;
-
 import org.qubership.atp.itf.lite.backend.exceptions.ItfLiteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,7 +26,7 @@ public class ItfLiteIncorrectImportRequest extends ItfLiteException {
     public static final String DEFAULT_MESSAGE = "Incorrect import from ram request: %s";
 
     public ItfLiteIncorrectImportRequest(String message) {
-        super(format(DEFAULT_MESSAGE, message));
+        super(DEFAULT_MESSAGE.formatted(message));
     }
 }
 

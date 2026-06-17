@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class EnvironmentReplacer {
                 value = value.replace(matcher.group(0), envValueStr);
                 return value;
             } catch (RuntimeException ex) {
-                String message = String.format("Error occurred while injecting environment [%s].\n%s\n%s",
+                String message = "Error occurred while injecting environment [%s].\n%s\n%s".formatted(
                         matcher.group(0),
                         ex.getClass().getName(),
                         ex.getMessage());

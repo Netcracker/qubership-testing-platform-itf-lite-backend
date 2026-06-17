@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -20,23 +20,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.qubership.atp.auth.springbootstarter.entities.UserInfo;
 import org.qubership.atp.itf.lite.backend.dataaccess.repository.UserSettingsRepository;
 import org.qubership.atp.itf.lite.backend.model.entities.user.UserSettings;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.jwt.JwtHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.nimbusds.jwt.EncryptedJWT;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.jwt.PlainJWT;
+import com.nimbusds.jwt.SignedJWT;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -55,7 +55,7 @@ public class UserService extends CrudService<UserSettings> {
     private String realm;
 
     @Qualifier("m2mRestTemplate")
-    private RestTemplate m2mRestTemplate;
+    private final RestTemplate m2mRestTemplate;
 
     private final UserSettingsRepository userSettingsRepository;
 
@@ -64,7 +64,6 @@ public class UserService extends CrudService<UserSettings> {
     /**
      * Constructor.
      */
-    @Autowired
     public UserService(RestTemplate m2mRestTemplate, UserSettingsRepository userSettingsRepository,
                        ModelMapper modelMapper) {
         this.m2mRestTemplate = m2mRestTemplate;
@@ -94,7 +93,7 @@ public class UserService extends CrudService<UserSettings> {
         try {
             userInfo = m2mRestTemplate.getForObject(issuer + "/users/" + userId.toString(), UserInfo.class);
         } catch (Exception e) {
-            log.error(String.format("Could not find user: %s ", userId.toString()));
+            log.error("Could not find user: %s ".formatted(userId.toString()));
             return null;
         }
 
@@ -111,10 +110,21 @@ public class UserService extends CrudService<UserSettings> {
         UUID userId = null;
         if (StringUtils.isNotBlank(token)) {
             try {
-                token = token.split(" ")[1];
-                JsonParser parser = JsonParserFactory.getJsonParser();
-                Map<String, ?> tokenData = parser.parseMap(JwtHelper.decode(token).getClaims());
-                userId = UUID.fromString(tokenData.get(sub).toString());
+                String[] splitToken = token.split(" ");
+                if (splitToken.length < 2) {
+                    log.warn("Cannot parse token: invalid format");
+                    return null;
+                }
+                JWT jwt = JWTParser.parse(splitToken[1]);
+                Map<String, Object> tokenData = switch (jwt) {
+                    case PlainJWT plainJWT -> plainJWT.getPayload().toJSONObject();
+                    case SignedJWT signedJWT -> signedJWT.getPayload().toJSONObject();
+                    case EncryptedJWT encryptedJWT -> encryptedJWT.getPayload().toJSONObject();
+                    default -> null; // in fact, we never visit it, due to earlier parse exception
+                };
+                if (tokenData != null && tokenData.containsKey("sub")) {
+                    userId = UUID.fromString(tokenData.get("sub").toString());
+                }
             } catch (Exception e) {
                 log.warn("Cannot parse token with error: ", e);
             }

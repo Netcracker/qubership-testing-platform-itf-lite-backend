@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -21,8 +21,7 @@ import java.util.UUID;
 import org.qubership.atp.auth.springbootstarter.config.FeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "${feign.atp.itf.name}",
@@ -31,8 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
         configuration = FeignConfiguration.class)
 public interface ItfContextBalancerFeignClient {
 
-    @RequestMapping(
-            method = RequestMethod.GET,
+    @GetMapping(
             value = "/context/get",
             produces = { "application/json" }
     )

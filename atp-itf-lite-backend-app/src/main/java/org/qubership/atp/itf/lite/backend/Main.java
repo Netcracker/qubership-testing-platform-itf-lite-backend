@@ -23,6 +23,9 @@ import org.qubership.atp.crypt.config.annotation.AtpCryptoEnable;
 import org.qubership.atp.crypt.config.annotation.AtpDecryptorEnable;
 import org.qubership.atp.integration.configuration.service.annotation.EnableAtpNotification;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.cache.annotation.EnableCaching;
@@ -34,8 +37,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = {
         "org.qubership.atp.itf.lite.backend",
-        "org.qubership.atp.common.probes.controllers"
-})
+        "org.qubership.atp.common.probes.controllers"},
+        exclude = {
+                MongoAutoConfiguration.class,
+                MongoDataAutoConfiguration.class,
+                MongoRepositoriesAutoConfiguration.class}
+)
 @EnableKafka
 @EnableAsync
 @EnableM2MRestTemplate

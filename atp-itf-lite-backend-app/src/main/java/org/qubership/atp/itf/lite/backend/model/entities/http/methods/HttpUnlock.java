@@ -1,5 +1,5 @@
 /*
- * # Copyright 2024-2025 NetCracker Technology Corporation
+ * # Copyright 2024-2026 NetCracker Technology Corporation
  * #
  * # Licensed under the Apache License, Version 2.0 (the "License");
  * # you may not use this file except in compliance with the License.
@@ -18,24 +18,18 @@ package org.qubership.atp.itf.lite.backend.model.entities.http.methods;
 
 import java.net.URI;
 
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 
-public class HttpUnlock extends HttpEntityEnclosingRequestBase {
+public class HttpUnlock extends HttpUriRequestBase {
 
     public static final String METHOD_NAME = "UNLOCK";
 
-    public HttpUnlock() {
-    }
-
     public HttpUnlock(URI uri) {
-        this.setURI(uri);
+        super(METHOD_NAME, uri);
     }
 
     public HttpUnlock(String uri) {
-        this.setURI(URI.create(uri));
+        this(URI.create(uri));
     }
 
-    public String getMethod() {
-        return METHOD_NAME;
-    }
 }
