@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,8 +40,8 @@ import org.qubership.atp.itf.lite.backend.exceptions.requests.ItfLiteUrlSyntaxEx
 import org.qubership.atp.itf.lite.backend.feign.service.RamService;
 import org.qubership.atp.itf.lite.backend.model.api.request.ImportFromRamRequest;
 import org.qubership.atp.itf.lite.backend.model.api.request.http.HttpHeaderSaveRequest;
+import org.qubership.atp.itf.lite.backend.model.entities.AbstractEntity;
 import org.qubership.atp.itf.lite.backend.model.entities.Cookie;
-import org.qubership.atp.itf.lite.backend.utils.StreamUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -65,10 +66,23 @@ public class CookieService {
      */
     @Transactional
     public List<Cookie> getNotExpiredCookiesByUserIdAndProjectId(UUID projectId) {
-        List<Cookie> cookies = cookiesRepository.findAllByUserIdAndProjectId(userInfoProvider.get().getId(), projectId);
-        List<Cookie> filteredCookies = filterExpired(cookies);
-        cookies.removeAll(filteredCookies);
-        cookiesRepository.removeAllByIdIn(StreamUtils.extractIds(cookies));
+        List<Cookie> allCookies = cookiesRepository.findAllByUserIdAndProjectId(
+                userInfoProvider.get().getId(), projectId);
+        // Deduplicated: keep first per name-domain (order matches DB result set; duplicates are identical in practice)
+        List<Cookie> deduplicatedCookies = new ArrayList<>(
+                allCookies.stream()
+                        .collect(Collectors.toMap(this::getNameWithDomain, Function.identity(), (a, b) -> a))
+                        .values());
+        List<Cookie> filteredCookies = filterExpired(deduplicatedCookies);
+        // Delete both duplicate losers and expired rows in one call
+        Set<UUID> keepIds = filteredCookies.stream().map(AbstractEntity::getId).collect(Collectors.toSet());
+        List<UUID> toDelete = allCookies.stream()
+                .map(AbstractEntity::getId)
+                .filter(id -> !keepIds.contains(id))
+                .collect(Collectors.toList());
+        if (!toDelete.isEmpty()) {
+            cookiesRepository.removeAllByIdIn(toDelete);
+        }
         return filteredCookies;
     }
 
