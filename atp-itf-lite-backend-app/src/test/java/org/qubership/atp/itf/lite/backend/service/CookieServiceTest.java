@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -97,8 +98,44 @@ public class CookieServiceTest {
 
         // then
         verify(cookiesRepository, times(1))
-                .removeAllByIdIn(new HashSet<UUID>(){{add(cookie2Id);}});
+                .removeAllByIdIn(Collections.singletonList(cookie2Id));
         Assertions.assertEquals(2, returnedCookies.size());
+    }
+
+    @Test
+    public void getCookieByUserIdAndProjectId_duplicateCookies_wasRemoved() {
+        // given
+        UUID projectId = UUID.randomUUID();
+        List<Cookie> cookies = new ArrayList<>();
+        Cookie cookie1 = new Cookie();
+        cookie1.setId(UUID.randomUUID());
+        cookie1.setKey("Cookie_1");
+        cookie1.setValue("Cookie_1=value; Path=/;");
+        cookies.add(cookie1);
+
+        Cookie cookie2 = new Cookie();
+        UUID cookie2Id = UUID.randomUUID();
+        cookie2.setId(cookie2Id);
+        cookie2.setKey("Cookie_1");
+        cookie2.setValue("Cookie_1=value; Path=/;");
+        cookies.add(cookie2);
+
+        Cookie cookie3 = new Cookie();
+        cookie3.setId(UUID.randomUUID());
+        cookie3.setKey("Cookie_3");
+        cookie3.setValue("Cookie_3=value; Path=/;");
+        cookies.add(cookie3);
+
+        // when
+        when(userInfoProvider.get()).thenReturn(new UserInfo());
+        when(cookiesRepository.findAllByUserIdAndProjectId(eq(null), eq(projectId))).thenReturn(cookies);
+        List<Cookie> returnedCookies = cookieService.getNotExpiredCookiesByUserIdAndProjectId(projectId);
+
+        // then
+        verify(cookiesRepository, times(1)).removeAllByIdIn(any());
+        Assertions.assertEquals(2, returnedCookies.size());
+        Assertions.assertTrue((returnedCookies.contains(cookie1) && !returnedCookies.contains(cookie2))
+                || (returnedCookies.contains(cookie2) && !returnedCookies.contains(cookie1)));
     }
 
     @Test
