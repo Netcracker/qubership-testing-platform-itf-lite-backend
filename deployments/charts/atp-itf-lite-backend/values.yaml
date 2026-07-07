@@ -177,6 +177,7 @@ CONSUL_TOKEN: ""
 SERVICE_TYPE: "ATP2"
 # http logging
 ATP_HTTP_LOGGING: "true"
+ATP_JS_SCRIPT_CONTEXT_LOGGING: "false"
 ATP_HTTP_LOGGING_HEADERS: "true"
 ATP_HTTP_LOGGING_HEADERS_IGNORE: "Authorization"
 ATP_HTTP_LOGGING_URI_IGNORE: "/atp-itf-lite/api/v1/sse/.* /rest/deployment/readiness /rest/deployment/liveness"

@@ -47,6 +47,7 @@ import org.qubership.atp.itf.lite.backend.model.api.response.RequestExecutionRes
 import org.qubership.atp.itf.lite.backend.model.context.SaveRequestResolvingContext;
 import org.qubership.atp.itf.lite.backend.service.EncryptionService;
 import org.qubership.atp.itf.lite.backend.utils.CookieUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -56,11 +57,11 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import feign.FeignException;
 import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class JsScriptEngineService {
 
@@ -71,6 +72,9 @@ public class JsScriptEngineService {
     private final ThreadLocal<List<String>> environmentEncrypted = new ThreadLocal<>();
     private final ThreadLocal<List<String>> iterationDataEncrypted = new ThreadLocal<>();
     private final ThreadLocal<List<String>> variablesEncrypted = new ThreadLocal<>();
+
+    @Value("${atp.itf.lite.js-script.context-logging.enabled:false}")
+    private boolean jsScriptContextLoggingEnabled;
 
     /**
      * Execute post script script in js engine.
@@ -133,7 +137,9 @@ public class JsScriptEngineService {
             resolvingContext.setEnvironment(updateContext(ContextType.ENVIRONMENT, postmanDto.getEnvironment()));
             resolvingContext.setIterationData(updateContext(ContextType.ITERATION_DATA, postmanDto.getIterationData()));
             resolvingContext.setVariables(updateContext(ContextType.VARIABLES, postmanDto.getVariables()));
-            log.debug("All results context {}, isPreScript? {}", resolvingContext, isPreScript);
+            if (jsScriptContextLoggingEnabled) {
+                log.debug("All results context {}, isPreScript? {}", resolvingContext, isPreScript);
+            }
             return jsScriptEngineResponse;
         } catch (AtpDecryptException decryptEx) {
             return generateExecuteScriptErrorResponse("DECRYPT CONTEXT BEFORE EXECUTION",
@@ -264,7 +270,9 @@ public class JsScriptEngineService {
 
     private Map<String, Object> updateContext(ContextType type, Map<String, Object> sourceContext)
             throws AtpEncryptException {
-        log.debug("Update context type: {} and sourceContext {}", type, sourceContext);
+        if (jsScriptContextLoggingEnabled) {
+            log.debug("Update context type: {} and sourceContext {}", type, sourceContext);
+        }
         Map<String, Object> targetContext = new HashMap<>();
         List<String> keysEncrypted = new ArrayList<>();
         switch (type) {
