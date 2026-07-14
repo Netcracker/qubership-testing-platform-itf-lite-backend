@@ -68,13 +68,13 @@ public class CookieService {
     public List<Cookie> getNotExpiredCookiesByUserIdAndProjectId(UUID projectId) {
         List<Cookie> allCookies = cookiesRepository.findAllByUserIdAndProjectId(
                 userInfoProvider.get().getId(), projectId);
-        // Deduplicated: keep first per name-domain (order matches DB result set; duplicates are identical in practice)
+        // Get cookies filtering duplicates
         List<Cookie> deduplicatedCookies = new ArrayList<>(
                 allCookies.stream()
                         .collect(Collectors.toMap(this::getNameWithDomain, Function.identity(), (a, b) -> a))
                         .values());
         List<Cookie> filteredCookies = filterExpired(deduplicatedCookies);
-        // Delete both duplicate losers and expired rows in one call
+        // Delete both duplicate cookies and expired rows in one call
         Set<UUID> keepIds = filteredCookies.stream().map(AbstractEntity::getId).collect(Collectors.toSet());
         List<UUID> toDelete = allCookies.stream()
                 .map(AbstractEntity::getId)
