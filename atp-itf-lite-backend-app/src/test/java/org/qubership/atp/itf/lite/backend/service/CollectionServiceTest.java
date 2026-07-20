@@ -378,7 +378,7 @@ public class CollectionServiceTest {
         // then
         verify(ramService.get()).getDefaultCollectionRunTestPlanId(projectId);
         verify(cookieService.get(), times(1)).getNotExpiredCookiesByUserIdAndProjectId(eq(projectId));
-        verify(cookieService.get(), times(1)).save(any());
+        verify(cookieService.get(), times(1)).saveWithDeduplication(any());
 
         ArgumentCaptor<ExecuteRequestDto> executeRequestDtoCaptor = ArgumentCaptor.forClass(ExecuteRequestDto.class);
         verify(catalogueService.get()).execute(eq(authToken), executeRequestDtoCaptor.capture());

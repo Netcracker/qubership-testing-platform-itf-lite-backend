@@ -68,12 +68,7 @@ public class CookieService {
     public List<Cookie> getNotExpiredCookiesByUserIdAndProjectId(UUID projectId) {
         List<Cookie> allCookies = cookiesRepository.findAllByUserIdAndProjectId(
                 userInfoProvider.get().getId(), projectId);
-        // Get cookies filtering duplicates
-        List<Cookie> deduplicatedCookies = new ArrayList<>(
-                allCookies.stream()
-                        .collect(Collectors.toMap(this::getNameWithDomain, Function.identity(), (a, b) -> a))
-                        .values());
-        List<Cookie> filteredCookies = filterExpired(deduplicatedCookies);
+        List<Cookie> filteredCookies = filterExpired(deduplicateByNameAndDomain(allCookies));
         // Delete both duplicate cookies and expired rows in one call
         Set<UUID> keepIds = filteredCookies.stream().map(AbstractEntity::getId).collect(Collectors.toSet());
         List<UUID> toDelete = allCookies.stream()
@@ -88,6 +83,7 @@ public class CookieService {
 
     /**
      * Only saves cookies that haven't expired.
+     * Throws if the list contains duplicate name+domain cookies.
      *
      * @param cookies list of cookies to save
      * @return list of saved cookies
@@ -96,6 +92,18 @@ public class CookieService {
     public List<Cookie> save(List<Cookie> cookies) {
         cookies = filterExpired(cookies);
         return cookiesRepository.saveAll(cookies);
+    }
+
+    /**
+     * Deduplicates by name+domain (first wins), then saves non-expired cookies.
+     * Intended for execution paths where duplicates should be collapsed, not rejected.
+     *
+     * @param cookies list of cookies to save
+     * @return list of saved cookies
+     */
+    @Transactional
+    public List<Cookie> saveWithDeduplication(List<Cookie> cookies) {
+        return save(deduplicateByNameAndDomain(cookies));
     }
 
     @Transactional
@@ -137,6 +145,12 @@ public class CookieService {
         }
     }
 
+    private List<Cookie> deduplicateByNameAndDomain(List<Cookie> cookies) {
+        return new ArrayList<>(cookies.stream()
+                .collect(Collectors.toMap(this::getNameWithDomain, Function.identity(), (a, b) -> a))
+                .values());
+    }
+
     private String getNameWithDomain(HttpCookie cookie) {
         return cookie.getName() + "-" + cookie.getDomain();
     }
@@ -176,11 +190,11 @@ public class CookieService {
      * @return List o Cookies.
      */
     public List<Cookie> getAllByExecutionRequestIdAndTestRunId(UUID executionRequestId, UUID testRunId) {
-        return filterExpired(
+        return filterExpired(deduplicateByNameAndDomain(
                 cookiesRepository
                         .findAllByExecutionRequestIdAndTestRunIdOrTestRunIdIsNull(
                             executionRequestId,
-                            testRunId));
+                            testRunId)));
     }
 
     /**
