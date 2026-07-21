@@ -58,7 +58,7 @@ public class ToPostmanRequest {
             this.body = new ToPostmanBody(request);
         }
         if (request.getUrl() != null) {
-            this.url = new ToPostmanUrl(request.getUrl());
+            this.url = new ToPostmanUrl(request.getUrl(), request.getRequestParams());
         }
         this.auth = new ToPostmanAuth(request.getAuthorization());
     }
