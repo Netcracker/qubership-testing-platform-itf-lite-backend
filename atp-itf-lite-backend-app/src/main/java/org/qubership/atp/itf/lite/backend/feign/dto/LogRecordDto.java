@@ -24,10 +24,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
 @JsonIgnoreProperties(
-  value = "type",
+  value = "protocolType",
   allowSetters = true
 )
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
+        property = "protocolType", visible = true, defaultImpl = LogRecordDto.class)
 @JsonSubTypes({
   @JsonSubTypes.Type(value = RestLogRecordDto.class, name = "REST")
 })
@@ -35,6 +36,7 @@ import lombok.Data;
 public class LogRecordDto {
 
   private TypeActionDto type;
+  private String protocolType;
   private UUID uuid;
   private String name;
 
