@@ -1302,7 +1302,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                             requestExecuteRequest.getExecutionRequestId(), requestExecuteRequest.getTestRunId());
                     cookieService.deleteByExecutionRequestIdAndTestRunId(requestExecuteRequest.getExecutionRequestId(),
                             requestExecuteRequest.getTestRunId());
-                    cookieService.save(cookies);
+                    cookieService.saveWithDeduplication(cookies);
                 }
             }
         } catch (Exception e) {
@@ -1504,7 +1504,7 @@ public class RequestService extends CrudService<Request> implements EntityHistor
                 if (!request.isAutoCookieDisabled()) {
                     cookieService.fillCookieInfo(cookies, projectId);
                     cookieService.deleteByUserIdAndProjectId(projectId);
-                    List<Cookie> savedCookies = cookieService.save(cookies);
+                    List<Cookie> savedCookies = cookieService.saveWithDeduplication(cookies);
                     try {
                         URI uri = new URI(httpRequest.getUrl());
                         HttpHeaderSaveRequest cookieHeader = cookieService.cookieListToRequestHeader(

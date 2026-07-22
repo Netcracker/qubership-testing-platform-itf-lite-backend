@@ -279,4 +279,9 @@
         <comment>PSUPATPII-6454 correct FK for delete javers global id</comment>
     </changeSet>
 
+    <changeSet id="51" author="arko0220">
+        <sqlFile path="v3.0/deduplicate_cookies_and_add_unique_constraint.sql" relativeToChangelogFile="true"/>
+        <comment>Fix duplicate cookies and enforce uniqueness on key+domain+user+project</comment>
+    </changeSet>
+
 </databaseChangeLog>

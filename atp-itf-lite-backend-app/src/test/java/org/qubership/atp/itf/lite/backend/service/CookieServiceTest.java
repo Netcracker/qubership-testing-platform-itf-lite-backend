@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -97,8 +98,44 @@ public class CookieServiceTest {
 
         // then
         verify(cookiesRepository, times(1))
-                .removeAllByIdIn(new HashSet<UUID>(){{add(cookie2Id);}});
+                .removeAllByIdIn(Collections.singletonList(cookie2Id));
         Assertions.assertEquals(2, returnedCookies.size());
+    }
+
+    @Test
+    public void getCookieByUserIdAndProjectId_duplicateCookies_wasRemoved() {
+        // given
+        UUID projectId = UUID.randomUUID();
+        List<Cookie> cookies = new ArrayList<>();
+        Cookie cookie1 = new Cookie();
+        cookie1.setId(UUID.randomUUID());
+        cookie1.setKey("Cookie_1");
+        cookie1.setValue("Cookie_1=value; Path=/;");
+        cookies.add(cookie1);
+
+        Cookie cookie2 = new Cookie();
+        UUID cookie2Id = UUID.randomUUID();
+        cookie2.setId(cookie2Id);
+        cookie2.setKey("Cookie_1");
+        cookie2.setValue("Cookie_1=value; Path=/;");
+        cookies.add(cookie2);
+
+        Cookie cookie3 = new Cookie();
+        cookie3.setId(UUID.randomUUID());
+        cookie3.setKey("Cookie_3");
+        cookie3.setValue("Cookie_3=value; Path=/;");
+        cookies.add(cookie3);
+
+        // when
+        when(userInfoProvider.get()).thenReturn(new UserInfo());
+        when(cookiesRepository.findAllByUserIdAndProjectId(eq(null), eq(projectId))).thenReturn(cookies);
+        List<Cookie> returnedCookies = cookieService.getNotExpiredCookiesByUserIdAndProjectId(projectId);
+
+        // then
+        verify(cookiesRepository, times(1)).removeAllByIdIn(any());
+        Assertions.assertEquals(2, returnedCookies.size());
+        Assertions.assertTrue((returnedCookies.contains(cookie1) && !returnedCookies.contains(cookie2))
+                || (returnedCookies.contains(cookie2) && !returnedCookies.contains(cookie1)));
     }
 
     @Test
@@ -178,6 +215,52 @@ public class CookieServiceTest {
     }
 
     @Test
+    public void save_duplicateNameAndDomain_throws() {
+        List<Cookie> cookies = new ArrayList<>();
+        Cookie cookie1 = new Cookie();
+        cookie1.setKey("Cookie_1");
+        cookie1.setDomain("example.com");
+        cookie1.setValue("Cookie_1=value1; Path=/;");
+        cookies.add(cookie1);
+        Cookie cookie2 = new Cookie();
+        cookie2.setKey("Cookie_1");
+        cookie2.setDomain("example.com");
+        cookie2.setValue("Cookie_1=value2; Path=/;");
+        cookies.add(cookie2);
+
+        Assertions.assertThrows(IllegalCookieException.class, () -> cookieService.save(cookies));
+        verify(cookiesRepository, never()).saveAll(any());
+    }
+
+    @Test
+    public void saveWithDeduplication_duplicateNameAndDomain_keepsFirst() {
+        List<Cookie> cookies = new ArrayList<>();
+        Cookie cookie1 = new Cookie();
+        cookie1.setKey("Cookie_1");
+        cookie1.setDomain("example.com");
+        cookie1.setValue("Cookie_1=value1; Path=/;");
+        cookies.add(cookie1);
+        Cookie cookie2 = new Cookie();
+        cookie2.setKey("Cookie_1");
+        cookie2.setDomain("example.com");
+        cookie2.setValue("Cookie_1=value2; Path=/;");
+        cookies.add(cookie2);
+        Cookie cookie3 = new Cookie();
+        cookie3.setKey("Cookie_3");
+        cookie3.setDomain("example.com");
+        cookie3.setValue("Cookie_3=value; Path=/;");
+        cookies.add(cookie3);
+
+        when(cookiesRepository.saveAll(any())).thenAnswer(args -> args.getArguments()[0]);
+        List<Cookie> savedCookies = cookieService.saveWithDeduplication(cookies);
+
+        Assertions.assertEquals(2, savedCookies.size());
+        Assertions.assertTrue(savedCookies.contains(cookie1));
+        Assertions.assertFalse(savedCookies.contains(cookie2));
+        Assertions.assertTrue(savedCookies.contains(cookie3));
+    }
+
+    @Test
     public void importCookiesFromRam_noAlreadySavedCookies() {
         // given
         UUID projectId = UUID.randomUUID();
@@ -253,9 +336,48 @@ public class CookieServiceTest {
         UUID executionRequestId = UUID.randomUUID();
         UUID testRunId = UUID.randomUUID();
 
+        when(cookiesRepository.findAllByExecutionRequestIdAndTestRunIdOrTestRunIdIsNull(
+                eq(executionRequestId), eq(testRunId))).thenReturn(Collections.emptyList());
+
         cookieService.getAllByExecutionRequestIdAndTestRunId(executionRequestId, testRunId);
 
         verify(cookiesRepository)
                 .findAllByExecutionRequestIdAndTestRunIdOrTestRunIdIsNull(eq(executionRequestId), eq(testRunId));
+    }
+
+    @Test
+    public void getAllByExecutionRequestIdAndTestRunId_duplicateCookies_keepsFirst() {
+        UUID executionRequestId = UUID.randomUUID();
+        UUID testRunId = UUID.randomUUID();
+        List<Cookie> cookies = new ArrayList<>();
+
+        Cookie cookie1 = new Cookie();
+        cookie1.setKey("Cookie_1");
+        cookie1.setDomain("example.com");
+        cookie1.setValue("Cookie_1=value1; Path=/;");
+        cookies.add(cookie1);
+
+        Cookie cookie2 = new Cookie();
+        cookie2.setKey("Cookie_1");
+        cookie2.setDomain("example.com");
+        cookie2.setValue("Cookie_1=value2; Path=/;");
+        cookies.add(cookie2);
+
+        Cookie cookie3 = new Cookie();
+        cookie3.setKey("Cookie_3");
+        cookie3.setDomain("example.com");
+        cookie3.setValue("Cookie_3=value; Path=/;");
+        cookies.add(cookie3);
+
+        when(cookiesRepository.findAllByExecutionRequestIdAndTestRunIdOrTestRunIdIsNull(
+                eq(executionRequestId), eq(testRunId))).thenReturn(cookies);
+
+        List<Cookie> returnedCookies =
+                cookieService.getAllByExecutionRequestIdAndTestRunId(executionRequestId, testRunId);
+
+        Assertions.assertEquals(2, returnedCookies.size());
+        Assertions.assertTrue(returnedCookies.contains(cookie1));
+        Assertions.assertFalse(returnedCookies.contains(cookie2));
+        Assertions.assertTrue(returnedCookies.contains(cookie3));
     }
  }

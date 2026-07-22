@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,8 +40,8 @@ import org.qubership.atp.itf.lite.backend.exceptions.requests.ItfLiteUrlSyntaxEx
 import org.qubership.atp.itf.lite.backend.feign.service.RamService;
 import org.qubership.atp.itf.lite.backend.model.api.request.ImportFromRamRequest;
 import org.qubership.atp.itf.lite.backend.model.api.request.http.HttpHeaderSaveRequest;
+import org.qubership.atp.itf.lite.backend.model.entities.AbstractEntity;
 import org.qubership.atp.itf.lite.backend.model.entities.Cookie;
-import org.qubership.atp.itf.lite.backend.utils.StreamUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -65,15 +66,28 @@ public class CookieService {
      */
     @Transactional
     public List<Cookie> getNotExpiredCookiesByUserIdAndProjectId(UUID projectId) {
-        List<Cookie> cookies = cookiesRepository.findAllByUserIdAndProjectId(userInfoProvider.get().getId(), projectId);
-        List<Cookie> filteredCookies = filterExpired(cookies);
-        cookies.removeAll(filteredCookies);
-        cookiesRepository.removeAllByIdIn(StreamUtils.extractIds(cookies));
+        List<Cookie> allCookies = cookiesRepository.findAllByUserIdAndProjectId(
+                userInfoProvider.get().getId(), projectId);
+        List<Cookie> filteredCookies = filterExpired(deduplicateByNameAndDomain(allCookies));
+        // Delete both duplicate cookies and expired rows in one call
+        Set<UUID> keepIds = filteredCookies.stream().map(AbstractEntity::getId).collect(Collectors.toSet());
+        List<UUID> toDelete = allCookies.stream()
+                .map(AbstractEntity::getId)
+                .filter(id -> !keepIds.contains(id))
+                .collect(Collectors.toList());
+
+        // TODO: Need to re-think and (may be) remove below command,
+        //  because making of changes in database looks incorrect in 'get' method.
+        if (!toDelete.isEmpty()) {
+            cookiesRepository.removeAllByIdIn(toDelete);
+        }
+
         return filteredCookies;
     }
 
     /**
      * Only saves cookies that haven't expired.
+     * Throws if the list contains duplicate name+domain cookies.
      *
      * @param cookies list of cookies to save
      * @return list of saved cookies
@@ -82,6 +96,18 @@ public class CookieService {
     public List<Cookie> save(List<Cookie> cookies) {
         cookies = filterExpired(cookies);
         return cookiesRepository.saveAll(cookies);
+    }
+
+    /**
+     * Deduplicates by name+domain (first wins), then saves non-expired cookies.
+     * Intended for execution paths where duplicates should be collapsed, not rejected.
+     *
+     * @param cookies list of cookies to save
+     * @return list of saved cookies
+     */
+    @Transactional
+    public List<Cookie> saveWithDeduplication(List<Cookie> cookies) {
+        return save(deduplicateByNameAndDomain(cookies));
     }
 
     @Transactional
@@ -123,6 +149,12 @@ public class CookieService {
         }
     }
 
+    private List<Cookie> deduplicateByNameAndDomain(List<Cookie> cookies) {
+        return new ArrayList<>(cookies.stream()
+                .collect(Collectors.toMap(this::getNameWithDomain, Function.identity(), (a, b) -> a))
+                .values());
+    }
+
     private String getNameWithDomain(HttpCookie cookie) {
         return cookie.getName() + "-" + cookie.getDomain();
     }
@@ -162,11 +194,11 @@ public class CookieService {
      * @return List o Cookies.
      */
     public List<Cookie> getAllByExecutionRequestIdAndTestRunId(UUID executionRequestId, UUID testRunId) {
-        return filterExpired(
+        return filterExpired(deduplicateByNameAndDomain(
                 cookiesRepository
                         .findAllByExecutionRequestIdAndTestRunIdOrTestRunIdIsNull(
                             executionRequestId,
-                            testRunId));
+                            testRunId)));
     }
 
     /**

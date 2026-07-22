@@ -750,7 +750,7 @@ public class CollectionsService {
         // Clearing userId field to avoid duplicating cookies for user
         cookies.forEach(cookie -> cookie.setUserId(null));
         cookieService.fillCookieInfoWithExecutionRequestInfo(cookies, erId, null);
-        cookieService.save(cookies);
+        cookieService.saveWithDeduplication(cookies);
     }
 
     private EnrichedScenarioDto generateIftLiteRunCollectionScenario(CollectionExecuteRequest request) {
