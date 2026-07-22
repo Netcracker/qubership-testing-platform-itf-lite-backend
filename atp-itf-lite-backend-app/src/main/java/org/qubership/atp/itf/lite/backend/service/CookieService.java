@@ -75,9 +75,13 @@ public class CookieService {
                 .map(AbstractEntity::getId)
                 .filter(id -> !keepIds.contains(id))
                 .collect(Collectors.toList());
+
+        // TODO: Need to re-think and (may be) remove below command,
+        //  because making of changes in database looks incorrect in 'get' method.
         if (!toDelete.isEmpty()) {
             cookiesRepository.removeAllByIdIn(toDelete);
         }
+
         return filteredCookies;
     }
 
