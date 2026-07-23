@@ -23,11 +23,16 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
+// @JsonTypeInfo writes protocolType field ignoring @JsonIgnoreProperties annotation.
+// But this annotation is needed for deserialization to avoid emitting it twice.
+// objectMapper.writeValueAsString(logRecord) -> "{\"protocolType\":\"LogRecordDto\"}"
+// Ignoring the bean property prevents a duplicate key; allowSetters still permits deserialization.
 @JsonIgnoreProperties(
-  value = "type",
+  value = "protocolType",
   allowSetters = true
 )
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
+        property = "protocolType", visible = true, defaultImpl = LogRecordDto.class)
 @JsonSubTypes({
   @JsonSubTypes.Type(value = RestLogRecordDto.class, name = "REST")
 })
@@ -35,6 +40,7 @@ import lombok.Data;
 public class LogRecordDto {
 
   private TypeActionDto type;
+  private String protocolType;
   private UUID uuid;
   private String name;
 

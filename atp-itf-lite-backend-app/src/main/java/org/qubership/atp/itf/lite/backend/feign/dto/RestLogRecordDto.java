@@ -16,22 +16,11 @@
 
 package org.qubership.atp.itf.lite.backend.feign.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@JsonIgnoreProperties(
-  value = "type",
-  allowSetters = true
-)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
-@JsonSubTypes({
-  @JsonSubTypes.Type(value = RestLogRecordDto.class, name = "REST")
-})
-@JsonTypeName("RestLogRecord")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class RestLogRecordDto extends LogRecordDto {
   private RequestDto request;
   private ResponseDto response;
