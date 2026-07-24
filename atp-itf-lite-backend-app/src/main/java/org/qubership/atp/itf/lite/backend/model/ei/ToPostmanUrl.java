@@ -18,11 +18,15 @@ package org.qubership.atp.itf.lite.backend.model.ei;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.qubership.atp.itf.lite.backend.model.entities.http.RequestParam;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -48,6 +52,13 @@ public class ToPostmanUrl {
      * Create Postman url entity by string.
      */
     public ToPostmanUrl(String urlString) {
+        this(urlString, null);
+    }
+
+    /**
+     * Create Postman url entity by string and request parameters.
+     */
+    public ToPostmanUrl(String urlString, List<RequestParam> requestParams) {
         this.raw = urlString;
         try {
             URL url = new URL(urlString);
@@ -70,10 +81,40 @@ public class ToPostmanUrl {
                         })
                         .collect(Collectors.toList());
             }
-
         } catch (MalformedURLException e) {
             this.host = List.of(urlString);
             log.warn("Failed to parse URL '{}' during export to POSTMAN", urlString);
         }
+        try {
+            addRequestParams(requestParams);
+        } catch (RuntimeException e) {
+            log.warn("Failed to add request parameters to URL '{}' during export to POSTMAN", urlString, e);
+        }
+    }
+
+    private void addRequestParams(List<RequestParam> requestParams) {
+        if (requestParams == null || requestParams.isEmpty()) {
+            return;
+        }
+        if (query == null) {
+            query = new ArrayList<>();
+        }
+        query.addAll(requestParams.stream()
+                .map(param -> new ToPostmanMapDescriptionAndDisabled(param.getKey(), param.getValue(),
+                        param.getDescription(), param.isDisabled()))
+                .collect(Collectors.toList()));
+
+        String activeParams = requestParams.stream()
+                .filter(param -> !param.isDisabled())
+                .map(param -> encodeQueryParam(param.getKey())
+                        + (param.getValue() == null ? "" : "=" + encodeQueryParam(param.getValue())))
+                .collect(Collectors.joining("&"));
+        if (StringUtils.isNotEmpty(activeParams)) {
+            raw += (raw.contains("?") ? "&" : "?") + activeParams;
+        }
+    }
+
+    private static String encodeQueryParam(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
     }
 }
