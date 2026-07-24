@@ -18,6 +18,8 @@ package org.qubership.atp.itf.lite.backend.model.ei;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -104,11 +106,15 @@ public class ToPostmanUrl {
 
         String activeParams = requestParams.stream()
                 .filter(param -> !param.isDisabled())
-                .map(param -> param.getValue() == null
-                        ? param.getKey() : param.getKey() + "=" + param.getValue())
+                .map(param -> encodeQueryParam(param.getKey())
+                        + (param.getValue() == null ? "" : "=" + encodeQueryParam(param.getValue())))
                 .collect(Collectors.joining("&"));
         if (StringUtils.isNotEmpty(activeParams)) {
             raw += (raw.contains("?") ? "&" : "?") + activeParams;
         }
+    }
+
+    private static String encodeQueryParam(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
     }
 }

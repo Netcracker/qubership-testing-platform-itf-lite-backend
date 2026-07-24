@@ -34,7 +34,7 @@ class ToPostmanUrlTest {
     private static final String BASE_URL = "https://example.com/resource";
 
     @Test
-    void constructor_urlWithRequestParams_exportsPostmanQuery() {
+    void exportsPostmanQuery() {
         HttpRequest request = new HttpRequest();
         request.setUrl(BASE_URL);
         request.setRequestParams(List.of(
@@ -50,5 +50,48 @@ class ToPostmanUrlTest {
         assertEquals("value", queryParam.getValue());
         assertEquals("description", queryParam.getDescription());
         assertFalse(queryParam.isDisabled());
+    }
+
+    @Test
+    void encodesUnicodeAndSpecialCharacters() {
+        String key = "ключ name&[]";
+        String value = "тест value&[]=✓";
+        HttpRequest request = new HttpRequest();
+        request.setUrl(BASE_URL);
+        request.setRequestParams(List.of(
+                new RequestParam(key, value, null, false)));
+
+        ToPostmanUrl url = new ToPostmanRequest(request).getUrl();
+        String expected = BASE_URL
+                + "?%D0%BA%D0%BB%D1%8E%D1%87%20name%26%5B%5D="
+                + "%D1%82%D0%B5%D1%81%D1%82%20value%26%5B%5D%3D%E2%9C%93";
+
+        assertEquals(expected, url.getRaw());
+        assertEquals(key, url.getQuery().getFirst().getKey());
+        assertEquals(value, url.getQuery().getFirst().getValue());
+    }
+
+    @Test
+    void encodesEmailSpecialCharacters() {
+        HttpRequest request = new HttpRequest();
+        request.setUrl(BASE_URL);
+        request.setRequestParams(List.of(
+                new RequestParam("email", "john+test@example.com", null, false)));
+
+        ToPostmanUrl url = new ToPostmanRequest(request).getUrl();
+
+        assertEquals(BASE_URL + "?email=john%2Btest%40example.com", url.getRaw());
+    }
+
+    @Test
+    void encodesKeyWithoutValue() {
+        HttpRequest request = new HttpRequest();
+        request.setUrl(BASE_URL);
+        request.setRequestParams(List.of(
+                new RequestParam("key with space", null, null, false)));
+
+        ToPostmanUrl url = new ToPostmanRequest(request).getUrl();
+
+        assertEquals(BASE_URL + "?key%20with%20space", url.getRaw());
     }
 }
