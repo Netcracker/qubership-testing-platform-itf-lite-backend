@@ -16,10 +16,12 @@
 
 package org.qubership.atp.itf.lite.backend.model.entities;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.qubership.atp.itf.lite.backend.annotations.SerializableCheckable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -31,7 +33,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class FileBody {
+@SerializableCheckable
+public class FileBody implements Serializable {
     @Column(name = "file_name")
     private String fileName;
     @Column(name = "file_id")
