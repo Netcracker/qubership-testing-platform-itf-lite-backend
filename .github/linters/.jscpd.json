@@ -3,6 +3,7 @@
   "mode": "weak",
   "ignore": [
     "**/resources/**",
+    "**/test/**",
     "**/.github/**",
     "**/*/*.xml",
     "**/*/*.yaml",
